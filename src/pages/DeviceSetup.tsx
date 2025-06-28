@@ -307,8 +307,8 @@ const DeviceSetup: React.FC = () => {
           <div>PID|1||PAT001^^^HOSPITAL^MR||SMITH^JOHN^||19580315|M</div>
           <div>OBR|1||ORDER001|VITALS^VITAL SIGNS^LOCAL|||20241201120000</div>
           <div>OBX|1|NM|HR^HEART RATE^LOCAL|1|72|BPM|60-100|N|||F</div>
-          <div>OBX|2|NM|NBP^BLOOD PRESSURE^LOCAL|1|120/80|MMHG|<140/90|N|||F</div>
-          <div>OBX|3|NM|SPO2^OXYGEN SATURATION^LOCAL|1|98|%|>95|N|||F</div>
+          <div>OBX|2|NM|NBP^BLOOD PRESSURE^LOCAL|1|120/80|MMHG|&lt;140/90|N|||F</div>
+          <div>OBX|3|NM|SPO2^OXYGEN SATURATION^LOCAL|1|98|%|&gt;95|N|||F</div>
         </div>
       </div>
       
