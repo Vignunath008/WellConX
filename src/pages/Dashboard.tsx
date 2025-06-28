@@ -77,7 +77,7 @@ const Dashboard: React.FC = () => {
     <div className="space-y-8">
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((stat, index) => (
+        {statCards.map((stat, _) => (
           <div key={stat.title} className={`${stat.bgColor} rounded-2xl p-6 border border-gray-100`}>
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 rounded-xl bg-white shadow-sm ${stat.color}`}>
