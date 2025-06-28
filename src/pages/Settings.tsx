@@ -5,16 +5,12 @@ import {
   Bell, 
   Shield, 
   Database, 
-  Wifi, 
-  Save,
-  Eye,
-  EyeOff
+  Save
 } from 'lucide-react'
 
 const Settings: React.FC = () => {
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState('profile')
-  const [showPassword, setShowPassword] = useState(false)
   const [settings, setSettings] = useState({
     profile: {
       name: user?.name || '',
