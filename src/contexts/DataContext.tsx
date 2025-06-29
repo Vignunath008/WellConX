@@ -199,7 +199,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       initialWaveforms[patient.id] = {
         ecg: generateECGWaveform(300, patient.vitals.heartRate),
         pleth: generatePlethWaveform(300, patient.vitals.heartRate, patient.vitals.oxygenSaturation),
-        respiration: generateRespirationWaveform(300, patient.vitals.respiratoryRate)
+        respiration: generateRespirationWaveform(300, patient.vitals.respiratoryRate, patient.vitals.heartRate)
       }
     })
     setWaveforms(initialWaveforms)
@@ -322,7 +322,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   // Generate respiration waveform based on actual respiratory rate
-  const generateRespirationWaveform = (length: number, respiratoryRate: number) => {
+  const generateRespirationWaveform = (length: number, respiratoryRate: number, heartRate: number) => {
     const waveform = []
     const sampleRate = 250
     const samplesPerBreath = Math.round((60 / respiratoryRate) * sampleRate)
@@ -446,7 +446,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             // Generate new waveform segments based on CURRENT vitals
             const newECGPoints = generateECGWaveform(5, patient.vitals.heartRate)
             const newPlethPoints = generatePlethWaveform(5, patient.vitals.heartRate, patient.vitals.oxygenSaturation)
-            const newRespPoints = generateRespirationWaveform(5, patient.vitals.respiratoryRate)
+            const newRespPoints = generateRespirationWaveform(5, patient.vitals.respiratoryRate, patient.vitals.heartRate)
             
             // Shift old data and add new points
             updated[patient.id] = {
