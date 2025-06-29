@@ -9,19 +9,20 @@ const Dashboard: React.FC = () => {
   const { patients, devices, alerts, waveforms } = useData()
   const [chartData, setChartData] = useState<any[]>([])
 
-  // Generate historical chart data
+  // Generate historical chart data with more realistic intervals
   useEffect(() => {
     const generateChartData = () => {
       const data = []
       const now = new Date()
       
-      for (let i = 59; i >= 0; i--) {
-        const timestamp = new Date(now.getTime() - i * 60 * 1000)
+      // Generate data points every 5 minutes for the last 2 hours
+      for (let i = 23; i >= 0; i--) {
+        const timestamp = new Date(now.getTime() - i * 5 * 60 * 1000)
         data.push({
           timestamp,
-          heartRate: Math.round(70 + Math.sin(i * 0.1) * 10 + Math.random() * 8),
-          oxygenSaturation: Math.round(97 + Math.sin(i * 0.15) * 2 + Math.random() * 2),
-          temperature: Math.round((98.6 + Math.sin(i * 0.2) * 0.5 + Math.random() * 0.3) * 10) / 10,
+          heartRate: Math.round(70 + Math.sin(i * 0.2) * 8 + Math.random() * 4),
+          oxygenSaturation: Math.round(97 + Math.sin(i * 0.3) * 1.5 + Math.random() * 1),
+          temperature: Math.round((98.6 + Math.sin(i * 0.4) * 0.3 + Math.random() * 0.2) * 10) / 10,
         })
       }
       
@@ -29,7 +30,8 @@ const Dashboard: React.FC = () => {
     }
 
     generateChartData()
-    const interval = setInterval(generateChartData, 60000)
+    // Update chart data every 5 minutes
+    const interval = setInterval(generateChartData, 5 * 60 * 1000)
     
     return () => clearInterval(interval)
   }, [])
@@ -77,7 +79,7 @@ const Dashboard: React.FC = () => {
     <div className="space-y-8">
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((stat, _) => (
+        {statCards.map((stat) => (
           <div key={stat.title} className={`${stat.bgColor} rounded-2xl p-6 border border-gray-100`}>
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 rounded-xl bg-white shadow-sm ${stat.color}`}>
@@ -154,7 +156,7 @@ const Dashboard: React.FC = () => {
                     data={waveforms[patient.id].ecg}
                     color="#00ff00"
                     height={120}
-                    speed={3}
+                    speed={2}
                     amplitude={1.2}
                     unit="mV"
                   />
@@ -164,7 +166,7 @@ const Dashboard: React.FC = () => {
                     color="#00ffff"
                     height={120}
                     speed={2}
-                    amplitude={1}
+                    amplitude={1.5}
                     unit="SpO2"
                   />
                   <LiveWaveform
@@ -172,8 +174,8 @@ const Dashboard: React.FC = () => {
                     data={waveforms[patient.id].respiration}
                     color="#ffff00"
                     height={120}
-                    speed={1}
-                    amplitude={0.8}
+                    speed={2}
+                    amplitude={1.0}
                     unit="Resp"
                   />
                 </div>

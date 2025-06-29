@@ -137,80 +137,170 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const initialWaveforms: any = {}
     demoPatients.forEach(patient => {
       initialWaveforms[patient.id] = {
-        ecg: generateECGWaveform(200),
-        pleth: generatePlethWaveform(200),
-        respiration: generateRespirationWaveform(200)
+        ecg: generateECGWaveform(300, patient.vitals.heartRate),
+        pleth: generatePlethWaveform(300, patient.vitals.heartRate, patient.vitals.oxygenSaturation),
+        respiration: generateRespirationWaveform(300, patient.vitals.respiratoryRate)
       }
     })
     setWaveforms(initialWaveforms)
   }, [])
 
-  // Generate realistic ECG waveform
-  const generateECGWaveform = (length: number) => {
+  // Generate realistic ECG waveform based on heart rate
+  const generateECGWaveform = (length: number, heartRate: number) => {
     const waveform = []
-    for (let i = 0; i < length; i++) {
-      const t = i / 50 // Time scaling
-      let value = 0
+    const samplesPerBeat = Math.round((60 / heartRate) * 250) // 250 samples per second
+    const totalBeats = Math.ceil(length / samplesPerBeat)
+    
+    for (let beat = 0; beat < totalBeats; beat++) {
+      const beatStart = beat * samplesPerBeat
       
-      // P wave
-      if (t % 1 < 0.1) {
-        value += 0.2 * Math.sin(Math.PI * (t % 1) / 0.1)
+      for (let i = 0; i < samplesPerBeat && (beatStart + i) < length; i++) {
+        const t = i / samplesPerBeat // Normalized time within beat (0-1)
+        let value = 0
+        
+        // Baseline with slight drift
+        value += 0.05 * Math.sin(beat * 0.1) + (Math.random() - 0.5) * 0.02
+        
+        // P wave (0.08-0.12 of cycle)
+        if (t >= 0.08 && t <= 0.12) {
+          const pT = (t - 0.08) / 0.04
+          value += 0.15 * Math.sin(Math.PI * pT)
+        }
+        
+        // QRS complex (0.16-0.26 of cycle)
+        else if (t >= 0.16 && t <= 0.26) {
+          const qrsT = (t - 0.16) / 0.1
+          if (qrsT < 0.2) {
+            // Q wave
+            value -= 0.2 * Math.sin(Math.PI * qrsT / 0.2)
+          } else if (qrsT < 0.6) {
+            // R wave
+            value += 1.2 * Math.sin(Math.PI * (qrsT - 0.2) / 0.4)
+          } else {
+            // S wave
+            value -= 0.4 * Math.sin(Math.PI * (qrsT - 0.6) / 0.4)
+          }
+        }
+        
+        // T wave (0.35-0.55 of cycle)
+        else if (t >= 0.35 && t <= 0.55) {
+          const tT = (t - 0.35) / 0.2
+          value += 0.25 * Math.sin(Math.PI * tT)
+        }
+        
+        // Add heart rate variability
+        const hrv = 1 + (Math.random() - 0.5) * 0.05
+        value *= hrv
+        
+        waveform.push(value)
       }
-      // QRS complex
-      else if (t % 1 > 0.15 && t % 1 < 0.25) {
-        const qrsT = (t % 1 - 0.15) / 0.1
-        if (qrsT < 0.3) value -= 0.3 * Math.sin(Math.PI * qrsT / 0.3)
-        else if (qrsT < 0.7) value += 1.5 * Math.sin(Math.PI * (qrsT - 0.3) / 0.4)
-        else value -= 0.5 * Math.sin(Math.PI * (qrsT - 0.7) / 0.3)
-      }
-      // T wave
-      else if (t % 1 > 0.4 && t % 1 < 0.6) {
-        value += 0.3 * Math.sin(Math.PI * (t % 1 - 0.4) / 0.2)
-      }
+    }
+    
+    return waveform.slice(0, length)
+  }
+
+  // Generate plethysmography waveform based on heart rate and SpO2
+  const generatePlethWaveform = (length: number, heartRate: number, spo2: number) => {
+    const waveform = []
+    const samplesPerBeat = Math.round((60 / heartRate) * 250)
+    const totalBeats = Math.ceil(length / samplesPerBeat)
+    
+    // SpO2 affects amplitude (lower SpO2 = lower amplitude)
+    const amplitudeMultiplier = (spo2 / 100) * 0.8 + 0.2
+    
+    for (let beat = 0; beat < totalBeats; beat++) {
+      const beatStart = beat * samplesPerBeat
       
-      // Add some noise
-      value += (Math.random() - 0.5) * 0.05
-      waveform.push(value)
+      for (let i = 0; i < samplesPerBeat && (beatStart + i) < length; i++) {
+        const t = i / samplesPerBeat
+        
+        // Main pulse wave (systolic upstroke and diastolic decay)
+        let value = 0
+        
+        if (t < 0.3) {
+          // Systolic upstroke
+          value = Math.sin(Math.PI * t / 0.3) * amplitudeMultiplier
+        } else if (t < 0.6) {
+          // Diastolic decay with dicrotic notch
+          const decayT = (t - 0.3) / 0.3
+          value = Math.exp(-decayT * 2) * amplitudeMultiplier
+          
+          // Dicrotic notch around 0.4-0.45
+          if (t >= 0.4 && t <= 0.45) {
+            value *= 0.85
+          }
+        } else {
+          // Baseline
+          value = 0.1 * amplitudeMultiplier
+        }
+        
+        // Add respiratory variation (slower modulation)
+        const respPhase = (beat * samplesPerBeat + i) / (250 * 4) // 4 second respiratory cycle
+        value *= (1 + 0.1 * Math.sin(2 * Math.PI * respPhase))
+        
+        // Add noise
+        value += (Math.random() - 0.5) * 0.05 * amplitudeMultiplier
+        
+        waveform.push(value)
+      }
     }
-    return waveform
+    
+    return waveform.slice(0, length)
   }
 
-  // Generate plethysmography waveform
-  const generatePlethWaveform = (length: number) => {
+  // Generate respiration waveform based on respiratory rate
+  const generateRespirationWaveform = (length: number, respiratoryRate: number) => {
     const waveform = []
-    for (let i = 0; i < length; i++) {
-      const t = i / 60 // Slower than ECG
-      const value = Math.sin(2 * Math.PI * t) * 0.8 + (Math.random() - 0.5) * 0.1
-      waveform.push(value)
+    const samplesPerBreath = Math.round((60 / respiratoryRate) * 250)
+    const totalBreaths = Math.ceil(length / samplesPerBreath)
+    
+    for (let breath = 0; breath < totalBreaths; breath++) {
+      const breathStart = breath * samplesPerBreath
+      
+      for (let i = 0; i < samplesPerBreath && (breathStart + i) < length; i++) {
+        const t = i / samplesPerBreath
+        
+        // Inspiration (0-0.4) and expiration (0.4-1.0)
+        let value = 0
+        
+        if (t < 0.4) {
+          // Inspiration - gradual rise
+          value = 0.8 * Math.sin(Math.PI * t / 0.4 * 0.5)
+        } else {
+          // Expiration - exponential decay
+          const expT = (t - 0.4) / 0.6
+          value = 0.8 * Math.exp(-expT * 2)
+        }
+        
+        // Add slight irregularity
+        value += (Math.random() - 0.5) * 0.05
+        
+        // Add cardiac artifact (heart beats visible on respiration)
+        const cardiacPhase = (breath * samplesPerBreath + i) / (250 * 60 / 75) // Assuming 75 bpm
+        value += 0.02 * Math.sin(2 * Math.PI * cardiacPhase)
+        
+        waveform.push(value)
+      }
     }
-    return waveform
+    
+    return waveform.slice(0, length)
   }
 
-  // Generate respiration waveform
-  const generateRespirationWaveform = (length: number) => {
-    const waveform = []
-    for (let i = 0; i < length; i++) {
-      const t = i / 20 // Much slower breathing rate
-      const value = Math.sin(2 * Math.PI * t) * 0.6 + (Math.random() - 0.5) * 0.05
-      waveform.push(value)
-    }
-    return waveform
-  }
-
-  // Simulate real-time data updates
+  // Simulate realistic vital signs updates (every 5-10 seconds)
   useEffect(() => {
     const interval = setInterval(() => {
       setPatients(prevPatients => 
         prevPatients.map(patient => {
+          // More realistic vital sign changes (smaller, gradual changes)
           const newVitals = {
             ...patient.vitals,
-            heartRate: Math.round(Math.max(50, Math.min(150, patient.vitals.heartRate + (Math.random() - 0.5) * 6))),
-            oxygenSaturation: Math.round(Math.max(85, Math.min(100, patient.vitals.oxygenSaturation + (Math.random() - 0.5) * 3))),
-            temperature: Math.round((Math.max(95, Math.min(104, patient.vitals.temperature + (Math.random() - 0.5) * 0.4)) * 10)) / 10,
-            respiratoryRate: Math.round(Math.max(8, Math.min(35, patient.vitals.respiratoryRate + (Math.random() - 0.5) * 3))),
+            heartRate: Math.round(Math.max(50, Math.min(150, patient.vitals.heartRate + (Math.random() - 0.5) * 2))),
+            oxygenSaturation: Math.round(Math.max(85, Math.min(100, patient.vitals.oxygenSaturation + (Math.random() - 0.5) * 1))),
+            temperature: Math.round((Math.max(95, Math.min(104, patient.vitals.temperature + (Math.random() - 0.5) * 0.1)) * 10)) / 10,
+            respiratoryRate: Math.round(Math.max(8, Math.min(35, patient.vitals.respiratoryRate + (Math.random() - 0.5) * 1))),
             bloodPressure: {
-              systolic: Math.round(Math.max(80, Math.min(200, patient.vitals.bloodPressure.systolic + (Math.random() - 0.5) * 8))),
-              diastolic: Math.round(Math.max(40, Math.min(120, patient.vitals.bloodPressure.diastolic + (Math.random() - 0.5) * 6)))
+              systolic: Math.round(Math.max(80, Math.min(200, patient.vitals.bloodPressure.systolic + (Math.random() - 0.5) * 3))),
+              diastolic: Math.round(Math.max(40, Math.min(120, patient.vitals.bloodPressure.diastolic + (Math.random() - 0.5) * 2)))
             },
             timestamp: new Date()
           }
@@ -236,21 +326,35 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         })
       )
+    }, 7000) // Update every 7 seconds (more realistic)
 
-      // Update waveforms in real-time
+    return () => clearInterval(interval)
+  }, [])
+
+  // Update waveforms based on current vitals (every 200ms for smooth display)
+  useEffect(() => {
+    const interval = setInterval(() => {
       setWaveforms(prev => {
         const updated = { ...prev }
-        Object.keys(updated).forEach(patientId => {
-          // Shift arrays and add new data points
-          updated[patientId] = {
-            ecg: [...updated[patientId].ecg.slice(1), ...generateECGWaveform(5)].slice(-200),
-            pleth: [...updated[patientId].pleth.slice(1), ...generatePlethWaveform(5)].slice(-200),
-            respiration: [...updated[patientId].respiration.slice(1), ...generateRespirationWaveform(5)].slice(-200)
+        
+        patients.forEach(patient => {
+          if (updated[patient.id]) {
+            // Generate new data points based on current vitals
+            const newECGPoints = generateECGWaveform(10, patient.vitals.heartRate)
+            const newPlethPoints = generatePlethWaveform(10, patient.vitals.heartRate, patient.vitals.oxygenSaturation)
+            const newRespPoints = generateRespirationWaveform(10, patient.vitals.respiratoryRate)
+            
+            updated[patient.id] = {
+              ecg: [...updated[patient.id].ecg.slice(10), ...newECGPoints],
+              pleth: [...updated[patient.id].pleth.slice(10), ...newPlethPoints],
+              respiration: [...updated[patient.id].respiration.slice(10), ...newRespPoints]
+            }
           }
         })
+        
         return updated
       })
-    }, 100) // Update every 100ms for smooth waveforms
+    }, 200) // Update waveforms every 200ms
 
     return () => clearInterval(interval)
   }, [patients])
