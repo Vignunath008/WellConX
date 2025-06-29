@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useData } from '../contexts/DataContext'
 import DeviceMonitor from '../components/device/DeviceMonitor'
-import { Monitor, Plus, Filter, Search, Wifi, WifiOff, Settings } from 'lucide-react'
+import { Monitor, Plus, Filter, Search, Wifi, WifiOff, Settings, RefreshCw, Download } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const Devices: React.FC = () => {
@@ -9,6 +9,7 @@ const Devices: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | 'online' | 'offline' | 'maintenance'>('all')
   const [brandFilter, setBrandFilter] = useState<'all' | 'Philips' | 'GE' | 'Mindray'>('all')
+  const [showAddDevice, setShowAddDevice] = useState(false)
 
   const filteredDevices = devices.filter(device => {
     const matchesSearch = device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -30,12 +31,31 @@ const Devices: React.FC = () => {
 
   const handleConfigure = (deviceId: string) => {
     console.log('Configure device:', deviceId)
-    // Implement device configuration logic
+    alert(`Configuring device: ${deviceId}`)
   }
 
   const handleViewData = (deviceId: string) => {
     console.log('View device data:', deviceId)
-    // Implement device data viewing logic
+    alert(`Viewing data for device: ${deviceId}`)
+  }
+
+  const handleAddDevice = () => {
+    setShowAddDevice(true)
+    alert('Add Device functionality - Would open device setup wizard')
+  }
+
+  const handleRefresh = () => {
+    alert('Refreshing device status...')
+  }
+
+  const handleExport = () => {
+    alert('Exporting device data...')
+  }
+
+  const clearFilters = () => {
+    setSearchTerm('')
+    setStatusFilter('all')
+    setBrandFilter('all')
   }
 
   return (
@@ -46,10 +66,29 @@ const Devices: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">Device Management</h1>
           <p className="text-gray-600 mt-1">Monitor and manage medical devices across the facility</p>
         </div>
-        <button className="bg-medical-600 hover:bg-medical-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
-          <Plus className="h-4 w-4" />
-          <span>Add Device</span>
-        </button>
+        <div className="flex items-center space-x-3">
+          <button 
+            onClick={handleRefresh}
+            className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            <span>Refresh</span>
+          </button>
+          <button 
+            onClick={handleExport}
+            className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+          >
+            <Download className="h-4 w-4" />
+            <span>Export</span>
+          </button>
+          <button 
+            onClick={handleAddDevice}
+            className="bg-medical-600 hover:bg-medical-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Add Device</span>
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -123,12 +162,20 @@ const Devices: React.FC = () => {
               <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search devices..."
+                placeholder="Search devices by name, ID, or location..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500"
+                className="pl-10 pr-4 py-2 w-80 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500"
               />
             </div>
+            {(searchTerm || statusFilter !== 'all' || brandFilter !== 'all') && (
+              <button
+                onClick={clearFilters}
+                className="text-sm text-gray-500 hover:text-gray-700 underline"
+              >
+                Clear filters
+              </button>
+            )}
           </div>
           
           <div className="flex items-center space-x-3">
@@ -159,6 +206,14 @@ const Devices: React.FC = () => {
             </button>
           </div>
         </div>
+        
+        {/* Filter Results Summary */}
+        <div className="mt-4 text-sm text-gray-600">
+          Showing {filteredDevices.length} of {devices.length} devices
+          {searchTerm && ` matching "${searchTerm}"`}
+          {statusFilter !== 'all' && ` with status "${statusFilter}"`}
+          {brandFilter !== 'all' && ` from "${brandFilter}"`}
+        </div>
       </div>
 
       {/* Device Grid */}
@@ -184,16 +239,17 @@ const Devices: React.FC = () => {
           <Monitor className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No devices found</h3>
           <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+          <button
+            onClick={clearFilters}
+            className="mt-4 text-medical-600 hover:text-medical-700 font-medium"
+          >
+            Clear all filters
+          </button>
         </div>
       )}
 
-      {/* HL7 Connection Status */}
-      <motion.div
-        className="bg-white rounded-xl p-6 border border-gray-200"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.5 }}
-      >
+      {/* HL7 Connection Status - Fixed positioning */}
+      <div className="bg-white rounded-xl p-6 border border-gray-200">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">HL7 Connection Status</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-green-50 p-4 rounded-lg border border-green-200">
@@ -202,6 +258,7 @@ const Devices: React.FC = () => {
               <span className="text-sm font-medium text-green-700">TCP Listener</span>
             </div>
             <p className="text-xs text-green-600 mt-1">Port 2575 - Active</p>
+            <p className="text-xs text-green-500 mt-1">Last message: 2s ago</p>
           </div>
           
           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
@@ -210,6 +267,7 @@ const Devices: React.FC = () => {
               <span className="text-sm font-medium text-blue-700">Message Parser</span>
             </div>
             <p className="text-xs text-blue-600 mt-1">ORU^R01 - Ready</p>
+            <p className="text-xs text-blue-500 mt-1">Processed: 1,247 messages</p>
           </div>
           
           <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
@@ -218,9 +276,10 @@ const Devices: React.FC = () => {
               <span className="text-sm font-medium text-purple-700">Data Stream</span>
             </div>
             <p className="text-xs text-purple-600 mt-1">Real-time - Active</p>
+            <p className="text-xs text-purple-500 mt-1">Throughput: 15 msg/min</p>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
