@@ -159,14 +159,19 @@ const Header: React.FC = () => {
               onClick={() => setShowSearchResults(false)}
             />
             
-            {/* Search Results Modal */}
+            {/* Search Results Modal - Fixed positioning and sizing */}
             <motion.div
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              className="fixed top-20 left-1/2 transform -translate-x-1/2 w-full max-w-4xl bg-white rounded-2xl shadow-2xl z-50 max-h-[80vh] overflow-hidden"
+              className="fixed top-4 left-4 right-4 bg-white rounded-2xl shadow-2xl z-50 max-w-6xl mx-auto"
+              style={{ 
+                maxHeight: 'calc(100vh - 2rem)',
+                top: '2rem'
+              }}
             >
-              <div className="p-6 border-b border-gray-200">
+              {/* Header */}
+              <div className="p-6 border-b border-gray-200 flex-shrink-0">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">Search Results</h3>
@@ -186,7 +191,8 @@ const Header: React.FC = () => {
                 </div>
               </div>
 
-              <div className="max-h-96 overflow-y-auto">
+              {/* Scrollable Content */}
+              <div className="overflow-y-auto" style={{ maxHeight: 'calc(100vh - 12rem)' }}>
                 {searchResults.length > 0 ? (
                   <div className="p-6 space-y-4">
                     {searchResults.map((patient) => (
@@ -199,29 +205,29 @@ const Header: React.FC = () => {
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4">
-                            <div className="bg-blue-100 p-3 rounded-xl">
+                            <div className="bg-blue-100 p-3 rounded-xl flex-shrink-0">
                               <User className="h-6 w-6 text-blue-600" />
                             </div>
-                            <div>
-                              <h4 className="font-semibold text-gray-900">{patient.name}</h4>
+                            <div className="min-w-0 flex-1">
+                              <h4 className="font-semibold text-gray-900 truncate">{patient.name}</h4>
                               <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
                                 <div className="flex items-center">
-                                  <MapPin className="h-4 w-4 mr-1" />
-                                  {patient.room}
+                                  <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
+                                  <span className="truncate">{patient.room}</span>
                                 </div>
                                 <div className="flex items-center">
-                                  <Monitor className="h-4 w-4 mr-1" />
-                                  {patient.deviceId}
+                                  <Monitor className="h-4 w-4 mr-1 flex-shrink-0" />
+                                  <span className="truncate">{patient.deviceId}</span>
                                 </div>
-                                <span>MRN: {patient.medicalRecordNumber}</span>
+                                <span className="truncate">MRN: {patient.medicalRecordNumber}</span>
                               </div>
-                              <p className="text-sm text-gray-500 mt-1">{patient.diagnosis}</p>
+                              <p className="text-sm text-gray-500 mt-1 truncate">{patient.diagnosis}</p>
                             </div>
                           </div>
                           
-                          <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-4 flex-shrink-0">
                             {/* Quick Vitals */}
-                            <div className="flex items-center space-x-3 text-sm">
+                            <div className="hidden lg:flex items-center space-x-3 text-sm">
                               <div className="flex items-center space-x-1">
                                 <Heart className="h-4 w-4 text-red-500" />
                                 <span>{patient.vitals.heartRate}</span>
@@ -255,9 +261,9 @@ const Header: React.FC = () => {
                     <p className="text-gray-600 mb-4">
                       No patients match your search criteria "{searchTerm}"
                     </p>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-gray-500 max-w-md mx-auto">
                       <p>Try searching by:</p>
-                      <ul className="mt-2 space-y-1">
+                      <ul className="mt-2 space-y-1 text-left">
                         <li>• Patient name (e.g., "John Smith")</li>
                         <li>• Room number (e.g., "ICU-101")</li>
                         <li>• Medical record number (e.g., "MRN-001234")</li>
@@ -269,8 +275,9 @@ const Header: React.FC = () => {
                 )}
               </div>
 
+              {/* Footer */}
               {searchResults.length > 0 && (
-                <div className="p-4 bg-gray-50 border-t border-gray-200">
+                <div className="p-4 bg-gray-50 border-t border-gray-200 flex-shrink-0 rounded-b-2xl">
                   <p className="text-xs text-gray-500 text-center">
                     Click on a patient to view detailed information and real-time monitoring data
                   </p>
