@@ -3,11 +3,13 @@ import { useData } from '../contexts/DataContext'
 import { VitalMonitorGrid } from '../components/monitors/VitalMonitor'
 import RealTimeChart from '../components/charts/RealTimeChart'
 import LiveWaveform from '../components/charts/LiveWaveform'
-import { Users, Monitor, AlertTriangle, Activity, Clock, TrendingUp } from 'lucide-react'
+import AddPatientModal from '../components/modals/AddPatientModal'
+import { Users, Monitor, AlertTriangle, Activity, Clock, TrendingUp, Plus } from 'lucide-react'
 
 const Dashboard: React.FC = () => {
-  const { patients, devices, alerts, waveforms } = useData()
+  const { patients, devices, alerts, waveforms, addPatient } = useData()
   const [chartData, setChartData] = useState<any[]>([])
+  const [showAddModal, setShowAddModal] = useState(false)
 
   // Generate historical chart data with more realistic intervals
   useEffect(() => {
@@ -39,6 +41,18 @@ const Dashboard: React.FC = () => {
   const activePatients = patients.length
   const onlineDevices = devices.filter(d => d.status === 'online').length
   const criticalAlerts = alerts.filter(a => a.type === 'critical' && !a.acknowledged).length
+
+  // Get available devices for new patient assignment
+  const availableDevices = devices.filter(device => !device.patientId || device.status === 'offline').map(device => ({
+    id: device.id,
+    name: device.name,
+    location: device.location
+  }))
+
+  const handleAddPatient = (patientData: any) => {
+    const newPatient = addPatient(patientData)
+    alert(`Patient Added Successfully!\n\nName: ${newPatient.name}\nRoom: ${newPatient.room}\nStatus: ${newPatient.status.toUpperCase()}\n\nThe patient is now being monitored and will appear in real-time on the dashboard.`)
+  }
 
   const statCards = [
     {
@@ -103,141 +117,175 @@ const Dashboard: React.FC = () => {
             <h2 className="text-xl font-bold text-gray-900">Patient Monitoring</h2>
             <p className="text-sm text-gray-500">Real-time vital signs and status</p>
           </div>
-          <button className="btn-secondary">
-            <Activity className="h-4 w-4 mr-2" />
-            View All Patients
-          </button>
+          <div className="flex items-center space-x-3">
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Add Patient</span>
+            </button>
+            <button className="btn-secondary">
+              <Activity className="h-4 w-4 mr-2" />
+              View All Patients
+            </button>
+          </div>
         </div>
 
-        {patients.map((patient) => (
-          <div key={patient.id} className="bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-lg transition-all duration-300">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center space-x-4">
-                <div className="bg-blue-50 p-4 rounded-2xl">
-                  <Activity className="h-8 w-8 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">{patient.name}</h3>
-                  <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
-                    <span>{patient.age}y {patient.gender}</span>
-                    <span>•</span>
-                    <span>{patient.room}</span>
-                    <span>•</span>
-                    <span>{patient.deviceId}</span>
+        {patients.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
+            <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Patients Currently Monitored</h3>
+            <p className="text-gray-600 mb-6">Add your first patient to start real-time monitoring</p>
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2 mx-auto"
+            >
+              <Plus className="h-5 w-5" />
+              <span>Add First Patient</span>
+            </button>
+          </div>
+        ) : (
+          patients.map((patient) => (
+            <div key={patient.id} className="bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-lg transition-all duration-300">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center space-x-4">
+                  <div className="bg-blue-50 p-4 rounded-2xl">
+                    <Activity className="h-8 w-8 text-blue-600" />
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">{patient.diagnosis}</p>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">{patient.name}</h3>
+                    <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
+                      <span>{patient.age}y {patient.gender}</span>
+                      <span>•</span>
+                      <span>{patient.room}</span>
+                      <span>•</span>
+                      <span>{patient.deviceId || 'No device assigned'}</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">{patient.diagnosis}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <div className={`px-4 py-2 rounded-full text-sm font-medium ${
+                    patient.status === 'critical' ? 'bg-red-100 text-red-800' :
+                    patient.status === 'warning' ? 'bg-amber-100 text-amber-800' :
+                    'bg-emerald-100 text-emerald-800'
+                  }`}>
+                    {patient.status.toUpperCase()}
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full pulse-ring" />
+                    <span className="text-sm text-gray-500 font-medium">Live</span>
+                  </div>
                 </div>
               </div>
               
-              <div className="flex items-center space-x-4">
-                <div className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  patient.status === 'critical' ? 'bg-red-100 text-red-800' :
-                  patient.status === 'warning' ? 'bg-amber-100 text-amber-800' :
-                  'bg-emerald-100 text-emerald-800'
-                }`}>
-                  {patient.status.toUpperCase()}
+              <VitalMonitorGrid vitals={patient.vitals} />
+              
+              {/* Live Waveforms - Now accurately reflecting patient vitals */}
+              {waveforms[patient.id] && (
+                <div className="mt-8">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                    Live Waveforms - HR: {patient.vitals.heartRate} bpm, SpO2: {patient.vitals.oxygenSaturation}%, RR: {patient.vitals.respiratoryRate}/min
+                  </h4>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <LiveWaveform
+                      title={`ECG Lead II (${patient.vitals.heartRate} bpm)`}
+                      data={waveforms[patient.id].ecg}
+                      color="#00ff00"
+                      height={120}
+                      speed={1.5}
+                      amplitude={1.2}
+                      unit="mV"
+                    />
+                    <LiveWaveform
+                      title={`Plethysmography (${patient.vitals.oxygenSaturation}%)`}
+                      data={waveforms[patient.id].pleth}
+                      color="#00ffff"
+                      height={120}
+                      speed={1.5}
+                      amplitude={2.0}
+                      unit="SpO2"
+                    />
+                    <LiveWaveform
+                      title={`Respiration (${patient.vitals.respiratoryRate}/min)`}
+                      data={waveforms[patient.id].respiration}
+                      color="#ffff00"
+                      height={120}
+                      speed={1.0}
+                      amplitude={1.5}
+                      unit="Resp"
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full pulse-ring" />
-                  <span className="text-sm text-gray-500 font-medium">Live</span>
+              )}
+              
+              <div className="mt-6 flex items-center justify-between">
+                <div className="text-sm text-gray-500">
+                  Last updated: {patient.lastUpdated.toLocaleTimeString()}
+                </div>
+                <div className="flex space-x-3">
+                  <button className="btn-secondary text-sm">View History</button>
+                  <button className="btn-primary text-sm">View Details</button>
                 </div>
               </div>
             </div>
-            
-            <VitalMonitorGrid vitals={patient.vitals} />
-            
-            {/* Live Waveforms - Now accurately reflecting patient vitals */}
-            {waveforms[patient.id] && (
-              <div className="mt-8">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                  Live Waveforms - HR: {patient.vitals.heartRate} bpm, SpO2: {patient.vitals.oxygenSaturation}%, RR: {patient.vitals.respiratoryRate}/min
-                </h4>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  <LiveWaveform
-                    title={`ECG Lead II (${patient.vitals.heartRate} bpm)`}
-                    data={waveforms[patient.id].ecg}
-                    color="#00ff00"
-                    height={120}
-                    speed={1.5}
-                    amplitude={1.2}
-                    unit="mV"
-                  />
-                  <LiveWaveform
-                    title={`Plethysmography (${patient.vitals.oxygenSaturation}%)`}
-                    data={waveforms[patient.id].pleth}
-                    color="#00ffff"
-                    height={120}
-                    speed={1.5}
-                    amplitude={2.0}
-                    unit="SpO2"
-                  />
-                  <LiveWaveform
-                    title={`Respiration (${patient.vitals.respiratoryRate}/min)`}
-                    data={waveforms[patient.id].respiration}
-                    color="#ffff00"
-                    height={120}
-                    speed={1.0}
-                    amplitude={1.5}
-                    unit="Resp"
-                  />
-                </div>
-              </div>
-            )}
-            
-            <div className="mt-6 flex items-center justify-between">
-              <div className="text-sm text-gray-500">
-                Last updated: {patient.lastUpdated.toLocaleTimeString()}
-              </div>
-              <div className="flex space-x-3">
-                <button className="btn-secondary text-sm">View History</button>
-                <button className="btn-primary text-sm">View Details</button>
-              </div>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <RealTimeChart
-          title="Heart Rate Trend"
-          data={chartData.map(d => ({ timestamp: d.timestamp, value: d.heartRate }))}
-          color="#ef4444"
-          unit=" bpm"
-          yAxisMin={40}
-          yAxisMax={140}
-          thresholds={{
-            warning: { min: 60, max: 100 },
-            critical: { min: 50, max: 120 }
-          }}
-        />
-        
-        <RealTimeChart
-          title="SpO2 Trend"
-          data={chartData.map(d => ({ timestamp: d.timestamp, value: d.oxygenSaturation }))}
-          color="#3b82f6"
-          unit="%"
-          yAxisMin={85}
-          yAxisMax={100}
-          thresholds={{
-            warning: { min: 95 },
-            critical: { min: 90 }
-          }}
-        />
-        
-        <RealTimeChart
-          title="Temperature Trend"
-          data={chartData.map(d => ({ timestamp: d.timestamp, value: d.temperature }))}
-          color="#f59e0b"
-          unit="°F"
-          yAxisMin={95}
-          yAxisMax={104}
-          thresholds={{
-            warning: { min: 97, max: 99.5 },
-            critical: { min: 95, max: 101 }
-          }}
-        />
-      </div>
+      {patients.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <RealTimeChart
+            title="Heart Rate Trend"
+            data={chartData.map(d => ({ timestamp: d.timestamp, value: d.heartRate }))}
+            color="#ef4444"
+            unit=" bpm"
+            yAxisMin={40}
+            yAxisMax={140}
+            thresholds={{
+              warning: { min: 60, max: 100 },
+              critical: { min: 50, max: 120 }
+            }}
+          />
+          
+          <RealTimeChart
+            title="SpO2 Trend"
+            data={chartData.map(d => ({ timestamp: d.timestamp, value: d.oxygenSaturation }))}
+            color="#3b82f6"
+            unit="%"
+            yAxisMin={85}
+            yAxisMax={100}
+            thresholds={{
+              warning: { min: 95 },
+              critical: { min: 90 }
+            }}
+          />
+          
+          <RealTimeChart
+            title="Temperature Trend"
+            data={chartData.map(d => ({ timestamp: d.timestamp, value: d.temperature }))}
+            color="#f59e0b"
+            unit="°F"
+            yAxisMin={95}
+            yAxisMax={104}
+            thresholds={{
+              warning: { min: 97, max: 99.5 },
+              critical: { min: 95, max: 101 }
+            }}
+          />
+        </div>
+      )}
+
+      {/* Add Patient Modal */}
+      <AddPatientModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onAddPatient={handleAddPatient}
+        availableDevices={availableDevices}
+      />
     </div>
   )
 }

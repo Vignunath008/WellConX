@@ -17,6 +17,7 @@ interface DataContextType {
   acknowledgeAlert: (alertId: string) => void
   dismissAlert: (alertId: string) => void
   processHL7Message: (message: HL7Message) => void
+  addPatient: (patient: Omit<Patient, 'id' | 'lastUpdated'>) => void
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined)
@@ -82,6 +83,30 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         ipAddress: '192.168.1.103',
         serialNumber: 'MIN-2024-003',
         firmwareVersion: '2.8.2'
+      },
+      {
+        id: 'PHI-MP60-004',
+        name: 'Philips IntelliVue MP60',
+        model: 'MP60',
+        brand: 'Philips',
+        status: 'online',
+        location: 'ICU Room 104',
+        lastHeartbeat: new Date(),
+        ipAddress: '192.168.1.104',
+        serialNumber: 'MP60-2024-004',
+        firmwareVersion: '4.8.3'
+      },
+      {
+        id: 'GE-B650-005',
+        name: 'GE B650 Transport',
+        model: 'B650',
+        brand: 'GE',
+        status: 'online',
+        location: 'Emergency Room',
+        lastHeartbeat: new Date(),
+        ipAddress: '192.168.1.105',
+        serialNumber: 'B650-2024-005',
+        firmwareVersion: '2.1.7'
       }
     ]
 
@@ -357,7 +382,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         
         // Add cardiac artifact (heart beats visible on respiration trace)
-        const cardiacPhase = (breathStart + i) / (sampleRate * 60 / heartRate)
+        const cardiacPhase = (beatStart + i) / (sampleRate * 60 / heartRate)
         value += 0.015 * Math.sin(2 * Math.PI * cardiacPhase)
         
         // Add slight irregularity based on respiratory rate
@@ -564,6 +589,39 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
+  const addPatient = (patientData: Omit<Patient, 'id' | 'lastUpdated'>) => {
+    const newPatient: Patient = {
+      ...patientData,
+      id: `PAT-${String(Date.now()).slice(-6)}`, // Generate unique ID
+      lastUpdated: new Date()
+    }
+
+    setPatients(prev => [...prev, newPatient])
+
+    // Initialize waveforms for the new patient
+    setWaveforms(prev => ({
+      ...prev,
+      [newPatient.id]: {
+        ecg: generateECGWaveform(300, newPatient.vitals.heartRate),
+        pleth: generatePlethWaveform(300, newPatient.vitals.heartRate, newPatient.vitals.oxygenSaturation),
+        respiration: generateRespirationWaveform(300, newPatient.vitals.respiratoryRate, newPatient.vitals.heartRate)
+      }
+    }))
+
+    // Update device assignment if specified
+    if (patientData.deviceId) {
+      setDevices(prev => 
+        prev.map(device => 
+          device.id === patientData.deviceId 
+            ? { ...device, patientId: newPatient.id }
+            : device
+        )
+      )
+    }
+
+    return newPatient
+  }
+
   return (
     <DataContext.Provider value={{
       patients,
@@ -574,7 +632,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updatePatientVitals,
       acknowledgeAlert,
       dismissAlert,
-      processHL7Message
+      processHL7Message,
+      addPatient
     }}>
       {children}
     </DataContext.Provider>
