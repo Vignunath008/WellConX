@@ -9,6 +9,8 @@ import DeviceSetup from './pages/DeviceSetup'
 import Analytics from './pages/Analytics'
 import Settings from './pages/Settings'
 import Login from './pages/Login'
+import SignUp from './pages/SignUp'
+import AdminPanel from './pages/AdminPanel'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -18,6 +20,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/" element={
               <ProtectedRoute>
                 <Layout />
@@ -29,6 +32,7 @@ function App() {
               <Route path="devices/setup" element={<DeviceSetup />} />
               <Route path="analytics" element={<Analytics />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="admin" element={<AdminPanel />} />
             </Route>
           </Routes>
         </Router>

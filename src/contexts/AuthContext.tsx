@@ -68,8 +68,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         department: 'IT'
       }
     ]
+
+    // Check approved users from registration system
+    const approvedUsers = JSON.parse(localStorage.getItem('wellconx_approved_users') || '[]')
+    const allUsers = [...demoUsers, ...approvedUsers]
     
-    const foundUser = demoUsers.find(u => u.email === email)
+    const foundUser = allUsers.find(u => u.email === email)
     
     if (foundUser && password === 'demo123') {
       setUser(foundUser)

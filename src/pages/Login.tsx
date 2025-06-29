@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Activity, Eye, EyeOff, Shield, Users, BarChart3 } from 'lucide-react'
 
@@ -197,6 +197,16 @@ const Login: React.FC = () => {
                 <span className="font-mono text-gray-800">demo123</span>
               </div>
             </div>
+          </div>
+
+          {/* Sign Up Link */}
+          <div className="text-center">
+            <p className="text-gray-600">
+              New to WellConX?{' '}
+              <Link to="/signup" className="text-blue-600 hover:underline font-medium">
+                Create your account
+              </Link>
+            </p>
           </div>
         </div>
       </div>

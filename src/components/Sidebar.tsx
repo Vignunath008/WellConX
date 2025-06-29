@@ -1,23 +1,32 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import { 
   LayoutDashboard, 
   Users, 
   Monitor, 
   BarChart3, 
   Settings,
-  Activity
+  Activity,
+  UserCheck
 } from 'lucide-react'
 
-const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Patients', href: '/patients', icon: Users },
-  { name: 'Devices', href: '/devices', icon: Monitor },
-  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { name: 'Settings', href: '/settings', icon: Settings },
-]
-
 const Sidebar: React.FC = () => {
+  const { user } = useAuth()
+
+  const navigation = [
+    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { name: 'Patients', href: '/patients', icon: Users },
+    { name: 'Devices', href: '/devices', icon: Monitor },
+    { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+    { name: 'Settings', href: '/settings', icon: Settings },
+  ]
+
+  // Add admin panel for admin users
+  if (user?.role === 'admin') {
+    navigation.splice(-1, 0, { name: 'Admin Panel', href: '/admin', icon: UserCheck })
+  }
+
   return (
     <div className="bg-white w-72 border-r border-gray-100">
       <div className="flex items-center px-8 py-6 border-b border-gray-100">
