@@ -382,7 +382,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         
         // Add cardiac artifact (heart beats visible on respiration trace)
-        const cardiacPhase = (beatStart + i) / (sampleRate * 60 / heartRate)
+        const cardiacPhase = (breathStart + i) / (sampleRate * 60 / heartRate)
         value += 0.015 * Math.sin(2 * Math.PI * cardiacPhase)
         
         // Add slight irregularity based on respiratory rate
