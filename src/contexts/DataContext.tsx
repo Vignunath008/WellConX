@@ -130,8 +130,68 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     ]
 
+    // Initialize with some demo alerts
+    const demoAlerts: Alert[] = [
+      {
+        id: 'alert-001',
+        patientId: 'PAT-001',
+        type: 'warning',
+        message: 'Heart rate slightly elevated',
+        timestamp: new Date(Date.now() - 300000),
+        acknowledged: false,
+        vitalType: 'Heart Rate',
+        value: 105,
+        threshold: 100
+      },
+      {
+        id: 'alert-002',
+        patientId: 'PAT-002',
+        type: 'critical',
+        message: 'Oxygen saturation below critical threshold',
+        timestamp: new Date(Date.now() - 600000),
+        acknowledged: false,
+        vitalType: 'SpO2',
+        value: 88,
+        threshold: 90
+      },
+      {
+        id: 'alert-003',
+        patientId: 'PAT-001',
+        type: 'info',
+        message: 'Blood pressure reading completed',
+        timestamp: new Date(Date.now() - 900000),
+        acknowledged: true,
+        vitalType: 'Blood Pressure',
+        value: 120,
+        threshold: 140
+      },
+      {
+        id: 'alert-004',
+        patientId: 'PAT-002',
+        type: 'warning',
+        message: 'Temperature elevated - monitoring required',
+        timestamp: new Date(Date.now() - 1200000),
+        acknowledged: false,
+        vitalType: 'Temperature',
+        value: 99.8,
+        threshold: 99.5
+      },
+      {
+        id: 'alert-005',
+        patientId: 'PAT-001',
+        type: 'critical',
+        message: 'Bradycardia detected - immediate attention required',
+        timestamp: new Date(Date.now() - 1800000),
+        acknowledged: true,
+        vitalType: 'Heart Rate',
+        value: 45,
+        threshold: 50
+      }
+    ]
+
     setDevices(demoDevices)
     setPatients(demoPatients)
+    setAlerts(demoAlerts)
 
     // Initialize waveforms
     const initialWaveforms: any = {}

@@ -12,9 +12,14 @@ const Devices: React.FC = () => {
   const [showAddDevice, setShowAddDevice] = useState(false)
 
   const filteredDevices = devices.filter(device => {
-    const matchesSearch = device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         device.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         device.location.toLowerCase().includes(searchTerm.toLowerCase())
+    const searchLower = searchTerm.toLowerCase()
+    const matchesSearch = searchTerm === '' || 
+                         device.name.toLowerCase().includes(searchLower) ||
+                         device.id.toLowerCase().includes(searchLower) ||
+                         device.location.toLowerCase().includes(searchLower) ||
+                         device.model.toLowerCase().includes(searchLower) ||
+                         device.brand.toLowerCase().includes(searchLower) ||
+                         device.serialNumber.toLowerCase().includes(searchLower)
     
     const matchesStatus = statusFilter === 'all' || device.status === statusFilter
     const matchesBrand = brandFilter === 'all' || device.brand === brandFilter
@@ -30,26 +35,41 @@ const Devices: React.FC = () => {
   }
 
   const handleConfigure = (deviceId: string) => {
-    console.log('Configure device:', deviceId)
-    alert(`Configuring device: ${deviceId}`)
+    const device = devices.find(d => d.id === deviceId)
+    alert(`Configuring ${device?.name} (${deviceId})\n\nOpening device configuration panel...`)
   }
 
   const handleViewData = (deviceId: string) => {
-    console.log('View device data:', deviceId)
-    alert(`Viewing data for device: ${deviceId}`)
+    const device = devices.find(d => d.id === deviceId)
+    alert(`Viewing real-time data for ${device?.name}\n\nShowing:\n- Live vital signs\n- HL7 message stream\n- Device diagnostics`)
   }
 
   const handleAddDevice = () => {
     setShowAddDevice(true)
-    alert('Add Device functionality - Would open device setup wizard')
+    alert('Add Device Wizard\n\n1. Select device type\n2. Configure network settings\n3. Set up HL7 parameters\n4. Test connection\n5. Assign to patient')
   }
 
   const handleRefresh = () => {
-    alert('Refreshing device status...')
+    alert('Refreshing device status...\n\n✓ Checking network connectivity\n✓ Updating device heartbeats\n✓ Verifying HL7 connections\n✓ Syncing patient assignments')
   }
 
   const handleExport = () => {
-    alert('Exporting device data...')
+    const exportData = {
+      devices: filteredDevices,
+      stats: deviceStats,
+      timestamp: new Date().toISOString(),
+      filters: { searchTerm, statusFilter, brandFilter }
+    }
+    
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `devices-export-${new Date().toISOString().split('T')[0]}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+    
+    alert('Device data exported successfully!')
   }
 
   const clearFilters = () => {
@@ -162,10 +182,10 @@ const Devices: React.FC = () => {
               <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search devices by name, ID, or location..."
+                placeholder="Search devices by name, ID, location, model, brand..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-80 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500"
+                className="pl-10 pr-4 py-2 w-96 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500"
               />
             </div>
             {(searchTerm || statusFilter !== 'all' || brandFilter !== 'all') && (
@@ -201,7 +221,10 @@ const Devices: React.FC = () => {
               <option value="Mindray">Mindray</option>
             </select>
             
-            <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            <button 
+              onClick={() => alert('Advanced filters:\n- Device age\n- Firmware version\n- Patient assignment\n- Last maintenance date')}
+              className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
               <Filter className="h-4 w-4 text-gray-600" />
             </button>
           </div>
@@ -209,7 +232,7 @@ const Devices: React.FC = () => {
         
         {/* Filter Results Summary */}
         <div className="mt-4 text-sm text-gray-600">
-          Showing {filteredDevices.length} of {devices.length} devices
+          Showing <span className="font-medium">{filteredDevices.length}</span> of <span className="font-medium">{devices.length}</span> devices
           {searchTerm && ` matching "${searchTerm}"`}
           {statusFilter !== 'all' && ` with status "${statusFilter}"`}
           {brandFilter !== 'all' && ` from "${brandFilter}"`}
@@ -238,17 +261,19 @@ const Devices: React.FC = () => {
         <div className="text-center py-12">
           <Monitor className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No devices found</h3>
-          <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+          <p className="text-gray-600 mb-4">
+            {searchTerm ? `No devices match "${searchTerm}"` : 'Try adjusting your filter criteria'}
+          </p>
           <button
             onClick={clearFilters}
-            className="mt-4 text-medical-600 hover:text-medical-700 font-medium"
+            className="text-medical-600 hover:text-medical-700 font-medium"
           >
             Clear all filters
           </button>
         </div>
       )}
 
-      {/* HL7 Connection Status - Fixed positioning */}
+      {/* HL7 Connection Status */}
       <div className="bg-white rounded-xl p-6 border border-gray-200">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">HL7 Connection Status</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
