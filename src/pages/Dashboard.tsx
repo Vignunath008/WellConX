@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useData } from '../contexts/DataContext'
 import { VitalMonitorGrid } from '../components/monitors/VitalMonitor'
 import RealTimeChart from '../components/charts/RealTimeChart'
@@ -7,6 +8,7 @@ import AddPatientModal from '../components/modals/AddPatientModal'
 import { Users, Monitor, AlertTriangle, Activity, Clock, TrendingUp, Plus } from 'lucide-react'
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate()
   const { patients, devices, alerts, waveforms, addPatient } = useData()
   const [chartData, setChartData] = useState<any[]>([])
   const [showAddModal, setShowAddModal] = useState(false)
@@ -52,6 +54,10 @@ const Dashboard: React.FC = () => {
   const handleAddPatient = (patientData: any) => {
     const newPatient = addPatient(patientData)
     alert(`Patient Added Successfully!\n\nName: ${newPatient.name}\nRoom: ${newPatient.room}\nStatus: ${newPatient.status.toUpperCase()}\n\nThe patient is now being monitored and will appear in real-time on the dashboard.`)
+  }
+
+  const handleViewAllPatients = () => {
+    navigate('/patients')
   }
 
   const statCards = [
@@ -125,7 +131,10 @@ const Dashboard: React.FC = () => {
               <Plus className="h-4 w-4" />
               <span>Add Patient</span>
             </button>
-            <button className="btn-secondary">
+            <button 
+              onClick={handleViewAllPatients}
+              className="btn-secondary"
+            >
               <Activity className="h-4 w-4 mr-2" />
               View All Patients
             </button>

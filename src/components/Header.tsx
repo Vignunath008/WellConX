@@ -1,14 +1,18 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useData } from '../contexts/DataContext'
 import { Bell, LogOut, Wifi, WifiOff, Search, X, User, MapPin, Monitor, Heart, Thermometer, Wind, Activity } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import AlertPanel from './alerts/AlertPanel'
 
 const Header: React.FC = () => {
+  const navigate = useNavigate()
   const { user, logout } = useAuth()
-  const { isConnected, alerts, patients } = useData()
+  const { isConnected, alerts, patients, acknowledgeAlert, dismissAlert } = useData()
   const [searchTerm, setSearchTerm] = useState('')
   const [showSearchResults, setShowSearchResults] = useState(false)
+  const [showAlerts, setShowAlerts] = useState(false)
   
   const unreadAlerts = alerts.filter(a => !a.acknowledged).length
 
@@ -23,7 +27,7 @@ const Header: React.FC = () => {
       patient.room.toLowerCase().includes(searchLower) ||
       patient.medicalRecordNumber.toLowerCase().includes(searchLower) ||
       patient.diagnosis.toLowerCase().includes(searchLower) ||
-      patient.deviceId.toLowerCase().includes(searchLower)
+      patient.deviceId?.toLowerCase().includes(searchLower)
     )
   }
 
@@ -58,6 +62,20 @@ const Header: React.FC = () => {
     alert(`Selected Patient: ${patient.name}\n\nDetails:\n- Room: ${patient.room}\n- Status: ${patient.status}\n- Device: ${patient.deviceId}\n- Heart Rate: ${patient.vitals.heartRate} bpm\n- SpO2: ${patient.vitals.oxygenSaturation}%\n- Temperature: ${patient.vitals.temperature}°F\n\nRedirecting to patient details...`)
     setShowSearchResults(false)
     setSearchTerm('')
+    // Navigate to patients page with this patient highlighted
+    navigate('/patients')
+  }
+
+  const handleAlertClick = () => {
+    setShowAlerts(!showAlerts)
+  }
+
+  const handleAcknowledgeAlert = (alertId: string) => {
+    acknowledgeAlert(alertId)
+  }
+
+  const handleDismissAlert = (alertId: string) => {
+    dismissAlert(alertId)
   }
 
   return (
@@ -119,14 +137,135 @@ const Header: React.FC = () => {
               </div>
             </div>
             
-            <button className="relative p-2 text-gray-400 hover:text-gray-600 transition-colors">
-              <Bell className="h-5 w-5" />
-              {unreadAlerts > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {unreadAlerts}
-                </span>
-              )}
-            </button>
+            {/* Alert Bell with Dropdown */}
+            <div className="relative">
+              <button 
+                onClick={handleAlertClick}
+                className="relative p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+              >
+                <Bell className="h-5 w-5" />
+                {unreadAlerts > 0 && (
+                  <motion.span 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium"
+                  >
+                    {unreadAlerts > 99 ? '99+' : unreadAlerts}
+                  </motion.span>
+                )}
+              </button>
+
+              {/* Alert Dropdown */}
+              <AnimatePresence>
+                {showAlerts && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    className="absolute right-0 top-full mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50"
+                  >
+                    <div className="p-4 border-b border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold text-gray-900">Alerts</h3>
+                        <button
+                          onClick={() => setShowAlerts(false)}
+                          className="p-1 text-gray-400 hover:text-gray-600 rounded"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                      {unreadAlerts > 0 && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          {unreadAlerts} unread alert{unreadAlerts !== 1 ? 's' : ''}
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div className="max-h-96 overflow-y-auto">
+                      {alerts.length > 0 ? (
+                        <div className="p-2">
+                          {alerts.slice(0, 10).map((alert) => (
+                            <div
+                              key={alert.id}
+                              className={`p-3 rounded-lg mb-2 border ${
+                                alert.acknowledged 
+                                  ? 'bg-gray-50 border-gray-200 opacity-60' 
+                                  : alert.type === 'critical' 
+                                    ? 'bg-red-50 border-red-200' 
+                                    : alert.type === 'warning'
+                                      ? 'bg-yellow-50 border-yellow-200'
+                                      : 'bg-blue-50 border-blue-200'
+                              }`}
+                            >
+                              <div className="flex items-start justify-between">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center space-x-2 mb-1">
+                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                      alert.type === 'critical' ? 'bg-red-100 text-red-800' :
+                                      alert.type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                                      'bg-blue-100 text-blue-800'
+                                    }`}>
+                                      {alert.type.toUpperCase()}
+                                    </span>
+                                    <span className="text-xs text-gray-500">
+                                      Patient {alert.patientId}
+                                    </span>
+                                  </div>
+                                  <p className="text-sm text-gray-900 mb-1">{alert.message}</p>
+                                  <div className="flex items-center space-x-3 text-xs text-gray-500">
+                                    <span>{alert.vitalType}: {alert.value}</span>
+                                    <span>Threshold: {alert.threshold}</span>
+                                    <span>{alert.timestamp.toLocaleTimeString()}</span>
+                                  </div>
+                                </div>
+                                
+                                <div className="flex items-center space-x-1 ml-2">
+                                  {!alert.acknowledged && (
+                                    <button
+                                      onClick={() => handleAcknowledgeAlert(alert.id)}
+                                      className="p-1 text-green-600 hover:bg-green-100 rounded text-xs"
+                                      title="Acknowledge"
+                                    >
+                                      ✓
+                                    </button>
+                                  )}
+                                  <button
+                                    onClick={() => handleDismissAlert(alert.id)}
+                                    className="p-1 text-gray-400 hover:bg-gray-100 rounded text-xs"
+                                    title="Dismiss"
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          
+                          {alerts.length > 10 && (
+                            <div className="text-center p-3 border-t border-gray-200">
+                              <button
+                                onClick={() => {
+                                  setShowAlerts(false)
+                                  navigate('/analytics') // Navigate to analytics page for full alert management
+                                }}
+                                className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                              >
+                                View All {alerts.length} Alerts
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="p-8 text-center">
+                          <Bell className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                          <p className="text-gray-600 text-sm">No alerts</p>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             
             <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
               <div className="text-right">
@@ -159,7 +298,7 @@ const Header: React.FC = () => {
               onClick={() => setShowSearchResults(false)}
             />
             
-            {/* Search Results Modal - Fixed positioning and sizing */}
+            {/* Search Results Modal */}
             <motion.div
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -217,7 +356,7 @@ const Header: React.FC = () => {
                                 </div>
                                 <div className="flex items-center">
                                   <Monitor className="h-4 w-4 mr-1 flex-shrink-0" />
-                                  <span className="truncate">{patient.deviceId}</span>
+                                  <span className="truncate">{patient.deviceId || 'No device'}</span>
                                 </div>
                                 <span className="truncate">MRN: {patient.medicalRecordNumber}</span>
                               </div>
@@ -287,6 +426,14 @@ const Header: React.FC = () => {
           </>
         )}
       </AnimatePresence>
+
+      {/* Click outside to close alerts */}
+      {showAlerts && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowAlerts(false)}
+        />
+      )}
     </>
   )
 }
