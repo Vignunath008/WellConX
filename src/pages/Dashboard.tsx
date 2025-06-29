@@ -146,36 +146,38 @@ const Dashboard: React.FC = () => {
             
             <VitalMonitorGrid vitals={patient.vitals} />
             
-            {/* Live Waveforms */}
+            {/* Live Waveforms - Now accurately reflecting patient vitals */}
             {waveforms[patient.id] && (
               <div className="mt-8">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Live Waveforms</h4>
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                  Live Waveforms - HR: {patient.vitals.heartRate} bpm, SpO2: {patient.vitals.oxygenSaturation}%, RR: {patient.vitals.respiratoryRate}/min
+                </h4>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                   <LiveWaveform
-                    title="ECG Lead II"
+                    title={`ECG Lead II (${patient.vitals.heartRate} bpm)`}
                     data={waveforms[patient.id].ecg}
                     color="#00ff00"
                     height={120}
-                    speed={2}
+                    speed={1.5}
                     amplitude={1.2}
                     unit="mV"
                   />
                   <LiveWaveform
-                    title="Plethysmography"
+                    title={`Plethysmography (${patient.vitals.oxygenSaturation}%)`}
                     data={waveforms[patient.id].pleth}
                     color="#00ffff"
                     height={120}
-                    speed={2}
-                    amplitude={1.5}
+                    speed={1.5}
+                    amplitude={2.0}
                     unit="SpO2"
                   />
                   <LiveWaveform
-                    title="Respiration"
+                    title={`Respiration (${patient.vitals.respiratoryRate}/min)`}
                     data={waveforms[patient.id].respiration}
                     color="#ffff00"
                     height={120}
-                    speed={2}
-                    amplitude={1.0}
+                    speed={1.0}
+                    amplitude={1.5}
                     unit="Resp"
                   />
                 </div>
