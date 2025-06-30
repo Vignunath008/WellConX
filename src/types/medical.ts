@@ -13,7 +13,7 @@ export interface Patient {
   age: number
   gender: 'male' | 'female'
   room: string
-  deviceId: string
+  deviceId?: string
   status: 'stable' | 'critical' | 'warning'
   vitals: VitalSigns
   lastUpdated: Date

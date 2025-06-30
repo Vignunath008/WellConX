@@ -3,10 +3,8 @@ import { useAuth } from '../contexts/AuthContext'
 import { 
   Users, 
   UserCheck, 
-  UserX, 
   Settings, 
   Shield, 
-  Database, 
   Server, 
   Activity, 
   BarChart3, 
