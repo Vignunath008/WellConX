@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useData } from '../contexts/DataContext'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from 'recharts'
-import { Download, Filter, Calendar, TrendingUp, TrendingDown, Users, Heart, AlertTriangle, Clock } from 'lucide-react'
+import { Download, Filter, TrendingUp, TrendingDown, Users, Heart, AlertTriangle, Clock } from 'lucide-react'
 
 const Analytics: React.FC = () => {
-  const { patients, devices, alerts } = useData()
+  const { patients, alerts } = useData()
   const [dateRange, setDateRange] = useState('7d')
   const [selectedPatient, setSelectedPatient] = useState<string>('all')
 

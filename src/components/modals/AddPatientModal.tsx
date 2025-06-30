@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, User, MapPin, Monitor, Calendar, FileText, Save, AlertCircle } from 'lucide-react'
+import { X, User, MapPin, Monitor, AlertCircle, Save } from 'lucide-react'
 import { Patient, VitalSigns } from '../../types/medical'
 
 interface AddPatientModalProps {
@@ -351,7 +351,7 @@ const AddPatientModal: React.FC<AddPatientModalProps> = ({
               {/* Medical Information */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <FileText className="h-5 w-5 mr-2 text-purple-600" />
+                  <User className="h-5 w-5 mr-2 text-purple-600" />
                   Medical Information
                 </h3>
                 <div>

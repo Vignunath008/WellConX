@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useData } from '../contexts/DataContext'
-import { ArrowLeft, Monitor, Activity, Heart, Wind, Thermometer, Zap, Settings, Download, Maximize2, Minimize2 } from 'lucide-react'
+import { ArrowLeft, Activity, Heart, Wind, Thermometer, Download, Maximize2, Minimize2 } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
-import { motion } from 'framer-motion'
 
 interface ParameterConfig {
   id: string
@@ -166,19 +165,19 @@ const AdvancedMonitoring: React.FC = () => {
       if (!waveforms[patient.id]) return
 
       const enhancedWaveforms = {
-        ecg: waveforms[patient.id].ecg.map((value, index) => ({
+        ecg: waveforms[patient.id].ecg.map((value: number, index: number) => ({
           time: index * 4, // 4ms per sample (250 Hz)
           value: value,
           amplitude: Math.abs(value),
           rPeak: value > 0.8 // Detect R peaks
         })),
-        pleth: waveforms[patient.id].pleth.map((value, index) => ({
+        pleth: waveforms[patient.id].pleth.map((value: number, index: number) => ({
           time: index * 4,
           value: value,
           amplitude: Math.abs(value),
           pulse: value > 0.5 // Detect pulse peaks
         })),
-        respiration: waveforms[patient.id].respiration.map((value, index) => ({
+        respiration: waveforms[patient.id].respiration.map((value: number, index: number) => ({
           time: index * 4,
           value: value,
           amplitude: Math.abs(value),
@@ -199,7 +198,7 @@ const AdvancedMonitoring: React.FC = () => {
     }, 100)
 
     return () => clearInterval(interval)
-  }, [patient, timeScale])
+  }, [patient, timeScale, parameters])
 
   if (!patient) {
     return (
@@ -601,11 +600,11 @@ const AdvancedMonitoring: React.FC = () => {
           
           <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
             {currentData.length > 0 && (() => {
-              const values = currentData.map(d => d.value)
+              const values = currentData.map((d: any) => d.value)
               const min = Math.min(...values)
               const max = Math.max(...values)
-              const avg = values.reduce((a, b) => a + b, 0) / values.length
-              const variance = values.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / values.length
+              const avg = values.reduce((a: number, b: number) => a + b, 0) / values.length
+              const variance = values.reduce((a: number, b: number) => a + Math.pow(b - avg, 2), 0) / values.length
               const stdDev = Math.sqrt(variance)
               const cv = (stdDev / avg) * 100 // Coefficient of variation
               

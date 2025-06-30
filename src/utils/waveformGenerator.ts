@@ -487,7 +487,7 @@ export class RespiratoryGenerator {
         frequency: respiratoryRate / 60,
         morphology: this.classifyRespMorphology(respiratoryRate, pathologyFactor)
       },
-      quality: this.calculateRespQuality(data, respiratoryRate)
+      quality: this.calculateRespQuality(data)
     }
   }
 
@@ -526,15 +526,15 @@ export class RespiratoryGenerator {
     return Math.max(0, value)
   }
 
-  private classifyRespMorphology(rr: number, pathology: number): string {
-    if (pathology < 0.2 && rr >= 12 && rr <= 20) return 'Normal Breathing'
-    if (rr < 12) return 'Bradypnea'
-    if (rr > 20) return 'Tachypnea'
+  private classifyRespMorphology(respiratoryRate: number, pathology: number): string {
+    if (pathology < 0.2 && respiratoryRate >= 12 && respiratoryRate <= 20) return 'Normal Breathing'
+    if (respiratoryRate < 12) return 'Bradypnea'
+    if (respiratoryRate > 20) return 'Tachypnea'
     if (pathology >= 0.4) return 'Irregular Breathing Pattern'
     return 'Abnormal Respiration'
   }
 
-  private calculateRespQuality(data: number[], rr: number): number {
+  private calculateRespQuality(data: number[]): number {
     // Calculate regularity of breathing
     const peaks = data.map((val, i) => val > 0.7 ? i : -1).filter(i => i !== -1)
     if (peaks.length < 2) return 0.5

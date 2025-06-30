@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useData } from '../contexts/DataContext'
-import { ArrowLeft, Calendar, Heart, Thermometer, Wind, Activity, Download, Filter, TrendingUp, TrendingDown } from 'lucide-react'
+import { ArrowLeft, Calendar, Heart, Thermometer, Wind, Download, TrendingUp, TrendingDown } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts'
 import { motion } from 'framer-motion'
 

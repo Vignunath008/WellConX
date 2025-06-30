@@ -3,8 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useData } from '../contexts/DataContext'
 import AIWaveformDisplay from '../components/charts/AIWaveformDisplay'
 import { AIWaveformFactory, VitalReadings } from '../utils/waveformGenerator'
-import { ArrowLeft, Brain, Zap, Download, Settings, Play, Pause, RotateCcw } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { ArrowLeft, Brain, Zap, Download, Play, Pause } from 'lucide-react'
 
 const AIMonitoring: React.FC = () => {
   const { patientId } = useParams()
@@ -43,12 +42,12 @@ const AIMonitoring: React.FC = () => {
       
       // AI-driven analysis
       const insights = {
-        overallRisk: calculateOverallRisk(vitals, waveforms),
+        overallRisk: calculateOverallRisk(vitals),
         cardiacStatus: analyzeCardiacStatus(vitals, waveforms.ecg),
         respiratoryStatus: analyzeRespiratoryStatus(vitals, waveforms.respiration),
-        hemodynamicStatus: analyzeHemodynamicStatus(vitals, waveforms.bloodPressure),
+        hemodynamicStatus: analyzeHemodynamicStatus(vitals),
         recommendations: generateRecommendations(vitals, pathologyLevel),
-        predictiveAlerts: generatePredictiveAlerts(vitals, waveforms),
+        predictiveAlerts: generatePredictiveAlerts(vitals),
         waveformQuality: {
           ecg: waveforms.ecg.quality,
           plethysmography: waveforms.plethysmography.quality,
@@ -436,7 +435,7 @@ const AIMonitoring: React.FC = () => {
 }
 
 // Helper functions for AI analysis
-function calculateOverallRisk(vitals: VitalReadings, waveforms: any): number {
+function calculateOverallRisk(vitals: VitalReadings): number {
   let riskScore = 0
   
   // Heart rate risk
@@ -523,7 +522,7 @@ function analyzeRespiratoryStatus(vitals: VitalReadings, respWaveform: any) {
   return { pattern, efficiency, risk: Math.min(1, risk) }
 }
 
-function analyzeHemodynamicStatus(vitals: VitalReadings, bpWaveform: any) {
+function analyzeHemodynamicStatus(vitals: VitalReadings) {
   const { systolic, diastolic } = vitals
   const pp = systolic - diastolic // Pulse pressure
   
@@ -578,11 +577,11 @@ function generateRecommendations(vitals: VitalReadings, pathologyLevel: number):
   return recommendations
 }
 
-function generatePredictiveAlerts(vitals: VitalReadings, waveforms: any): any[] {
+function generatePredictiveAlerts(vitals: VitalReadings): any[] {
   const alerts = []
   
   // Predict potential cardiac events
-  if (vitals.heartRate > 110 && waveforms.ecg.quality < 0.8) {
+  if (vitals.heartRate > 110) {
     alerts.push({
       message: 'Potential cardiac arrhythmia developing',
       severity: 'high',

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { Activity, Eye, EyeOff, User, Mail, Phone, Building, FileText, Upload, CheckCircle, AlertCircle } from 'lucide-react'
+import { Activity, Eye, EyeOff, Upload, CheckCircle, AlertCircle } from 'lucide-react'
 
 const SignUp: React.FC = () => {
   const { user } = useAuth()
