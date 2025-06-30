@@ -17,17 +17,6 @@ import {
   Eye, 
   Edit, 
   Trash,
-  Plus,
-  Database,
-  FileText,
-  Bell,
-  Lock,
-  HardDrive,
-  Zap,
-  Wifi,
-  GitBranch,
-  Layers,
-  Cpu,
   Monitor,
   Save
 } from 'lucide-react'
@@ -74,8 +63,8 @@ const AdminPanel: React.FC = () => {
     },
     {
       id: 'staff-003',
-      name: 'Dr. Aditya Gupta',
-      email: 'aditya.gupta@wellconx.com',
+      name: 'Dr. Amit Kumar',
+      email: 'amit.kumar@wellconx.com',
       role: 'doctor',
       department: 'Neurology',
       specialization: 'Neurology',
@@ -84,23 +73,23 @@ const AdminPanel: React.FC = () => {
     },
     {
       id: 'staff-004',
-      name: 'Dr. Neha Reddy',
-      email: 'neha.reddy@wellconx.com',
-      role: 'doctor',
-      department: 'Pediatrics',
-      specialization: 'Pediatric Cardiology',
-      status: 'active',
-      lastLogin: new Date(Date.now() - 1000 * 60 * 180) // 3 hours ago
-    },
-    {
-      id: 'staff-005',
-      name: 'Nurse Arjun Kumar',
-      email: 'arjun.kumar@wellconx.com',
+      name: 'Nurse Deepika Singh',
+      email: 'deepika.singh@wellconx.com',
       role: 'nurse',
       department: 'Emergency',
       specialization: 'Trauma Care',
       status: 'active',
       lastLogin: new Date(Date.now() - 1000 * 60 * 45) // 45 minutes ago
+    },
+    {
+      id: 'staff-005',
+      name: 'Dr. Sanjay Gupta',
+      email: 'sanjay.gupta@wellconx.com',
+      role: 'doctor',
+      department: 'Pulmonology',
+      specialization: 'Respiratory Medicine',
+      status: 'active',
+      lastLogin: new Date(Date.now() - 1000 * 60 * 180) // 3 hours ago
     }
   ])
 
@@ -193,10 +182,10 @@ const AdminPanel: React.FC = () => {
         
         <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-alert-100 p-3 rounded-medical">
-              <BarChart3 className="h-6 w-6 text-alert-600" />
+            <div className="bg-primary-100 p-3 rounded-medical">
+              <BarChart3 className="h-6 w-6 text-primary-600" />
             </div>
-            <span className="text-sm text-alert-600 font-medium">Alerts</span>
+            <span className="text-sm text-primary-600 font-medium">Alerts</span>
           </div>
           <div className="text-2xl font-bold text-text-primary">{systemStats.alertsToday}</div>
           <p className="text-sm text-text-secondary mt-1">Alerts today</p>
@@ -204,10 +193,10 @@ const AdminPanel: React.FC = () => {
         
         <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-primary-100 p-3 rounded-medical">
-              <Clock className="h-6 w-6 text-primary-600" />
+            <div className="bg-alert-100 p-3 rounded-medical">
+              <Clock className="h-6 w-6 text-alert-600" />
             </div>
-            <span className="text-sm text-primary-600 font-medium">Response</span>
+            <span className="text-sm text-alert-600 font-medium">Response</span>
           </div>
           <div className="text-2xl font-bold text-text-primary">{systemStats.responseTime}</div>
           <p className="text-sm text-text-secondary mt-1">Avg. response time</p>
@@ -298,15 +287,14 @@ const AdminPanel: React.FC = () => {
               className="pl-10 pr-4 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
             />
           </div>
-          <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2">
-            <Plus className="h-4 w-4" />
-            <span>Add Staff</span>
+          <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors">
+            Add Staff
           </button>
         </div>
       </div>
       
       {/* Staff List */}
-      <div className="bg-background-card rounded-card border border-border-light overflow-hidden shadow-soft">
+      <div className="bg-background-card rounded-card border border-border-light shadow-soft overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-border-light">
             <thead className="bg-background-hover">
@@ -397,7 +385,7 @@ const AdminPanel: React.FC = () => {
       </div>
       
       {registrationRequests.filter(req => req.status === 'pending').length > 0 ? (
-        <div className="bg-background-card rounded-card border border-border-light overflow-hidden shadow-soft">
+        <div className="bg-background-card rounded-card border border-border-light shadow-soft overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-border-light">
               <thead className="bg-background-hover">
@@ -472,7 +460,7 @@ const AdminPanel: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-background-card rounded-card p-8 border border-border-light text-center shadow-soft">
+        <div className="bg-background-card rounded-card p-8 border border-border-light shadow-soft text-center">
           <UserCheck className="h-12 w-12 text-text-light mx-auto mb-4" />
           <h3 className="text-lg font-medium text-text-primary mb-2">No Pending Requests</h3>
           <p className="text-text-secondary">There are no registration requests waiting for approval.</p>
@@ -483,7 +471,7 @@ const AdminPanel: React.FC = () => {
       {registrationRequests.filter(req => req.status !== 'pending').length > 0 && (
         <div className="mt-8">
           <h3 className="text-lg font-semibold text-text-primary mb-4">Processed Requests</h3>
-          <div className="bg-background-card rounded-card border border-border-light overflow-hidden shadow-soft">
+          <div className="bg-background-card rounded-card border border-border-light shadow-soft overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-border-light">
                 <thead className="bg-background-hover">
@@ -561,7 +549,7 @@ const AdminPanel: React.FC = () => {
               <p className="text-sm text-text-secondary">Require 2FA for all admin users</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" checked />
+              <input type="checkbox" className="sr-only peer" defaultChecked />
               <div className="w-11 h-6 bg-background-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border-light after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
             </label>
           </div>
@@ -677,200 +665,167 @@ const AdminPanel: React.FC = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-text-primary">Device Management</h2>
         <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2">
-          <Plus className="h-4 w-4" />
-          <span>Add Device Type</span>
+          <Monitor className="h-4 w-4" />
+          <span>Add Device</span>
         </button>
       </div>
       
-      {/* Device Types */}
+      {/* Device Categories */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="bg-primary-100 p-3 rounded-medical">
-                <Monitor className="h-6 w-6 text-primary-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-text-primary">Philips IntelliVue</h3>
-                <p className="text-sm text-text-secondary">Patient Monitors</p>
-              </div>
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="bg-primary-100 p-3 rounded-medical">
+              <Monitor className="h-6 w-6 text-primary-600" />
             </div>
-            <span className="px-2 py-1 text-xs font-medium rounded-full bg-health-100 text-health-800">Active</span>
-          </div>
-          
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Supported Models:</span>
-              <span className="text-text-primary">MP70, MP60, MP50, MP30</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Protocol:</span>
-              <span className="text-text-primary">HL7 v2.5</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Active Devices:</span>
-              <span className="text-text-primary">3</span>
+            <div>
+              <h3 className="text-lg font-semibold text-text-primary">Philips Devices</h3>
+              <p className="text-sm text-text-secondary">IntelliVue Series</p>
             </div>
           </div>
-          
-          <div className="mt-4 flex space-x-2">
-            <button className="flex-1 bg-background-hover hover:bg-border-light text-text-primary px-3 py-2 rounded-medical text-sm">
-              Configure
-            </button>
-            <button className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-medical text-sm">
-              View Devices
-            </button>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center p-3 bg-background-hover rounded-medical">
+              <span className="text-text-primary">MP70 Monitors</span>
+              <span className="text-health-600 font-medium">4 Active</span>
+            </div>
+            <div className="flex justify-between items-center p-3 bg-background-hover rounded-medical">
+              <span className="text-text-primary">MP60 Monitors</span>
+              <span className="text-health-600 font-medium">3 Active</span>
+            </div>
+            <div className="flex justify-between items-center p-3 bg-background-hover rounded-medical">
+              <span className="text-text-primary">MP50 Monitors</span>
+              <span className="text-alert-600 font-medium">1 Maintenance</span>
+            </div>
           </div>
         </div>
         
         <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="bg-alert-100 p-3 rounded-medical">
-                <Monitor className="h-6 w-6 text-alert-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-text-primary">GE Healthcare</h3>
-                <p className="text-sm text-text-secondary">Patient Monitors</p>
-              </div>
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="bg-alert-100 p-3 rounded-medical">
+              <Monitor className="h-6 w-6 text-alert-600" />
             </div>
-            <span className="px-2 py-1 text-xs font-medium rounded-full bg-health-100 text-health-800">Active</span>
-          </div>
-          
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Supported Models:</span>
-              <span className="text-text-primary">DASH 5000, B650, B450</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Protocol:</span>
-              <span className="text-text-primary">HL7 v2.5</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Active Devices:</span>
-              <span className="text-text-primary">2</span>
+            <div>
+              <h3 className="text-lg font-semibold text-text-primary">GE Devices</h3>
+              <p className="text-sm text-text-secondary">DASH Series</p>
             </div>
           </div>
-          
-          <div className="mt-4 flex space-x-2">
-            <button className="flex-1 bg-background-hover hover:bg-border-light text-text-primary px-3 py-2 rounded-medical text-sm">
-              Configure
-            </button>
-            <button className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-medical text-sm">
-              View Devices
-            </button>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center p-3 bg-background-hover rounded-medical">
+              <span className="text-text-primary">DASH 5000</span>
+              <span className="text-health-600 font-medium">2 Active</span>
+            </div>
+            <div className="flex justify-between items-center p-3 bg-background-hover rounded-medical">
+              <span className="text-text-primary">DASH 4000</span>
+              <span className="text-red-600 font-medium">1 Offline</span>
+            </div>
+            <div className="flex justify-between items-center p-3 bg-background-hover rounded-medical">
+              <span className="text-text-primary">B650 Transport</span>
+              <span className="text-health-600 font-medium">2 Active</span>
+            </div>
           </div>
         </div>
         
         <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="bg-health-100 p-3 rounded-medical">
-                <Monitor className="h-6 w-6 text-health-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-text-primary">Mindray</h3>
-                <p className="text-sm text-text-secondary">Patient Monitors</p>
-              </div>
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="bg-health-100 p-3 rounded-medical">
+              <Monitor className="h-6 w-6 text-health-600" />
             </div>
-            <span className="px-2 py-1 text-xs font-medium rounded-full bg-health-100 text-health-800">Active</span>
-          </div>
-          
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Supported Models:</span>
-              <span className="text-text-primary">BeneView T1, T5, T8</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Protocol:</span>
-              <span className="text-text-primary">HL7 v2.5</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Active Devices:</span>
-              <span className="text-text-primary">1</span>
+            <div>
+              <h3 className="text-lg font-semibold text-text-primary">Mindray Devices</h3>
+              <p className="text-sm text-text-secondary">BeneView Series</p>
             </div>
           </div>
-          
-          <div className="mt-4 flex space-x-2">
-            <button className="flex-1 bg-background-hover hover:bg-border-light text-text-primary px-3 py-2 rounded-medical text-sm">
-              Configure
-            </button>
-            <button className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-medical text-sm">
-              View Devices
-            </button>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center p-3 bg-background-hover rounded-medical">
+              <span className="text-text-primary">BeneView T1</span>
+              <span className="text-health-600 font-medium">1 Active</span>
+            </div>
+            <div className="flex justify-between items-center p-3 bg-background-hover rounded-medical">
+              <span className="text-text-primary">BeneView T5</span>
+              <span className="text-alert-600 font-medium">1 Maintenance</span>
+            </div>
+            <div className="flex justify-between items-center p-3 bg-background-hover rounded-medical">
+              <span className="text-text-primary">BeneView T8</span>
+              <span className="text-health-600 font-medium">1 Active</span>
+            </div>
           </div>
         </div>
       </div>
       
-      {/* HL7 Configuration */}
+      {/* Device Configuration */}
       <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-        <h3 className="text-lg font-semibold text-text-primary mb-4">HL7 Configuration</h3>
+        <h3 className="text-lg font-semibold text-text-primary mb-4">Device Configuration</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="font-medium text-text-primary mb-3">Network Settings</h4>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">HL7 Listener IP</label>
-                <input
-                  type="text"
-                  value="192.168.1.50"
-                  className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
-                />
+          <div className="space-y-4">
+            <div className="bg-background-hover p-4 rounded-medical">
+              <h4 className="font-medium text-text-primary mb-2">Network Settings</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">IP Range:</span>
+                  <span className="text-text-primary font-mono">192.168.1.100-199</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Subnet Mask:</span>
+                  <span className="text-text-primary font-mono">255.255.255.0</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Gateway:</span>
+                  <span className="text-text-primary font-mono">192.168.1.1</span>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">HL7 Port</label>
-                <input
-                  type="text"
-                  value="2575"
-                  className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Backup Port</label>
-                <input
-                  type="text"
-                  value="2576"
-                  className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
-                />
+            </div>
+            
+            <div className="bg-background-hover p-4 rounded-medical">
+              <h4 className="font-medium text-text-primary mb-2">HL7 Configuration</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Protocol:</span>
+                  <span className="text-text-primary">HL7 v2.5</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Port:</span>
+                  <span className="text-text-primary">2575</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Message Type:</span>
+                  <span className="text-text-primary">ORU^R01</span>
+                </div>
               </div>
             </div>
           </div>
           
-          <div>
-            <h4 className="font-medium text-text-primary mb-3">Protocol Settings</h4>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">HL7 Version</label>
-                <select className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
-                  <option value="2.3">HL7 v2.3</option>
-                  <option value="2.4">HL7 v2.4</option>
-                  <option value="2.5" selected>HL7 v2.5</option>
-                  <option value="2.6">HL7 v2.6</option>
-                </select>
+          <div className="space-y-4">
+            <div className="bg-background-hover p-4 rounded-medical">
+              <h4 className="font-medium text-text-primary mb-2">Firmware Management</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Auto Updates:</span>
+                  <span className="text-health-600">Enabled</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Update Schedule:</span>
+                  <span className="text-text-primary">Sundays, 2:00 AM</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Last Check:</span>
+                  <span className="text-text-primary">Today, 6:30 AM</span>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Transport Protocol</label>
-                <select className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
-                  <option value="mllp" selected>MLLP (Minimal Lower Layer Protocol)</option>
-                  <option value="tcp">TCP (Raw Socket)</option>
-                  <option value="https">HTTPS (Web Service)</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Message Types</label>
-                <div className="space-y-1 mt-1">
-                  <label className="flex items-center">
-                    <input type="checkbox" checked className="rounded border-border-medium text-primary-600 focus:ring-primary-500 mr-2" />
-                    <span className="text-sm text-text-primary">ORU^R01 (Observation Results)</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input type="checkbox" checked className="rounded border-border-medium text-primary-600 focus:ring-primary-500 mr-2" />
-                    <span className="text-sm text-text-primary">ADT^A01 (Admission)</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input type="checkbox" checked className="rounded border-border-medium text-primary-600 focus:ring-primary-500 mr-2" />
-                    <span className="text-sm text-text-primary">ADT^A08 (Update Patient Info)</span>
-                  </label>
+            </div>
+            
+            <div className="bg-background-hover p-4 rounded-medical">
+              <h4 className="font-medium text-text-primary mb-2">Device Pairing</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Auto Discovery:</span>
+                  <span className="text-health-600">Enabled</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Pairing Code:</span>
+                  <span className="text-text-primary font-mono">WCX-2024</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Security Level:</span>
+                  <span className="text-text-primary">High</span>
                 </div>
               </div>
             </div>
@@ -878,631 +833,10 @@ const AdminPanel: React.FC = () => {
         </div>
         
         <div className="mt-6 flex justify-end">
-          <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical">
-            Save Configuration
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-
-  // Render integration management tab
-  const renderIntegrationManagement = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-text-primary">Integration Management</h2>
-        <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2">
-          <Plus className="h-4 w-4" />
-          <span>Add Integration</span>
-        </button>
-      </div>
-      
-      {/* Active Integrations */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="bg-primary-100 p-3 rounded-medical">
-                <Database className="h-6 w-6 text-primary-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-text-primary">Hospital EHR System</h3>
-                <p className="text-sm text-text-secondary">Electronic Health Records</p>
-              </div>
-            </div>
-            <span className="px-2 py-1 text-xs font-medium rounded-full bg-health-100 text-health-800">Active</span>
-          </div>
-          
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Integration Type:</span>
-              <span className="text-text-primary">HL7 FHIR API</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Last Sync:</span>
-              <span className="text-text-primary">10 minutes ago</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Status:</span>
-              <span className="text-health-600">Connected</span>
-            </div>
-          </div>
-          
-          <div className="mt-4 flex space-x-2">
-            <button className="flex-1 bg-background-hover hover:bg-border-light text-text-primary px-3 py-2 rounded-medical text-sm">
-              Configure
-            </button>
-            <button className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-medical text-sm">
-              View Logs
-            </button>
-          </div>
-        </div>
-        
-        <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="bg-alert-100 p-3 rounded-medical">
-                <FileText className="h-6 w-6 text-alert-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-text-primary">Laboratory System</h3>
-                <p className="text-sm text-text-secondary">Lab Results Integration</p>
-              </div>
-            </div>
-            <span className="px-2 py-1 text-xs font-medium rounded-full bg-health-100 text-health-800">Active</span>
-          </div>
-          
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Integration Type:</span>
-              <span className="text-text-primary">REST API</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Last Sync:</span>
-              <span className="text-text-primary">25 minutes ago</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Status:</span>
-              <span className="text-health-600">Connected</span>
-            </div>
-          </div>
-          
-          <div className="mt-4 flex space-x-2">
-            <button className="flex-1 bg-background-hover hover:bg-border-light text-text-primary px-3 py-2 rounded-medical text-sm">
-              Configure
-            </button>
-            <button className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-medical text-sm">
-              View Logs
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      {/* Available Integrations */}
-      <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-        <h3 className="text-lg font-semibold text-text-primary mb-4">Available Integrations</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="border border-border-light rounded-medical p-4 hover:bg-background-hover transition-colors">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="bg-primary-100 p-2 rounded-medical">
-                <Bell className="h-5 w-5 text-primary-600" />
-              </div>
-              <h4 className="font-medium text-text-primary">Notification System</h4>
-            </div>
-            <p className="text-sm text-text-secondary mb-3">Integrate with hospital-wide notification systems for alerts and critical updates.</p>
-            <button className="w-full bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-medical text-sm">
-              Set Up
-            </button>
-          </div>
-          
-          <div className="border border-border-light rounded-medical p-4 hover:bg-background-hover transition-colors">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="bg-alert-100 p-2 rounded-medical">
-                <HardDrive className="h-5 w-5 text-alert-600" />
-              </div>
-              <h4 className="font-medium text-text-primary">PACS System</h4>
-            </div>
-            <p className="text-sm text-text-secondary mb-3">Connect to Picture Archiving and Communication System for medical imaging.</p>
-            <button className="w-full bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-medical text-sm">
-              Set Up
-            </button>
-          </div>
-          
-          <div className="border border-border-light rounded-medical p-4 hover:bg-background-hover transition-colors">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="bg-health-100 p-2 rounded-medical">
-                <Zap className="h-5 w-5 text-health-600" />
-              </div>
-              <h4 className="font-medium text-text-primary">Pharmacy System</h4>
-            </div>
-            <p className="text-sm text-text-secondary mb-3">Integrate with hospital pharmacy systems for medication management.</p>
-            <button className="w-full bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-medical text-sm">
-              Set Up
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      {/* API Management */}
-      <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-        <h3 className="text-lg font-semibold text-text-primary mb-4">API Management</h3>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between py-2 border-b border-border-light">
-            <div>
-              <p className="font-medium text-text-primary">API Access</p>
-              <p className="text-sm text-text-secondary">Enable external API access</p>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" checked />
-              <div className="w-11 h-6 bg-background-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border-light after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-            </label>
-          </div>
-          
-          <div className="flex items-center justify-between py-2 border-b border-border-light">
-            <div>
-              <p className="font-medium text-text-primary">API Keys</p>
-              <p className="text-sm text-text-secondary">Manage API authentication keys</p>
-            </div>
-            <button className="bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-medical text-sm">
-              Manage Keys
-            </button>
-          </div>
-          
-          <div className="flex items-center justify-between py-2 border-b border-border-light">
-            <div>
-              <p className="font-medium text-text-primary">Rate Limiting</p>
-              <p className="text-sm text-text-secondary">Maximum requests per minute</p>
-            </div>
-            <select className="px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
-              <option value="60">60 requests/min</option>
-              <option value="120" selected>120 requests/min</option>
-              <option value="300">300 requests/min</option>
-              <option value="unlimited">Unlimited</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-
-  // Render system monitoring tab
-  const renderSystemMonitoring = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-text-primary">System Monitoring</h2>
-        <div className="flex items-center space-x-3">
-          <select className="px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
-            <option value="1h">Last Hour</option>
-            <option value="6h">Last 6 Hours</option>
-            <option value="24h" selected>Last 24 Hours</option>
-            <option value="7d">Last 7 Days</option>
-          </select>
           <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2">
-            <RefreshCw className="h-4 w-4" />
-            <span>Refresh</span>
+            <Save className="h-4 w-4" />
+            <span>Save Configuration</span>
           </button>
-        </div>
-      </div>
-      
-      {/* System Health Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-          <div className="flex items-center justify-between mb-4">
-            <div className="bg-primary-100 p-3 rounded-medical">
-              <Cpu className="h-6 w-6 text-primary-600" />
-            </div>
-            <span className="text-sm text-primary-600 font-medium">CPU</span>
-          </div>
-          <div className="text-2xl font-bold text-text-primary">12%</div>
-          <div className="flex items-center justify-between mt-2">
-            <p className="text-sm text-text-secondary">Average usage</p>
-            <span className="text-xs text-health-600">Normal</span>
-          </div>
-          <div className="w-full bg-background-hover rounded-full h-2 mt-2">
-            <div className="bg-primary-600 h-2 rounded-full" style={{ width: '12%' }}></div>
-          </div>
-        </div>
-        
-        <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-          <div className="flex items-center justify-between mb-4">
-            <div className="bg-health-100 p-3 rounded-medical">
-              <HardDrive className="h-6 w-6 text-health-600" />
-            </div>
-            <span className="text-sm text-health-600 font-medium">Memory</span>
-          </div>
-          <div className="text-2xl font-bold text-text-primary">38%</div>
-          <div className="flex items-center justify-between mt-2">
-            <p className="text-sm text-text-secondary">8.2 GB / 16 GB</p>
-            <span className="text-xs text-health-600">Normal</span>
-          </div>
-          <div className="w-full bg-background-hover rounded-full h-2 mt-2">
-            <div className="bg-health-600 h-2 rounded-full" style={{ width: '38%' }}></div>
-          </div>
-        </div>
-        
-        <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-          <div className="flex items-center justify-between mb-4">
-            <div className="bg-alert-100 p-3 rounded-medical">
-              <Database className="h-6 w-6 text-alert-600" />
-            </div>
-            <span className="text-sm text-alert-600 font-medium">Storage</span>
-          </div>
-          <div className="text-2xl font-bold text-text-primary">68%</div>
-          <div className="flex items-center justify-between mt-2">
-            <p className="text-sm text-text-secondary">342 GB / 500 GB</p>
-            <span className="text-xs text-alert-600">Moderate</span>
-          </div>
-          <div className="w-full bg-background-hover rounded-full h-2 mt-2">
-            <div className="bg-alert-600 h-2 rounded-full" style={{ width: '68%' }}></div>
-          </div>
-        </div>
-        
-        <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-          <div className="flex items-center justify-between mb-4">
-            <div className="bg-primary-100 p-3 rounded-medical">
-              <Wifi className="h-6 w-6 text-primary-600" />
-            </div>
-            <span className="text-sm text-primary-600 font-medium">Network</span>
-          </div>
-          <div className="text-2xl font-bold text-text-primary">5.2 Mbps</div>
-          <div className="flex items-center justify-between mt-2">
-            <p className="text-sm text-text-secondary">Current throughput</p>
-            <span className="text-xs text-health-600">Normal</span>
-          </div>
-          <div className="w-full bg-background-hover rounded-full h-2 mt-2">
-            <div className="bg-primary-600 h-2 rounded-full" style={{ width: '25%' }}></div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Service Status */}
-      <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-        <h3 className="text-lg font-semibold text-text-primary mb-4">Service Status</h3>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-border-light">
-            <thead className="bg-background-hover">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  Service
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  Status
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  Uptime
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  Last Restart
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-background-card divide-y divide-border-light">
-              {[
-                { name: 'HL7 Listener', status: 'Running', uptime: '14d 6h 32m', lastRestart: '2 weeks ago' },
-                { name: 'Database Service', status: 'Running', uptime: '14d 6h 32m', lastRestart: '2 weeks ago' },
-                { name: 'Web Server', status: 'Running', uptime: '14d 6h 32m', lastRestart: '2 weeks ago' },
-                { name: 'Authentication Service', status: 'Running', uptime: '14d 6h 32m', lastRestart: '2 weeks ago' },
-                { name: 'Backup Service', status: 'Running', uptime: '6h 15m', lastRestart: '6 hours ago' }
-              ].map((service, index) => (
-                <tr key={index} className="hover:bg-background-hover">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="text-sm font-medium text-text-primary">{service.name}</div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-health-100 text-health-800">
-                      {service.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-text-primary">
-                    {service.uptime}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                    {service.lastRestart}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="text-primary-600 hover:text-primary-900 mr-3">
-                      Restart
-                    </button>
-                    <button className="text-primary-600 hover:text-primary-900">
-                      Logs
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      
-      {/* System Logs */}
-      <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-text-primary">Recent System Logs</h3>
-          <button className="bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-medical text-sm flex items-center space-x-2">
-            <Download className="h-4 w-4" />
-            <span>Export Logs</span>
-          </button>
-        </div>
-        <div className="bg-background-hover rounded-medical p-4 font-mono text-sm text-text-primary overflow-x-auto">
-          <div className="space-y-1">
-            <div className="flex">
-              <span className="text-health-600 mr-2">[INFO]</span>
-              <span className="text-text-light mr-2">2024-05-15 11:45:23</span>
-              <span>System backup completed successfully</span>
-            </div>
-            <div className="flex">
-              <span className="text-primary-600 mr-2">[NOTICE]</span>
-              <span className="text-text-light mr-2">2024-05-15 11:30:12</span>
-              <span>User login: admin@wellconx.com (IP: 192.168.1.25)</span>
-            </div>
-            <div className="flex">
-              <span className="text-alert-600 mr-2">[WARN]</span>
-              <span className="text-text-light mr-2">2024-05-15 11:15:45</span>
-              <span>High memory usage detected (75%), monitoring situation</span>
-            </div>
-            <div className="flex">
-              <span className="text-primary-600 mr-2">[NOTICE]</span>
-              <span className="text-text-light mr-2">2024-05-15 11:10:33</span>
-              <span>New patient record created: PAT-123456</span>
-            </div>
-            <div className="flex">
-              <span className="text-health-600 mr-2">[INFO]</span>
-              <span className="text-text-light mr-2">2024-05-15 11:05:17</span>
-              <span>HL7 connection established with device PHI-MP70-001</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-
-  // Render advanced configuration tab
-  const renderAdvancedConfiguration = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-text-primary">Advanced Configuration</h2>
-        <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2">
-          <Save className="h-4 w-4" />
-          <span>Save Changes</span>
-        </button>
-      </div>
-      
-      {/* System Parameters */}
-      <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-        <h3 className="text-lg font-semibold text-text-primary mb-4">System Parameters</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="font-medium text-text-primary mb-3">Performance Settings</h4>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Data Processing Threads</label>
-                <select className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
-                  <option value="2">2 threads</option>
-                  <option value="4" selected>4 threads</option>
-                  <option value="8">8 threads</option>
-                  <option value="16">16 threads</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Database Connection Pool</label>
-                <select className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
-                  <option value="5">5 connections</option>
-                  <option value="10" selected>10 connections</option>
-                  <option value="20">20 connections</option>
-                  <option value="50">50 connections</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Cache Size (MB)</label>
-                <input
-                  type="number"
-                  value="512"
-                  className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
-                />
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <h4 className="font-medium text-text-primary mb-3">Advanced Security</h4>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">IP Whitelisting</label>
-                <textarea
-                  className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
-                  rows={3}
-                  placeholder="Enter IP addresses, one per line"
-                  value="192.168.1.0/24&#10;10.0.0.5&#10;10.0.0.6"
-                ></textarea>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">API Rate Limiting Strategy</label>
-                <select className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
-                  <option value="fixed">Fixed Window</option>
-                  <option value="sliding" selected>Sliding Window</option>
-                  <option value="token">Token Bucket</option>
-                </select>
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-text-primary">TLS 1.3 Only</p>
-                  <p className="text-xs text-text-secondary">Enforce TLS 1.3 for all connections</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" checked />
-                  <div className="w-11 h-6 bg-background-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border-light after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Advanced Monitoring Configuration */}
-      <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-        <h3 className="text-lg font-semibold text-text-primary mb-4">Advanced Monitoring Configuration</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="font-medium text-text-primary mb-3">Vital Sign Thresholds</h4>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Heart Rate Warning Range (bpm)</label>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    value="60"
-                    className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
-                  />
-                  <span className="text-text-secondary">to</span>
-                  <input
-                    type="number"
-                    value="100"
-                    className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">SpO2 Warning Threshold (%)</label>
-                <input
-                  type="number"
-                  value="95"
-                  className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Temperature Warning Range (°F)</label>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    value="97"
-                    step="0.1"
-                    className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
-                  />
-                  <span className="text-text-secondary">to</span>
-                  <input
-                    type="number"
-                    value="99.5"
-                    step="0.1"
-                    className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <h4 className="font-medium text-text-primary mb-3">AI Configuration</h4>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">AI Analysis Frequency</label>
-                <select className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
-                  <option value="5">Every 5 seconds</option>
-                  <option value="15" selected>Every 15 seconds</option>
-                  <option value="30">Every 30 seconds</option>
-                  <option value="60">Every minute</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Predictive Alert Threshold</label>
-                <select className="w-full px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
-                  <option value="0.6">60% confidence</option>
-                  <option value="0.7" selected>70% confidence</option>
-                  <option value="0.8">80% confidence</option>
-                  <option value="0.9">90% confidence</option>
-                </select>
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-text-primary">Enable AI Diagnostics</p>
-                  <p className="text-xs text-text-secondary">Use AI for diagnostic suggestions</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" checked />
-                  <div className="w-11 h-6 bg-background-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border-light after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* System Architecture */}
-      <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
-        <h3 className="text-lg font-semibold text-text-primary mb-4">System Architecture</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="border border-border-light rounded-medical p-4">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="bg-primary-100 p-2 rounded-medical">
-                <Layers className="h-5 w-5 text-primary-600" />
-              </div>
-              <h4 className="font-medium text-text-primary">Microservices</h4>
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-text-secondary">Status:</span>
-                <span className="text-health-600">Active</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-text-secondary">Services:</span>
-                <span className="text-text-primary">8 running</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-text-secondary">Health:</span>
-                <span className="text-health-600">100%</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="border border-border-light rounded-medical p-4">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="bg-alert-100 p-2 rounded-medical">
-                <Database className="h-5 w-5 text-alert-600" />
-              </div>
-              <h4 className="font-medium text-text-primary">Database Cluster</h4>
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-text-secondary">Status:</span>
-                <span className="text-health-600">Active</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-text-secondary">Nodes:</span>
-                <span className="text-text-primary">3 active</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-text-secondary">Replication:</span>
-                <span className="text-health-600">Synchronized</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="border border-border-light rounded-medical p-4">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="bg-health-100 p-2 rounded-medical">
-                <GitBranch className="h-5 w-5 text-health-600" />
-              </div>
-              <h4 className="font-medium text-text-primary">Load Balancer</h4>
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-text-secondary">Status:</span>
-                <span className="text-health-600">Active</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-text-secondary">Algorithm:</span>
-                <span className="text-text-primary">Round Robin</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-text-secondary">Health Checks:</span>
-                <span className="text-health-600">Passing</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -1521,12 +855,6 @@ const AdminPanel: React.FC = () => {
         return renderSystemSettings()
       case 'devices':
         return renderDeviceManagement()
-      case 'integrations':
-        return renderIntegrationManagement()
-      case 'monitoring':
-        return renderSystemMonitoring()
-      case 'advanced':
-        return renderAdvancedConfiguration()
       default:
         return renderDashboard()
     }
@@ -1578,7 +906,7 @@ const AdminPanel: React.FC = () => {
       <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
         {/* Sidebar */}
         <div className="md:w-64 flex-shrink-0">
-          <div className="bg-background-card rounded-card border border-border-light overflow-hidden shadow-soft">
+          <div className="bg-background-card rounded-card border border-border-light shadow-soft overflow-hidden">
             <nav className="flex flex-col">
               <button
                 onClick={() => setActiveTab('dashboard')}
@@ -1631,42 +959,6 @@ const AdminPanel: React.FC = () => {
               >
                 <Monitor className="h-5 w-5" />
                 <span className="font-medium">Device Management</span>
-              </button>
-              
-              <button
-                onClick={() => setActiveTab('integrations')}
-                className={`flex items-center space-x-3 px-4 py-3 text-left ${
-                  activeTab === 'integrations'
-                    ? 'bg-primary-50 text-primary-700 border-l-4 border-primary-700'
-                    : 'text-text-primary hover:bg-background-hover'
-                }`}
-              >
-                <GitBranch className="h-5 w-5" />
-                <span className="font-medium">Integrations</span>
-              </button>
-              
-              <button
-                onClick={() => setActiveTab('monitoring')}
-                className={`flex items-center space-x-3 px-4 py-3 text-left ${
-                  activeTab === 'monitoring'
-                    ? 'bg-primary-50 text-primary-700 border-l-4 border-primary-700'
-                    : 'text-text-primary hover:bg-background-hover'
-                }`}
-              >
-                <Activity className="h-5 w-5" />
-                <span className="font-medium">System Monitoring</span>
-              </button>
-              
-              <button
-                onClick={() => setActiveTab('advanced')}
-                className={`flex items-center space-x-3 px-4 py-3 text-left ${
-                  activeTab === 'advanced'
-                    ? 'bg-primary-50 text-primary-700 border-l-4 border-primary-700'
-                    : 'text-text-primary hover:bg-background-hover'
-                }`}
-              >
-                <Cpu className="h-5 w-5" />
-                <span className="font-medium">Advanced Config</span>
               </button>
               
               <button
