@@ -12,14 +12,14 @@ interface LiveWaveformProps {
 }
 
 const LiveWaveform: React.FC<LiveWaveformProps> = ({
-  title,
-  data,
-  color,
-  height = 120,
-  speed = 1,
-  amplitude = 1,
-  showGrid = true,
-  unit = ''
+  title, 
+  data, 
+  color, 
+  height = 120, 
+  speed = 1, 
+  amplitude = 1, 
+  showGrid = true, 
+  unit = '' 
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animationRef = useRef<number>()
