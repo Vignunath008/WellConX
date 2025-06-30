@@ -22,41 +22,6 @@ import ProtectedRoute from './components/ProtectedRoute'
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "demo-mode";
 
 function App() {
-  // If no valid Google Client ID is configured, disable Google OAuth
-  const isGoogleOAuthEnabled = GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== "demo-mode" && GOOGLE_CLIENT_ID !== "YOUR_GOOGLE_CLIENT_ID";
-
-  if (!isGoogleOAuthEnabled) {
-    return (
-      <AuthProvider>
-        <DataProvider>
-          <Router>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Layout />
-                </ProtectedRoute>
-              }>
-                <Route index element={<Dashboard />} />
-                <Route path="patients" element={<Patients />} />
-                <Route path="patients/:patientId" element={<PatientDetails />} />
-                <Route path="patients/:patientId/history" element={<PatientHistory />} />
-                <Route path="patients/:patientId/advanced" element={<AdvancedMonitoring />} />
-                <Route path="patients/:patientId/ai" element={<AIMonitoring />} />
-                <Route path="devices" element={<Devices />} />
-                <Route path="devices/setup" element={<DeviceSetup />} />
-                <Route path="analytics" element={<Analytics />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="admin" element={<AdminPanel />} />
-              </Route>
-            </Routes>
-          </Router>
-        </DataProvider>
-      </AuthProvider>
-    );
-  }
-
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <AuthProvider>
