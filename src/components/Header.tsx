@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useData } from '../contexts/DataContext'
-import { Bell, LogOut, Wifi, WifiOff, Search, X, User, MapPin, Monitor, Heart, Thermometer, Wind, Activity, Menu } from 'lucide-react'
+import { Bell, Wifi, WifiOff, Search, X, User, MapPin, Monitor, Heart, Thermometer, Wind, Activity, Menu } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface HeaderProps {

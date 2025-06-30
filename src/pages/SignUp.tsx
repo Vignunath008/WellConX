@@ -41,16 +41,6 @@ const SignUp: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
-
-  React.useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
 
   if (user) {
     return <Navigate to="/" replace />
