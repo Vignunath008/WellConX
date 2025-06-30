@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { useData } from '../contexts/DataContext'
 import DeviceMonitor from '../components/device/DeviceMonitor'
 import { Monitor, Plus, Search, Wifi, WifiOff, Settings, RefreshCw, Download, X, Activity, Heart, Wind, Thermometer, CheckCircle, Zap } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 const Devices: React.FC = () => {
   const { devices, patients } = useData()
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | 'online' | 'offline' | 'maintenance'>('all')
   const [brandFilter, setBrandFilter] = useState<'all' | 'Philips' | 'GE' | 'Mindray'>('all')
-  const [showAddDevice, setShowAddDevice] = useState(false)
+  const [, setShowAddDevice] = useState(false)
   const [showConfigModal, setShowConfigModal] = useState(false)
   const [showDataModal, setShowDataModal] = useState(false)
   const [selectedDevice, setSelectedDevice] = useState<any>(null)
