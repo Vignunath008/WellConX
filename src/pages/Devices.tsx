@@ -39,14 +39,18 @@ const Devices: React.FC = () => {
 
   const handleConfigure = (deviceId: string) => {
     const device = devices.find(d => d.id === deviceId)
-    setSelectedDevice(device)
-    setShowConfigModal(true)
+    if (device) {
+      setSelectedDevice(device)
+      setShowConfigModal(true)
+    }
   }
 
   const handleViewData = (deviceId: string) => {
     const device = devices.find(d => d.id === deviceId)
-    setSelectedDevice(device)
-    setShowDataModal(true)
+    if (device) {
+      setSelectedDevice(device)
+      setShowDataModal(true)
+    }
   }
 
   const handleAddDevice = () => {
@@ -140,6 +144,7 @@ const Devices: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="fixed inset-4 sm:inset-8 lg:inset-16 bg-white rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6 flex-shrink-0">
@@ -366,6 +371,7 @@ const Devices: React.FC = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               className="fixed inset-4 sm:inset-8 lg:inset-16 bg-white rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[90vh]"
+              onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
               <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-4 sm:p-6 flex-shrink-0">
@@ -554,31 +560,31 @@ const Devices: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6 px-2 sm:px-0 max-w-full overflow-hidden">
+      {/* Header - Mobile Optimized */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Device Management</h1>
-          <p className="text-gray-600 mt-1">Monitor and manage medical devices across the facility</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Device Management</h1>
+          <p className="text-sm text-gray-600 mt-1">Monitor and manage medical devices</p>
         </div>
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap gap-2 sm:flex-nowrap sm:space-x-3">
           <button 
             onClick={handleRefresh}
-            className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+            className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center space-x-1 text-sm flex-1 sm:flex-none"
           >
             <RefreshCw className="h-4 w-4" />
-            <span>Refresh</span>
+            <span className="hidden sm:inline">Refresh</span>
           </button>
           <button 
             onClick={handleExport}
-            className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+            className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center space-x-1 text-sm flex-1 sm:flex-none"
           >
             <Download className="h-4 w-4" />
-            <span>Export</span>
+            <span className="hidden sm:inline">Export</span>
           </button>
           <button 
             onClick={handleAddDevice}
-            className="bg-medical-600 hover:bg-medical-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+            className="bg-medical-600 hover:bg-medical-700 text-white px-3 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center space-x-1 text-sm flex-1 sm:flex-none"
           >
             <Plus className="h-4 w-4" />
             <span>Add Device</span>
@@ -586,98 +592,90 @@ const Devices: React.FC = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {/* Stats Cards - Mobile Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <motion.div
-          className="bg-white rounded-xl p-6 border border-gray-200"
+          className="bg-white rounded-lg p-4 border border-gray-200"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Devices</p>
-              <p className="text-2xl font-bold text-gray-900">{deviceStats.total}</p>
+              <p className="text-xs sm:text-sm text-gray-600">Total</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{deviceStats.total}</p>
             </div>
-            <Monitor className="h-8 w-8 text-gray-600" />
+            <Monitor className="h-6 w-6 sm:h-8 sm:w-8 text-gray-600" />
           </div>
         </motion.div>
 
         <motion.div
-          className="bg-green-50 rounded-xl p-6 border border-green-200"
+          className="bg-green-50 rounded-lg p-4 border border-green-200"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-green-600">Online</p>
-              <p className="text-2xl font-bold text-green-700">{deviceStats.online}</p>
+              <p className="text-xs sm:text-sm text-green-600">Online</p>
+              <p className="text-xl sm:text-2xl font-bold text-green-700">{deviceStats.online}</p>
             </div>
-            <Wifi className="h-8 w-8 text-green-600" />
+            <Wifi className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
           </div>
         </motion.div>
 
         <motion.div
-          className="bg-red-50 rounded-xl p-6 border border-red-200"
+          className="bg-red-50 rounded-lg p-4 border border-red-200"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-red-600">Offline</p>
-              <p className="text-2xl font-bold text-red-700">{deviceStats.offline}</p>
+              <p className="text-xs sm:text-sm text-red-600">Offline</p>
+              <p className="text-xl sm:text-2xl font-bold text-red-700">{deviceStats.offline}</p>
             </div>
-            <WifiOff className="h-8 w-8 text-red-600" />
+            <WifiOff className="h-6 w-6 sm:h-8 sm:w-8 text-red-600" />
           </div>
         </motion.div>
 
         <motion.div
-          className="bg-yellow-50 rounded-xl p-6 border border-yellow-200"
+          className="bg-yellow-50 rounded-lg p-4 border border-yellow-200"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.3 }}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-yellow-600">Maintenance</p>
-              <p className="text-2xl font-bold text-yellow-700">{deviceStats.maintenance}</p>
+              <p className="text-xs sm:text-sm text-yellow-600">Maintenance</p>
+              <p className="text-xl sm:text-2xl font-bold text-yellow-700">{deviceStats.maintenance}</p>
             </div>
-            <Settings className="h-8 w-8 text-yellow-600" />
+            <Settings className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-600" />
           </div>
         </motion.div>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-xl p-6 border border-gray-200">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search devices by name, ID, location, model, brand..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-96 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500"
-              />
-            </div>
-            {(searchTerm || statusFilter !== 'all' || brandFilter !== 'all') && (
-              <button
-                onClick={clearFilters}
-                className="text-sm text-gray-500 hover:text-gray-700 underline"
-              >
-                Clear filters
-              </button>
-            )}
+      {/* Filters - Mobile Optimized */}
+      <div className="bg-white rounded-lg p-4 border border-gray-200">
+        <div className="space-y-3">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search devices..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+            />
           </div>
           
-          <div className="flex items-center space-x-3">
+          {/* Filter Controls */}
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500"
+              className="flex-1 px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
             >
               <option value="all">All Status</option>
               <option value="online">Online</option>
@@ -688,34 +686,36 @@ const Devices: React.FC = () => {
             <select
               value={brandFilter}
               onChange={(e) => setBrandFilter(e.target.value as any)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500"
+              className="flex-1 px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
             >
               <option value="all">All Brands</option>
               <option value="Philips">Philips</option>
               <option value="GE">GE</option>
               <option value="Mindray">Mindray</option>
             </select>
-            
-            <button 
-              onClick={() => alert('Advanced filters:\n- Device age\n- Firmware version\n- Patient assignment\n- Last maintenance date')}
-              className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <Filter className="h-4 w-4 text-gray-600" />
-            </button>
           </div>
         </div>
         
         {/* Filter Results Summary */}
-        <div className="mt-4 text-sm text-gray-600">
+        <div className="mt-3 text-sm text-gray-600">
           Showing <span className="font-medium">{filteredDevices.length}</span> of <span className="font-medium">{devices.length}</span> devices
           {searchTerm && ` matching "${searchTerm}"`}
           {statusFilter !== 'all' && ` with status "${statusFilter}"`}
           {brandFilter !== 'all' && ` from "${brandFilter}"`}
         </div>
+        
+        {(searchTerm || statusFilter !== 'all' || brandFilter !== 'all') && (
+          <button
+            onClick={clearFilters}
+            className="mt-2 text-sm text-blue-600 hover:text-blue-700 underline"
+          >
+            Clear filters
+          </button>
+        )}
       </div>
 
-      {/* Device Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Device Grid - Mobile Responsive */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredDevices.map((device, index) => (
           <motion.div
             key={device.id}
@@ -733,10 +733,10 @@ const Devices: React.FC = () => {
       </div>
 
       {filteredDevices.length === 0 && (
-        <div className="text-center py-12">
-          <Monitor className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No devices found</h3>
-          <p className="text-gray-600 mb-4">
+        <div className="text-center py-8">
+          <Monitor className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No devices found</h3>
+          <p className="text-gray-600 mb-4 text-sm sm:text-base">
             {searchTerm ? `No devices match "${searchTerm}"` : 'Try adjusting your filter criteria'}
           </p>
           <button
@@ -749,30 +749,30 @@ const Devices: React.FC = () => {
       )}
 
       {/* HL7 Connection Status */}
-      <div className="bg-white rounded-xl p-6 border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">HL7 Connection Status</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+      <div className="bg-white rounded-lg p-4 border border-gray-200">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">HL7 Connection Status</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="bg-green-50 p-3 rounded-lg border border-green-200">
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
               <span className="text-sm font-medium text-green-700">TCP Listener</span>
             </div>
             <p className="text-xs text-green-600 mt-1">Port 2575 - Active</p>
             <p className="text-xs text-green-500 mt-1">Last message: 2s ago</p>
           </div>
           
-          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
               <span className="text-sm font-medium text-blue-700">Message Parser</span>
             </div>
             <p className="text-xs text-blue-600 mt-1">ORU^R01 - Ready</p>
             <p className="text-xs text-blue-500 mt-1">Processed: 1,247 messages</p>
           </div>
           
-          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+          <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
               <span className="text-sm font-medium text-purple-700">Data Stream</span>
             </div>
             <p className="text-xs text-purple-600 mt-1">Real-time - Active</p>

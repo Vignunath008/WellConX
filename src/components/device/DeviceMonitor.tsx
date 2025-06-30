@@ -49,6 +49,22 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ device, onConfigure, onVi
     }
   }
 
+  const handleConfigureClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (onConfigure) {
+      onConfigure(device.id)
+    }
+  }
+
+  const handleViewDataClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (onViewData) {
+      onViewData(device.id)
+    }
+  }
+
   return (
     <motion.div 
       className={`rounded-xl border-2 p-6 ${getStatusColors()} transition-all duration-300 hover:shadow-lg`}
@@ -126,13 +142,13 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ device, onConfigure, onVi
 
       <div className="mt-6 flex space-x-2">
         <button 
-          onClick={() => onConfigure?.(device.id)}
+          onClick={handleConfigureClick}
           className="flex-1 bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
         >
           Configure
         </button>
         <button 
-          onClick={() => onViewData?.(device.id)}
+          onClick={handleViewDataClick}
           className="flex-1 bg-medical-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-medical-700 transition-colors"
         >
           View Data
