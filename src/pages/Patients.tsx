@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useData } from '../contexts/DataContext'
 import AddPatientModal from '../components/modals/AddPatientModal'
-import { User, Monitor, Plus, Search, Filter, Download, Calendar, Eye, Clock, Heart, Wind, Thermometer, Activity, ChevronRight } from 'lucide-react'
+import { User, Plus, Search, Download, Eye, Clock, Heart, Wind, Thermometer, Activity, ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const Patients: React.FC = () => {
