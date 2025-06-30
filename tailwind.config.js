@@ -61,7 +61,6 @@ export default {
           dark: '#B0BEC5',
         },
         // Legacy support
-        background: 'rgb(244 246 248)',
         foreground: 'rgb(38 50 56)',
         medical: {
           50: '#E3F2FD',
