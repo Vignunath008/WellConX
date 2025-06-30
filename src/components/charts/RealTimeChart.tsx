@@ -47,7 +47,7 @@ const RealTimeChart: React.FC<RealTimeChartProps> = ({
   unit,
   yAxisMin,
   yAxisMax,
-  height = 300,
+  height = 250,
   thresholds
 }) => {
   const chartRef = useRef<ChartJS<'line'>>(null)
@@ -60,11 +60,11 @@ const RealTimeChart: React.FC<RealTimeChartProps> = ({
         data: data.map(d => d.value),
         borderColor: color,
         backgroundColor: `${color}10`,
-        borderWidth: 3,
+        borderWidth: 2,
         fill: true,
         tension: 0.4,
         pointRadius: 0,
-        pointHoverRadius: 6,
+        pointHoverRadius: 4,
         pointBackgroundColor: color,
         pointBorderColor: '#fff',
         pointBorderWidth: 2,
@@ -80,7 +80,7 @@ const RealTimeChart: React.FC<RealTimeChartProps> = ({
         data: data.map(() => thresholds.warning!.max!),
         borderColor: '#f59e0b',
         backgroundColor: 'transparent',
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderDash: [8, 4],
         pointRadius: 0,
         fill: false,
@@ -92,7 +92,7 @@ const RealTimeChart: React.FC<RealTimeChartProps> = ({
         data: data.map(() => thresholds.critical!.max!),
         borderColor: '#ef4444',
         backgroundColor: 'transparent',
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderDash: [4, 4],
         pointRadius: 0,
         fill: false,
@@ -121,6 +121,12 @@ const RealTimeChart: React.FC<RealTimeChartProps> = ({
         borderColor: color,
         borderWidth: 1,
         cornerRadius: 8,
+        titleFont: {
+          size: 12
+        },
+        bodyFont: {
+          size: 11
+        },
         callbacks: {
           label: (context) => {
             if (context.datasetIndex === 0) {
@@ -150,7 +156,10 @@ const RealTimeChart: React.FC<RealTimeChartProps> = ({
         },
         ticks: {
           color: '#6b7280',
-          maxTicksLimit: 6
+          maxTicksLimit: window.innerWidth < 640 ? 4 : 6,
+          font: {
+            size: window.innerWidth < 640 ? 10 : 11
+          }
         }
       },
       y: {
@@ -162,6 +171,9 @@ const RealTimeChart: React.FC<RealTimeChartProps> = ({
         },
         ticks: {
           color: '#6b7280',
+          font: {
+            size: window.innerWidth < 640 ? 10 : 11
+          },
           callback: (value) => `${value}${unit}`
         }
       }
@@ -176,18 +188,18 @@ const RealTimeChart: React.FC<RealTimeChartProps> = ({
   }, [data])
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-lg transition-all duration-300">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white rounded-lg sm:rounded-xl border border-gray-100 p-3 sm:p-4 lg:p-6 hover:shadow-lg transition-all duration-300">
+      <div className="flex items-center justify-between mb-3 sm:mb-4 lg:mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-          <p className="text-sm text-gray-500">Real-time monitoring</p>
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900">{title}</h3>
+          <p className="text-xs sm:text-sm text-gray-500">Real-time monitoring</p>
         </div>
         <div className="flex items-center space-x-2">
           <div 
-            className="w-3 h-3 rounded-full pulse-ring"
+            className="w-2 h-2 sm:w-3 sm:h-3 rounded-full pulse-ring"
             style={{ backgroundColor: color }}
           />
-          <span className="text-sm text-gray-600 font-medium">Live</span>
+          <span className="text-xs sm:text-sm text-gray-600 font-medium">Live</span>
         </div>
       </div>
       

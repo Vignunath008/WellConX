@@ -15,7 +15,7 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
   title,
   data,
   color,
-  height = 150,
+  height = 120,
   speed = 1,
   amplitude = 1,
   showGrid = true,
@@ -33,8 +33,14 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const width = canvas.width
-    const height = canvas.height
+    // Set canvas size based on container
+    const rect = canvas.getBoundingClientRect()
+    const dpr = window.devicePixelRatio || 1
+    canvas.width = rect.width * dpr
+    canvas.height = height * dpr
+    ctx.scale(dpr, dpr)
+
+    const width = rect.width
     const centerY = height / 2
 
     const draw = () => {
@@ -47,15 +53,16 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
         ctx.strokeStyle = 'rgba(0, 255, 0, 0.15)'
         ctx.lineWidth = 1
         
-        // Major grid lines (every 50px)
-        for (let x = 0; x < width; x += 50) {
+        // Major grid lines (every 50px on desktop, 25px on mobile)
+        const majorGridSize = width < 400 ? 25 : 50
+        for (let x = 0; x < width; x += majorGridSize) {
           ctx.beginPath()
           ctx.moveTo(x, 0)
           ctx.lineTo(x, height)
           ctx.stroke()
         }
         
-        for (let y = 0; y < height; y += 25) {
+        for (let y = 0; y < height; y += 20) {
           ctx.beginPath()
           ctx.moveTo(0, y)
           ctx.lineTo(width, y)
@@ -64,7 +71,8 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
 
         // Minor grid lines (every 10px)
         ctx.strokeStyle = 'rgba(0, 255, 0, 0.08)'
-        for (let x = 0; x < width; x += 10) {
+        const minorGridSize = width < 400 ? 12 : 10
+        for (let x = 0; x < width; x += minorGridSize) {
           ctx.beginPath()
           ctx.moveTo(x, 0)
           ctx.lineTo(x, height)
@@ -85,7 +93,7 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
       
       // Draw the main waveform
       ctx.strokeStyle = color
-      ctx.lineWidth = 2
+      ctx.lineWidth = width < 400 ? 1.5 : 2
       ctx.beginPath()
 
       let hasStarted = false
@@ -96,7 +104,7 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
         
         // Fade effect for older traces
         const distanceFromSweep = Math.abs(x - sweepX)
-        const fadeDistance = 100
+        const fadeDistance = width < 400 ? 50 : 100
         let alpha = 1
         
         if (distanceFromSweep < fadeDistance) {
@@ -124,9 +132,9 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
 
       // Draw sweep line with glow effect
       ctx.shadowColor = 'rgba(255, 255, 255, 0.8)'
-      ctx.shadowBlur = 10
+      ctx.shadowBlur = width < 400 ? 5 : 10
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)'
-      ctx.lineWidth = 2
+      ctx.lineWidth = width < 400 ? 1.5 : 2
       ctx.beginPath()
       ctx.moveTo(sweepX, 0)
       ctx.lineTo(sweepX, height)
@@ -134,11 +142,11 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
       ctx.shadowBlur = 0
 
       // Fade effect behind sweep line (phosphor persistence)
-      const gradient = ctx.createLinearGradient(sweepX, 0, sweepX + 80, 0)
+      const gradient = ctx.createLinearGradient(sweepX, 0, sweepX + (width < 400 ? 40 : 80), 0)
       gradient.addColorStop(0, 'rgba(0, 0, 0, 0.7)')
       gradient.addColorStop(1, 'rgba(0, 0, 0, 0)')
       ctx.fillStyle = gradient
-      ctx.fillRect(sweepX, 0, 80, height)
+      ctx.fillRect(sweepX, 0, width < 400 ? 40 : 80, height)
 
       if (isPlaying) {
         offsetRef.current += speed * 0.5 // Slower sweep for more realistic display
@@ -155,7 +163,7 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [data, color, speed, amplitude, showGrid, isPlaying])
+  }, [data, color, speed, amplitude, showGrid, isPlaying, height])
 
   // Helper function to convert hex to RGB
   const hexToRgb = (hex: string) => {
@@ -172,18 +180,18 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
   }
 
   return (
-    <div className="bg-black rounded-xl border border-gray-700 overflow-hidden">
-      <div className="flex items-center justify-between p-3 bg-gray-900 border-b border-gray-700">
-        <div className="flex items-center space-x-3">
-          <h3 className="text-green-400 font-mono text-sm font-semibold">{title}</h3>
-          {unit && <span className="text-green-300 text-xs font-mono">{unit}</span>}
+    <div className="bg-black rounded-lg border border-gray-700 overflow-hidden">
+      <div className="flex items-center justify-between p-2 sm:p-3 bg-gray-900 border-b border-gray-700">
+        <div className="flex items-center space-x-2 min-w-0 flex-1">
+          <h3 className="text-green-400 font-mono text-xs sm:text-sm font-semibold truncate">{title}</h3>
+          {unit && <span className="text-green-300 text-xs font-mono flex-shrink-0">{unit}</span>}
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full pulse-ring" />
+        <div className="flex items-center space-x-2 flex-shrink-0">
+          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full pulse-ring" />
           <span className="text-green-400 text-xs font-mono">LIVE</span>
           <button
             onClick={togglePlayPause}
-            className="text-green-400 hover:text-green-300 transition-colors text-sm ml-2"
+            className="text-green-400 hover:text-green-300 transition-colors text-sm ml-1 sm:ml-2 p-1"
           >
             {isPlaying ? '⏸️' : '▶️'}
           </button>
@@ -192,10 +200,8 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
       
       <canvas
         ref={canvasRef}
-        width={600}
-        height={height}
-        className="w-full"
-        style={{ backgroundColor: '#000' }}
+        className="w-full block"
+        style={{ height: `${height}px`, backgroundColor: '#000' }}
       />
     </div>
   )

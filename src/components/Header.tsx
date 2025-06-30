@@ -4,7 +4,6 @@ import { useAuth } from '../contexts/AuthContext'
 import { useData } from '../contexts/DataContext'
 import { Bell, LogOut, Wifi, WifiOff, Search, X, User, MapPin, Monitor, Heart, Thermometer, Wind, Activity, Menu } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import AlertPanel from './alerts/AlertPanel'
 
 interface HeaderProps {
   onMobileMenuClick: () => void
@@ -83,46 +82,47 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
 
   return (
     <>
-      <header className="bg-white border-b border-gray-100 relative z-40">
-        <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
+      <header className="bg-white border-b border-gray-100 relative z-40 safe-area-inset-top">
+        <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
           {/* Left Section */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
             {/* Mobile Menu Button */}
             <button
               onClick={onMobileMenuClick}
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
             >
               <Menu className="h-5 w-5 text-gray-600" />
             </button>
 
-            {/* Title - Hidden on small screens */}
-            <div className="hidden sm:block">
-              <h2 className="text-xl lg:text-2xl font-bold text-gray-900">Dashboard</h2>
-              <p className="text-sm text-gray-500 hidden md:block">Real-time patient monitoring</p>
+            {/* Title - Responsive */}
+            <div className="min-w-0 flex-1">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
+                <span className="hidden sm:inline">Dashboard</span>
+                <span className="sm:hidden">WellConX</span>
+              </h2>
+              <p className="text-xs sm:text-sm text-gray-500 hidden md:block truncate">Real-time patient monitoring</p>
             </div>
             
-            {/* Connection Status */}
-            <div className="flex items-center space-x-2">
+            {/* Connection Status - Compact on mobile */}
+            <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
               {isConnected ? (
-                <div className="flex items-center text-emerald-600 bg-emerald-50 px-2 sm:px-3 py-1 rounded-full">
-                  <Wifi className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                  <span className="text-xs sm:text-sm font-medium hidden sm:inline">Connected</span>
-                  <span className="text-xs sm:text-sm font-medium sm:hidden">●</span>
+                <div className="flex items-center text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                  <Wifi className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="text-xs font-medium ml-1 hidden sm:inline">Connected</span>
                 </div>
               ) : (
-                <div className="flex items-center text-red-600 bg-red-50 px-2 sm:px-3 py-1 rounded-full">
-                  <WifiOff className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                  <span className="text-xs sm:text-sm font-medium hidden sm:inline">Disconnected</span>
-                  <span className="text-xs sm:text-sm font-medium sm:hidden">●</span>
+                <div className="flex items-center text-red-600 bg-red-50 px-2 py-1 rounded-full">
+                  <WifiOff className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="text-xs font-medium ml-1 hidden sm:inline">Offline</span>
                 </div>
               )}
             </div>
           </div>
           
           {/* Right Section */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Search Bar - Responsive */}
-            <div className="relative hidden md:block">
+          <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+            {/* Desktop Search Bar */}
+            <div className="relative hidden lg:block">
               <div className="flex items-center">
                 <div className="relative">
                   <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -132,7 +132,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="pl-9 pr-4 py-2 w-64 lg:w-80 border border-gray-200 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="pl-9 pr-4 py-2 w-64 xl:w-80 border border-gray-200 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   />
                   {searchTerm && (
                     <button
@@ -156,7 +156,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
             {/* Mobile Search Button */}
             <button 
               onClick={() => setShowSearchResults(true)}
-              className="md:hidden p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+              className="lg:hidden p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
             >
               <Search className="h-5 w-5" />
             </button>
@@ -172,25 +172,25 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                   <motion.span 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium"
+                    className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center font-medium"
                   >
-                    {unreadAlerts > 99 ? '99+' : unreadAlerts}
+                    {unreadAlerts > 9 ? '9+' : unreadAlerts}
                   </motion.span>
                 )}
               </button>
 
-              {/* Alert Dropdown - Responsive */}
+              {/* Alert Dropdown - Mobile Optimized */}
               <AnimatePresence>
                 {showAlerts && (
                   <motion.div
                     initial={{ opacity: 0, y: -10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 max-h-96 overflow-hidden"
+                    className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 max-h-80 sm:max-h-96 overflow-hidden"
                   >
-                    <div className="p-4 border-b border-gray-200">
+                    <div className="p-3 sm:p-4 border-b border-gray-200">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-gray-900">Alerts</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900">Alerts</h3>
                         <button
                           onClick={() => setShowAlerts(false)}
                           className="p-1 text-gray-400 hover:text-gray-600 rounded"
@@ -199,16 +199,16 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                         </button>
                       </div>
                       {unreadAlerts > 0 && (
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1">
                           {unreadAlerts} unread alert{unreadAlerts !== 1 ? 's' : ''}
                         </p>
                       )}
                     </div>
                     
-                    <div className="max-h-80 overflow-y-auto">
+                    <div className="max-h-64 sm:max-h-80 overflow-y-auto">
                       {alerts.length > 0 ? (
                         <div className="p-2">
-                          {alerts.slice(0, 10).map((alert) => (
+                          {alerts.slice(0, 8).map((alert) => (
                             <div
                               key={alert.id}
                               className={`p-3 rounded-lg mb-2 border ${
@@ -231,19 +231,21 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                                     }`}>
                                       {alert.type.toUpperCase()}
                                     </span>
-                                    <span className="text-xs text-gray-500">
+                                    <span className="text-xs text-gray-500 truncate">
                                       Patient {alert.patientId}
                                     </span>
                                   </div>
-                                  <p className="text-sm text-gray-900 mb-1 truncate">{alert.message}</p>
-                                  <div className="flex items-center space-x-3 text-xs text-gray-500">
+                                  <p className="text-sm text-gray-900 mb-1 line-clamp-2">{alert.message}</p>
+                                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
                                     <span>{alert.vitalType}: {alert.value}</span>
+                                    <span>•</span>
                                     <span>Threshold: {alert.threshold}</span>
+                                    <span className="hidden sm:inline">•</span>
                                     <span className="hidden sm:inline">{alert.timestamp.toLocaleTimeString()}</span>
                                   </div>
                                 </div>
                                 
-                                <div className="flex items-center space-x-1 ml-2">
+                                <div className="flex items-center space-x-1 ml-2 flex-shrink-0">
                                   {!alert.acknowledged && (
                                     <button
                                       onClick={() => handleAcknowledgeAlert(alert.id)}
@@ -265,7 +267,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                             </div>
                           ))}
                           
-                          {alerts.length > 10 && (
+                          {alerts.length > 8 && (
                             <div className="text-center p-3 border-t border-gray-200">
                               <button
                                 onClick={() => {
@@ -280,8 +282,8 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                           )}
                         </div>
                       ) : (
-                        <div className="p-8 text-center">
-                          <Bell className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                        <div className="p-6 sm:p-8 text-center">
+                          <Bell className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400 mx-auto mb-2" />
                           <p className="text-gray-600 text-sm">No alerts</p>
                         </div>
                       )}
@@ -291,18 +293,18 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
               </AnimatePresence>
             </div>
             
-            {/* User Menu */}
-            <div className="flex items-center space-x-2 sm:space-x-3 pl-2 sm:pl-4 border-l border-gray-200">
-              {/* User Info - Hidden on small screens */}
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-medium text-gray-900 truncate max-w-32">{user?.name}</p>
-                <p className="text-xs text-gray-500 capitalize truncate max-w-32">
-                  {user?.role} • {user?.department}
+            {/* User Menu - Mobile Optimized */}
+            <div className="flex items-center space-x-2 pl-2 border-l border-gray-200">
+              {/* User Info - Hidden on mobile */}
+              <div className="text-right hidden md:block">
+                <p className="text-sm font-medium text-gray-900 truncate max-w-24 lg:max-w-32">{user?.name}</p>
+                <p className="text-xs text-gray-500 capitalize truncate max-w-24 lg:max-w-32">
+                  {user?.role}
                 </p>
               </div>
 
-              {/* User Avatar - Visible on all screens */}
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center sm:hidden">
+              {/* User Avatar - Mobile friendly */}
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center md:hidden">
                 <span className="text-white font-semibold text-sm">
                   {user?.name?.charAt(0) || 'U'}
                 </span>
@@ -320,7 +322,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
         </div>
       </header>
 
-      {/* Mobile Search Modal */}
+      {/* Mobile Search Modal - Full Screen */}
       <AnimatePresence>
         {showSearchResults && (
           <>
@@ -328,7 +330,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden"
+              className="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden"
               onClick={() => setShowSearchResults(false)}
             />
             
@@ -336,7 +338,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              className="fixed top-4 left-4 right-4 bg-white rounded-2xl shadow-2xl z-50 md:hidden max-h-[80vh] overflow-hidden"
+              className="fixed top-4 left-4 right-4 bg-white rounded-2xl shadow-2xl z-50 lg:hidden max-h-[85vh] overflow-hidden safe-area-inset-top"
             >
               {/* Mobile Search Header */}
               <div className="p-4 border-b border-gray-200">
@@ -349,7 +351,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
                       autoFocus
                     />
                   </div>
@@ -363,7 +365,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
               </div>
 
               {/* Mobile Search Results */}
-              <div className="overflow-y-auto max-h-96">
+              <div className="overflow-y-auto max-h-[calc(85vh-80px)]">
                 {searchResults.length > 0 ? (
                   <div className="p-4 space-y-3">
                     {searchResults.map((patient) => (
@@ -374,23 +376,50 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                         className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors cursor-pointer"
                         onClick={() => selectPatient(patient)}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="bg-blue-100 p-2 rounded-lg">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start space-x-3 min-w-0 flex-1">
+                            <div className="bg-blue-100 p-2 rounded-lg flex-shrink-0">
                               <User className="h-5 w-5 text-blue-600" />
                             </div>
                             <div className="min-w-0 flex-1">
                               <h4 className="font-semibold text-gray-900 truncate">{patient.name}</h4>
-                              <div className="flex items-center space-x-2 text-sm text-gray-600 mt-1">
-                                <MapPin className="h-3 w-3" />
-                                <span className="truncate">{patient.room}</span>
+                              <div className="flex flex-col space-y-1 text-sm text-gray-600 mt-1">
+                                <div className="flex items-center">
+                                  <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+                                  <span className="truncate">{patient.room}</span>
+                                </div>
+                                <div className="flex items-center">
+                                  <Monitor className="h-3 w-3 mr-1 flex-shrink-0" />
+                                  <span className="truncate text-xs">{patient.deviceId || 'No device'}</span>
+                                </div>
                               </div>
+                              <p className="text-xs text-gray-500 mt-1 line-clamp-2">{patient.diagnosis}</p>
                             </div>
                           </div>
                           
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(patient.status)}`}>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ml-2 ${getStatusColor(patient.status)}`}>
                             {patient.status.toUpperCase()}
                           </span>
+                        </div>
+                        
+                        {/* Quick Vitals on Mobile */}
+                        <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-gray-200">
+                          <div className="flex items-center space-x-1">
+                            <Heart className="h-3 w-3 text-red-500" />
+                            <span className="text-xs">{patient.vitals.heartRate} bpm</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Wind className="h-3 w-3 text-blue-500" />
+                            <span className="text-xs">{patient.vitals.oxygenSaturation}%</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Thermometer className="h-3 w-3 text-orange-500" />
+                            <span className="text-xs">{patient.vitals.temperature}°F</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Activity className="h-3 w-3 text-purple-500" />
+                            <span className="text-xs">{patient.vitals.bloodPressure.systolic}/{patient.vitals.bloodPressure.diastolic}</span>
+                          </div>
                         </div>
                       </motion.div>
                     ))}
@@ -403,146 +432,6 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                   </div>
                 )}
               </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Desktop Search Results Modal */}
-      <AnimatePresence>
-        {showSearchResults && searchTerm && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 z-50 hidden md:block"
-              onClick={() => setShowSearchResults(false)}
-            />
-            
-            <motion.div
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              className="fixed top-4 left-4 right-4 bg-white rounded-2xl shadow-2xl z-50 max-w-6xl mx-auto hidden md:block"
-              style={{ 
-                maxHeight: 'calc(100vh - 2rem)',
-                top: '2rem'
-              }}
-            >
-              {/* Header */}
-              <div className="p-6 border-b border-gray-200 flex-shrink-0">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">Search Results</h3>
-                    <p className="text-sm text-gray-600">
-                      {searchResults.length > 0 
-                        ? `Found ${searchResults.length} patient${searchResults.length !== 1 ? 's' : ''} matching "${searchTerm}"`
-                        : `No patients found matching "${searchTerm}"`
-                      }
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setShowSearchResults(false)}
-                    className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Scrollable Content */}
-              <div className="overflow-y-auto" style={{ maxHeight: 'calc(100vh - 12rem)' }}>
-                {searchResults.length > 0 ? (
-                  <div className="p-6 space-y-4">
-                    {searchResults.map((patient) => (
-                      <motion.div
-                        key={patient.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors cursor-pointer"
-                        onClick={() => selectPatient(patient)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className="bg-blue-100 p-3 rounded-xl flex-shrink-0">
-                              <User className="h-6 w-6 text-blue-600" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <h4 className="font-semibold text-gray-900 truncate">{patient.name}</h4>
-                              <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
-                                <div className="flex items-center">
-                                  <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
-                                  <span className="truncate">{patient.room}</span>
-                                </div>
-                                <div className="flex items-center">
-                                  <Monitor className="h-4 w-4 mr-1 flex-shrink-0" />
-                                  <span className="truncate">{patient.deviceId || 'No device'}</span>
-                                </div>
-                                <span className="truncate">MRN: {patient.medicalRecordNumber}</span>
-                              </div>
-                              <p className="text-sm text-gray-500 mt-1 truncate">{patient.diagnosis}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center space-x-4 flex-shrink-0">
-                            {/* Quick Vitals - Hidden on smaller screens */}
-                            <div className="hidden lg:flex items-center space-x-3 text-sm">
-                              <div className="flex items-center space-x-1">
-                                <Heart className="h-4 w-4 text-red-500" />
-                                <span>{patient.vitals.heartRate}</span>
-                              </div>
-                              <div className="flex items-center space-x-1">
-                                <Wind className="h-4 w-4 text-blue-500" />
-                                <span>{patient.vitals.oxygenSaturation}%</span>
-                              </div>
-                              <div className="flex items-center space-x-1">
-                                <Thermometer className="h-4 w-4 text-orange-500" />
-                                <span>{patient.vitals.temperature}°F</span>
-                              </div>
-                              <div className="flex items-center space-x-1">
-                                <Activity className="h-4 w-4 text-purple-500" />
-                                <span>{patient.vitals.bloodPressure.systolic}/{patient.vitals.bloodPressure.diastolic}</span>
-                              </div>
-                            </div>
-                            
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(patient.status)}`}>
-                              {patient.status.toUpperCase()}
-                            </span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="p-12 text-center">
-                    <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h4 className="text-lg font-medium text-gray-900 mb-2">No patients found</h4>
-                    <p className="text-gray-600 mb-4">
-                      No patients match your search criteria "{searchTerm}"
-                    </p>
-                    <div className="text-sm text-gray-500 max-w-md mx-auto">
-                      <p>Try searching by:</p>
-                      <ul className="mt-2 space-y-1 text-left">
-                        <li>• Patient name (e.g., "John Smith")</li>
-                        <li>• Room number (e.g., "ICU-101")</li>
-                        <li>• Medical record number (e.g., "MRN-001234")</li>
-                        <li>• Device ID (e.g., "PHI-MP70-001")</li>
-                        <li>• Diagnosis keywords</li>
-                      </ul>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Footer */}
-              {searchResults.length > 0 && (
-                <div className="p-4 bg-gray-50 border-t border-gray-200 flex-shrink-0 rounded-b-2xl">
-                  <p className="text-xs text-gray-500 text-center">
-                    Click on a patient to view detailed information and real-time monitoring data
-                  </p>
-                </div>
-              )}
             </motion.div>
           </>
         )}

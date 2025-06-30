@@ -54,14 +54,80 @@ export default {
       },
       screens: {
         'xs': '475px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+        // Mobile-first breakpoints
+        'mobile': {'max': '639px'},
+        'tablet': {'min': '640px', 'max': '1023px'},
+        'desktop': {'min': '1024px'},
       },
       spacing: {
         'safe-top': 'env(safe-area-inset-top)',
         'safe-bottom': 'env(safe-area-inset-bottom)',
         'safe-left': 'env(safe-area-inset-left)',
         'safe-right': 'env(safe-area-inset-right)',
+        // Mobile-optimized spacing
+        '18': '4.5rem',
+        '22': '5.5rem',
+      },
+      fontSize: {
+        // Mobile-optimized font sizes
+        'xs': ['0.75rem', { lineHeight: '1rem' }],
+        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+        'base': ['1rem', { lineHeight: '1.5rem' }],
+        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
+        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
+        '2xl': ['1.5rem', { lineHeight: '2rem' }],
+        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
+        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
+      },
+      maxWidth: {
+        'mobile': '100vw',
+        'tablet': '768px',
+        'desktop': '1024px',
+      },
+      minHeight: {
+        'touch': '44px', // Minimum touch target size
+        'mobile-screen': '100vh',
+        'mobile-safe': 'calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))',
+      },
+      zIndex: {
+        'mobile-nav': '1000',
+        'mobile-overlay': '999',
+        'mobile-modal': '1001',
       }
     },
   },
-  plugins: [],
+  plugins: [
+    // Add custom utilities for mobile
+    function({ addUtilities }) {
+      const newUtilities = {
+        '.touch-manipulation': {
+          'touch-action': 'manipulation',
+        },
+        '.scroll-smooth': {
+          'scroll-behavior': 'smooth',
+          '-webkit-overflow-scrolling': 'touch',
+        },
+        '.no-tap-highlight': {
+          '-webkit-tap-highlight-color': 'transparent',
+        },
+        '.mobile-viewport': {
+          'width': '100vw',
+          'min-height': '100vh',
+          'min-height': '100dvh', // Dynamic viewport height
+        },
+        '.safe-area-full': {
+          'padding-top': 'env(safe-area-inset-top)',
+          'padding-bottom': 'env(safe-area-inset-bottom)',
+          'padding-left': 'env(safe-area-inset-left)',
+          'padding-right': 'env(safe-area-inset-right)',
+        }
+      }
+      addUtilities(newUtilities)
+    }
+  ],
 }

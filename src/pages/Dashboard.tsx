@@ -5,7 +5,7 @@ import { VitalMonitorGrid } from '../components/monitors/VitalMonitor'
 import RealTimeChart from '../components/charts/RealTimeChart'
 import LiveWaveform from '../components/charts/LiveWaveform'
 import AddPatientModal from '../components/modals/AddPatientModal'
-import { Users, Monitor, AlertTriangle, Activity, Clock, TrendingUp, Plus, Eye } from 'lucide-react'
+import { Users, Monitor, AlertTriangle, Activity, Clock, TrendingUp, Plus, Eye, ChevronRight, Heart, Wind, Thermometer } from 'lucide-react'
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate()
@@ -105,132 +105,144 @@ const Dashboard: React.FC = () => {
   ]
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      {/* Stats Overview - Responsive Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {statCards.map((stat) => (
-          <div key={stat.title} className={`${stat.bgColor} rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-100`}>
-            <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white shadow-sm ${stat.color}`}>
-                <stat.icon className="h-5 w-5 sm:h-6 sm:w-6" />
+    <div className="space-y-4 sm:space-y-6">
+      {/* Header - Mobile Optimized */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Patient Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-1">Real-time monitoring overview</p>
+        </div>
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Add Patient</span>
+          </button>
+          <button 
+            onClick={handleViewAllPatients}
+            className="btn-secondary flex items-center justify-center space-x-2"
+          >
+            <Activity className="h-4 w-4" />
+            <span>View All</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Stats Overview - Mobile Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {statCards.map((stat, index) => (
+          <div key={index} className={`${stat.bgColor} rounded-lg sm:rounded-xl p-4 sm:p-5 border border-gray-100`}>
+            <div className="flex items-center justify-between mb-3">
+              <div className={`p-2 sm:p-2.5 rounded-lg bg-white shadow-sm ${stat.color}`}>
+                <stat.icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
               <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             </div>
             <div>
               <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">{stat.value}</p>
-              <p className="text-xs text-gray-500">{stat.change}</p>
+              <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
+              <p className="text-xs text-gray-500 line-clamp-1">{stat.change}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Patient Monitoring */}
-      <div className="space-y-4 sm:space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+      {/* Patient Monitoring Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg sm:text-xl font-bold text-gray-900">Patient Monitoring</h2>
             <p className="text-sm text-gray-500">Real-time vital signs and status</p>
           </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-            <button 
-              onClick={() => setShowAddModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Add Patient</span>
-            </button>
-            <button 
-              onClick={handleViewAllPatients}
-              className="btn-secondary flex items-center justify-center space-x-2"
-            >
-              <Activity className="h-4 w-4" />
-              <span>View All Patients</span>
-            </button>
-          </div>
         </div>
 
         {patients.length === 0 ? (
-          <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-8 sm:p-12 text-center">
-            <Users className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No Patients Currently Monitored</h3>
-            <p className="text-gray-600 mb-6">Add your first patient to start real-time monitoring</p>
+          <div className="bg-white rounded-lg sm:rounded-xl border border-gray-100 p-6 sm:p-8 text-center">
+            <Users className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400 mx-auto mb-3 sm:mb-4" />
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No Patients Currently Monitored</h3>
+            <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Add your first patient to start real-time monitoring</p>
             <button 
               onClick={() => setShowAddModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2 mx-auto"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium transition-colors flex items-center space-x-2 mx-auto"
             >
-              <Plus className="h-5 w-5" />
+              <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
               <span>Add First Patient</span>
             </button>
           </div>
         ) : (
           patients.map((patient) => (
-            <div key={patient.id} className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-4 sm:p-6 lg:p-8 hover:shadow-lg transition-all duration-300">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 sm:mb-8 space-y-4 lg:space-y-0">
-                <div className="flex items-center space-x-3 sm:space-x-4">
-                  <div className="bg-blue-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
-                    <Activity className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+            <div key={patient.id} className="bg-white rounded-lg sm:rounded-xl border border-gray-100 p-4 sm:p-6 hover:shadow-lg transition-all duration-300">
+              {/* Patient Header - Mobile Optimized */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+                <div className="flex items-start space-x-3">
+                  <div className="bg-blue-50 p-2.5 sm:p-3 rounded-lg sm:rounded-xl flex-shrink-0">
+                    <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{patient.name}</h3>
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mt-1">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 truncate">{patient.name}</h3>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-xs sm:text-sm text-gray-500 mt-1 space-y-1 sm:space-y-0">
                       <span>{patient.age}y {patient.gender}</span>
-                      <span>•</span>
+                      <span className="hidden sm:inline">•</span>
                       <span className="truncate">{patient.room}</span>
                       <span className="hidden sm:inline">•</span>
-                      <span className="hidden sm:inline truncate">{patient.deviceId || 'No device assigned'}</span>
+                      <span className="truncate text-xs">{patient.deviceId || 'No device assigned'}</span>
                     </div>
-                    <p className="text-xs sm:text-sm text-gray-600 mt-1 truncate">{patient.diagnosis}</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{patient.diagnosis}</p>
                   </div>
                 </div>
                 
-                <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                  <div className={`px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium ${
+                <div className="flex items-center justify-between sm:flex-col sm:items-end sm:space-y-2">
+                  <div className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium ${
                     patient.status === 'critical' ? 'bg-red-100 text-red-800' :
                     patient.status === 'warning' ? 'bg-amber-100 text-amber-800' :
                     'bg-emerald-100 text-emerald-800'
                   }`}>
                     {patient.status.toUpperCase()}
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1 sm:space-x-2">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full pulse-ring" />
-                    <span className="text-xs sm:text-sm text-gray-500 font-medium">Live</span>
+                    <span className="text-xs font-medium text-gray-500">Live</span>
                   </div>
                 </div>
               </div>
               
+              {/* Vital Signs - Mobile Optimized Grid */}
               <VitalMonitorGrid vitals={patient.vitals} />
               
-              {/* Live Waveforms - Responsive */}
+              {/* Live Waveforms - Mobile Responsive */}
               {waveforms[patient.id] && (
-                <div className="mt-6 sm:mt-8">
-                  <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
-                    Live Waveforms - HR: {patient.vitals.heartRate} bpm, SpO2: {patient.vitals.oxygenSaturation}%, RR: {patient.vitals.respiratoryRate}/min
+                <div className="mt-4 sm:mt-6">
+                  <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4">
+                    Live Waveforms
                   </h4>
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
+                  
+                  {/* Mobile: Stack vertically, Desktop: Grid */}
+                  <div className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-1 lg:grid-cols-3 sm:gap-4">
                     <LiveWaveform
-                      title={`ECG Lead II (${patient.vitals.heartRate} bpm)`}
+                      title={`ECG (${patient.vitals.heartRate} bpm)`}
                       data={waveforms[patient.id].ecg}
                       color="#00ff00"
-                      height={120}
+                      height={100}
                       speed={1.5}
                       amplitude={1.2}
                       unit="mV"
                     />
                     <LiveWaveform
-                      title={`Plethysmography (${patient.vitals.oxygenSaturation}%)`}
+                      title={`SpO2 (${patient.vitals.oxygenSaturation}%)`}
                       data={waveforms[patient.id].pleth}
                       color="#00ffff"
-                      height={120}
+                      height={100}
                       speed={1.5}
                       amplitude={2.0}
                       unit="SpO2"
                     />
                     <LiveWaveform
-                      title={`Respiration (${patient.vitals.respiratoryRate}/min)`}
+                      title={`Resp (${patient.vitals.respiratoryRate}/min)`}
                       data={waveforms[patient.id].respiration}
                       color="#ffff00"
-                      height={120}
+                      height={100}
                       speed={1.0}
                       amplitude={1.5}
                       unit="Resp"
@@ -239,24 +251,26 @@ const Dashboard: React.FC = () => {
                 </div>
               )}
               
-              <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+              {/* Action Buttons - Mobile Optimized */}
+              <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                 <div className="text-xs sm:text-sm text-gray-500">
                   Last updated: {patient.lastUpdated.toLocaleTimeString()}
                 </div>
                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                   <button 
                     onClick={() => handleViewHistory(patient.id)}
-                    className="btn-secondary text-sm flex items-center justify-center space-x-1"
+                    className="btn-secondary text-sm flex items-center justify-center space-x-2 py-2.5"
                   >
                     <Clock className="h-4 w-4" />
                     <span>View History</span>
                   </button>
                   <button 
                     onClick={() => handleViewDetails(patient.id)}
-                    className="btn-primary text-sm flex items-center justify-center space-x-1"
+                    className="btn-primary text-sm flex items-center justify-center space-x-2 py-2.5"
                   >
                     <Eye className="h-4 w-4" />
                     <span>View Details</span>
+                    <ChevronRight className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -265,47 +279,55 @@ const Dashboard: React.FC = () => {
         )}
       </div>
 
-      {/* Charts Section - Responsive */}
+      {/* Charts Section - Mobile Responsive */}
       {patients.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          <RealTimeChart
-            title="Heart Rate Trend"
-            data={chartData.map(d => ({ timestamp: d.timestamp, value: d.heartRate }))}
-            color="#ef4444"
-            unit=" bpm"
-            yAxisMin={40}
-            yAxisMax={140}
-            thresholds={{
-              warning: { min: 60, max: 100 },
-              critical: { min: 50, max: 120 }
-            }}
-          />
+        <div className="space-y-4 sm:space-y-6">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">Vital Trends</h2>
           
-          <RealTimeChart
-            title="SpO2 Trend"
-            data={chartData.map(d => ({ timestamp: d.timestamp, value: d.oxygenSaturation }))}
-            color="#3b82f6"
-            unit="%"
-            yAxisMin={85}
-            yAxisMax={100}
-            thresholds={{
-              warning: { min: 95 },
-              critical: { min: 90 }
-            }}
-          />
-          
-          <RealTimeChart
-            title="Temperature Trend"
-            data={chartData.map(d => ({ timestamp: d.timestamp, value: d.temperature }))}
-            color="#f59e0b"
-            unit="°F"
-            yAxisMin={95}
-            yAxisMax={104}
-            thresholds={{
-              warning: { min: 97, max: 99.5 },
-              critical: { min: 95, max: 101 }
-            }}
-          />
+          {/* Mobile: Stack charts, Desktop: Grid */}
+          <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-1 lg:grid-cols-3 sm:gap-4 lg:gap-6">
+            <RealTimeChart
+              title="Heart Rate Trend"
+              data={chartData.map(d => ({ timestamp: d.timestamp, value: d.heartRate }))}
+              color="#ef4444"
+              unit=" bpm"
+              yAxisMin={40}
+              yAxisMax={140}
+              height={250}
+              thresholds={{
+                warning: { min: 60, max: 100 },
+                critical: { min: 50, max: 120 }
+              }}
+            />
+            
+            <RealTimeChart
+              title="SpO2 Trend"
+              data={chartData.map(d => ({ timestamp: d.timestamp, value: d.oxygenSaturation }))}
+              color="#3b82f6"
+              unit="%"
+              yAxisMin={85}
+              yAxisMax={100}
+              height={250}
+              thresholds={{
+                warning: { min: 95 },
+                critical: { min: 90 }
+              }}
+            />
+            
+            <RealTimeChart
+              title="Temperature Trend"
+              data={chartData.map(d => ({ timestamp: d.timestamp, value: d.temperature }))}
+              color="#f59e0b"
+              unit="°F"
+              yAxisMin={95}
+              yAxisMax={104}
+              height={250}
+              thresholds={{
+                warning: { min: 97, max: 99.5 },
+                critical: { min: 95, max: 101 }
+              }}
+            />
+          </div>
         </div>
       )}
 

@@ -50,35 +50,37 @@ const VitalMonitor: React.FC<VitalMonitorProps> = ({
 
   const getTrendIcon = () => {
     switch (trend) {
-      case 'up': return <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
-      case 'down': return <TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
-      default: return <Minus className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+      case 'up': return <TrendingUp className="h-3 w-3 text-red-500" />
+      case 'down': return <TrendingDown className="h-3 w-3 text-blue-500" />
+      default: return <Minus className="h-3 w-3 text-gray-400" />
     }
   }
 
   const colors = getStatusColors()
 
   return (
-    <div className={`${colors.bg} ${colors.border} border-2 rounded-lg sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:shadow-lg`}>
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <div className="flex items-center space-x-2 sm:space-x-3">
-          <div className={`p-1.5 sm:p-2 rounded-lg sm:rounded-xl ${colors.bg} ${colors.accent}`}>
+    <div className={`${colors.bg} ${colors.border} border-2 rounded-lg p-3 sm:p-4 transition-all duration-300 hover:shadow-md`}>
+      <div className="flex items-center justify-between mb-2 sm:mb-3">
+        <div className="flex items-center space-x-2 min-w-0 flex-1">
+          <div className={`p-1 sm:p-1.5 rounded-lg ${colors.bg} ${colors.accent} flex-shrink-0`}>
             {icon}
           </div>
-          <div>
-            <h3 className={`font-semibold text-xs sm:text-sm ${colors.text}`}>{title}</h3>
-            <div className="flex items-center space-x-1 sm:space-x-2 mt-1">
-              <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${colors.dot} ${status === 'critical' ? 'pulse-ring' : ''}`} />
+          <div className="min-w-0 flex-1">
+            <h3 className={`font-semibold text-xs sm:text-sm ${colors.text} truncate`}>{title}</h3>
+            <div className="flex items-center space-x-1 mt-0.5">
+              <div className={`w-1.5 h-1.5 rounded-full ${colors.dot} ${status === 'critical' ? 'pulse-ring' : ''}`} />
               <span className="text-xs text-gray-500">Live</span>
             </div>
           </div>
         </div>
-        {getTrendIcon()}
+        <div className="flex-shrink-0">
+          {getTrendIcon()}
+        </div>
       </div>
       
-      <div className="flex items-baseline space-x-1 sm:space-x-2">
-        <span className={`text-2xl sm:text-3xl font-bold ${colors.text}`}>{value}</span>
-        <span className={`text-xs sm:text-sm ${colors.accent} opacity-75`}>{unit}</span>
+      <div className="flex items-baseline space-x-1">
+        <span className={`text-xl sm:text-2xl font-bold ${colors.text} leading-none`}>{value}</span>
+        <span className={`text-xs ${colors.accent} opacity-75`}>{unit}</span>
       </div>
     </div>
   )
@@ -120,12 +122,12 @@ export const VitalMonitorGrid: React.FC<VitalMonitorGridProps> = ({ vitals }) =>
   }
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
       <VitalMonitor
         title="Heart Rate"
         value={Math.round(vitals.heartRate)}
         unit="bpm"
-        icon={<Heart className="h-4 w-4 sm:h-5 sm:w-5 heartbeat" />}
+        icon={<Heart className="h-3 w-3 sm:h-4 sm:w-4 heartbeat" />}
         status={getHeartRateStatus(vitals.heartRate)}
       />
       
@@ -133,7 +135,7 @@ export const VitalMonitorGrid: React.FC<VitalMonitorGridProps> = ({ vitals }) =>
         title="Blood Pressure"
         value={`${Math.round(vitals.bloodPressure.systolic)}/${Math.round(vitals.bloodPressure.diastolic)}`}
         unit="mmHg"
-        icon={<Activity className="h-4 w-4 sm:h-5 sm:w-5" />}
+        icon={<Activity className="h-3 w-3 sm:h-4 sm:w-4" />}
         status={getBPStatus(vitals.bloodPressure.systolic, vitals.bloodPressure.diastolic)}
       />
       
@@ -141,7 +143,7 @@ export const VitalMonitorGrid: React.FC<VitalMonitorGridProps> = ({ vitals }) =>
         title="SpO2"
         value={Math.round(vitals.oxygenSaturation)}
         unit="%"
-        icon={<Wind className="h-4 w-4 sm:h-5 sm:w-5" />}
+        icon={<Wind className="h-3 w-3 sm:h-4 sm:w-4" />}
         status={getSpO2Status(vitals.oxygenSaturation)}
       />
       
@@ -149,7 +151,7 @@ export const VitalMonitorGrid: React.FC<VitalMonitorGridProps> = ({ vitals }) =>
         title="Temperature"
         value={vitals.temperature.toFixed(1)}
         unit="°F"
-        icon={<Thermometer className="h-4 w-4 sm:h-5 sm:w-5" />}
+        icon={<Thermometer className="h-3 w-3 sm:h-4 sm:w-4" />}
         status={getTempStatus(vitals.temperature)}
       />
       
@@ -157,7 +159,7 @@ export const VitalMonitorGrid: React.FC<VitalMonitorGridProps> = ({ vitals }) =>
         title="Resp Rate"
         value={Math.round(vitals.respiratoryRate)}
         unit="/min"
-        icon={<Wind className="h-4 w-4 sm:h-5 sm:w-5" />}
+        icon={<Wind className="h-3 w-3 sm:h-4 sm:w-4" />}
         status={getRespStatus(vitals.respiratoryRate)}
       />
     </div>
