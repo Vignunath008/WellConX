@@ -27,7 +27,9 @@ import {
   Wifi,
   GitBranch,
   Layers,
-  Cpu
+  Cpu,
+  Monitor,
+  Save
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
