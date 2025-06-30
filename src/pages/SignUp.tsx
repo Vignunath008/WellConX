@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { GoogleLogin } from '@react-oauth/google'
 import { Activity, Eye, EyeOff, Upload, CheckCircle, AlertCircle } from 'lucide-react'
 
 const SignUp: React.FC = () => {
-  const { user } = useAuth()
+  const { user, loginWithGoogle } = useAuth()
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
     // Personal Information
@@ -41,6 +42,17 @@ const SignUp: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+  const [googleError, setGoogleError] = useState('')
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   if (user) {
     return <Navigate to="/" replace />
@@ -144,6 +156,21 @@ const SignUp: React.FC = () => {
     }
   }
 
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    setGoogleError('')
+    
+    if (credentialResponse.credential) {
+      const success = await loginWithGoogle(credentialResponse.credential)
+      if (!success) {
+        setGoogleError('Failed to register with Google. Please try again.')
+      }
+    }
+  }
+
+  const handleGoogleError = () => {
+    setGoogleError('Google sign-in failed. Please try again or use email registration.')
+  }
+
   const specializations = {
     doctor: [
       'Cardiology', 'Neurology', 'Oncology', 'Pediatrics', 'Surgery', 'Emergency Medicine',
@@ -196,6 +223,40 @@ const SignUp: React.FC = () => {
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Personal Information</h3>
         <p className="text-gray-600">Please provide your basic personal details</p>
+      </div>
+
+      <div className="bg-blue-50 p-4 rounded-lg mb-6">
+        <p className="text-sm text-blue-800 mb-4">
+          <strong>Quick Registration with Google</strong><br />
+          Sign up faster by using your Google account. We'll import your basic information automatically.
+        </p>
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            useOneTap
+            theme={isMobile ? "outline" : "filled_blue"}
+            shape="rectangular"
+            size={isMobile ? "medium" : "large"}
+            text="signup_with"
+            width={isMobile ? "250px" : "320px"}
+          />
+        </div>
+        
+        {googleError && (
+          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-xs text-red-600">{googleError}</p>
+          </div>
+        )}
+      </div>
+
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -560,8 +621,8 @@ const SignUp: React.FC = () => {
         </div>
 
         {/* Progress Steps */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+        <div className="mb-8 overflow-x-auto">
+          <div className="flex items-center justify-between min-w-max">
             {steps.map((stepItem, index) => (
               <div key={stepItem.number} className="flex items-center">
                 <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${

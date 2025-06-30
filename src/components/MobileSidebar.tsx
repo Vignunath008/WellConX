@@ -10,7 +10,8 @@ import {
   Settings,
   Activity,
   UserCheck,
-  X
+  X,
+  LogOut
 } from 'lucide-react'
 
 interface MobileSidebarProps {
@@ -19,7 +20,7 @@ interface MobileSidebarProps {
 }
 
 const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -32,6 +33,11 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
   // Add admin panel for admin users
   if (user?.role === 'admin') {
     navigation.splice(-1, 0, { name: 'Admin Panel', href: '/admin', icon: UserCheck })
+  }
+
+  const handleLogout = () => {
+    onClose()
+    logout()
   }
 
   return (
@@ -53,7 +59,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-y-0 left-0 w-80 bg-white shadow-xl z-50 lg:hidden"
+            className="fixed inset-y-0 left-0 w-80 bg-white shadow-xl z-50 lg:hidden safe-area-inset-left safe-area-inset-top safe-area-inset-bottom"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
@@ -102,17 +108,32 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
             <div className="absolute bottom-4 left-4 right-4">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-semibold text-sm">
-                      {user?.name?.charAt(0) || 'U'}
-                    </span>
-                  </div>
+                  {user?.picture ? (
+                    <img 
+                      src={user.picture} 
+                      alt={user.name} 
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                      <span className="text-white font-semibold text-sm">
+                        {user?.name?.charAt(0) || 'U'}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
                     <p className="text-xs text-gray-500 truncate capitalize">
                       {user?.role} • {user?.department}
                     </p>
                   </div>
+                  <button
+                    onClick={handleLogout}
+                    className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+                    title="Logout"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             </div>

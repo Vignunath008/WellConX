@@ -16,6 +16,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [showSearchResults, setShowSearchResults] = useState(false)
   const [showAlerts, setShowAlerts] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
   
   const unreadAlerts = alerts.filter(a => !a.acknowledged).length
 
@@ -78,6 +79,10 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
 
   const handleDismissAlert = (alertId: string) => {
     dismissAlert(alertId)
+  }
+
+  const toggleUserMenu = () => {
+    setShowUserMenu(!showUserMenu)
   }
 
   return (
@@ -294,29 +299,102 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
             </div>
             
             {/* User Menu - Mobile Optimized */}
-            <div className="flex items-center space-x-2 pl-2 border-l border-gray-200">
-              {/* User Info - Hidden on mobile */}
-              <div className="text-right hidden md:block">
-                <p className="text-sm font-medium text-gray-900 truncate max-w-24 lg:max-w-32">{user?.name}</p>
-                <p className="text-xs text-gray-500 capitalize truncate max-w-24 lg:max-w-32">
-                  {user?.role}
-                </p>
-              </div>
-
-              {/* User Avatar - Mobile friendly */}
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center md:hidden">
-                <span className="text-white font-semibold text-sm">
-                  {user?.name?.charAt(0) || 'U'}
-                </span>
-              </div>
-              
+            <div className="relative">
               <button
-                onClick={logout}
-                className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
-                title="Logout"
+                onClick={toggleUserMenu}
+                className="flex items-center space-x-2 pl-2 border-l border-gray-200"
               >
-                <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
+                {/* User Avatar */}
+                {user?.picture ? (
+                  <img 
+                    src={user.picture} 
+                    alt={user.name} 
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                    <span className="text-white font-semibold text-sm">
+                      {user?.name?.charAt(0) || 'U'}
+                    </span>
+                  </div>
+                )}
+                
+                {/* User Info - Hidden on mobile */}
+                <div className="text-right hidden md:block">
+                  <p className="text-sm font-medium text-gray-900 truncate max-w-24 lg:max-w-32">{user?.name}</p>
+                  <p className="text-xs text-gray-500 capitalize truncate max-w-24 lg:max-w-32">
+                    {user?.role}
+                  </p>
+                </div>
               </button>
+
+              {/* User Dropdown Menu */}
+              <AnimatePresence>
+                {showUserMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden"
+                  >
+                    <div className="p-4 border-b border-gray-100">
+                      <div className="flex items-center space-x-3">
+                        {user?.picture ? (
+                          <img 
+                            src={user.picture} 
+                            alt={user.name} 
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                            <span className="text-white font-semibold">
+                              {user?.name?.charAt(0) || 'U'}
+                            </span>
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-medium text-gray-900">{user?.name}</p>
+                          <p className="text-xs text-gray-500">{user?.email}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="py-2">
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false)
+                          navigate('/settings')
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Profile Settings
+                      </button>
+                      
+                      {user?.role === 'admin' && (
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false)
+                            navigate('/admin')
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          Admin Panel
+                        </button>
+                      )}
+                      
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false)
+                          logout()
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -442,6 +520,14 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
         <div 
           className="fixed inset-0 z-40" 
           onClick={() => setShowAlerts(false)}
+        />
+      )}
+
+      {/* Click outside to close user menu */}
+      {showUserMenu && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowUserMenu(false)}
         />
       )}
     </>

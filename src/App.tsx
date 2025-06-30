@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { DataProvider } from './contexts/DataContext'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import Patients from './pages/Patients'
@@ -17,35 +18,40 @@ import SignUp from './pages/SignUp'
 import AdminPanel from './pages/AdminPanel'
 import ProtectedRoute from './components/ProtectedRoute'
 
+// Google OAuth Client ID - in a real app, this would be in an environment variable
+const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"; // Replace with your actual Google Client ID
+
 function App() {
   return (
-    <AuthProvider>
-      <DataProvider>
-        <Router>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Dashboard />} />
-              <Route path="patients" element={<Patients />} />
-              <Route path="patients/:patientId" element={<PatientDetails />} />
-              <Route path="patients/:patientId/history" element={<PatientHistory />} />
-              <Route path="patients/:patientId/advanced" element={<AdvancedMonitoring />} />
-              <Route path="patients/:patientId/ai" element={<AIMonitoring />} />
-              <Route path="devices" element={<Devices />} />
-              <Route path="devices/setup" element={<DeviceSetup />} />
-              <Route path="analytics" element={<Analytics />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="admin" element={<AdminPanel />} />
-            </Route>
-          </Routes>
-        </Router>
-      </DataProvider>
-    </AuthProvider>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <AuthProvider>
+        <DataProvider>
+          <Router>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Dashboard />} />
+                <Route path="patients" element={<Patients />} />
+                <Route path="patients/:patientId" element={<PatientDetails />} />
+                <Route path="patients/:patientId/history" element={<PatientHistory />} />
+                <Route path="patients/:patientId/advanced" element={<AdvancedMonitoring />} />
+                <Route path="patients/:patientId/ai" element={<AIMonitoring />} />
+                <Route path="devices" element={<Devices />} />
+                <Route path="devices/setup" element={<DeviceSetup />} />
+                <Route path="analytics" element={<Analytics />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="admin" element={<AdminPanel />} />
+              </Route>
+            </Routes>
+          </Router>
+        </DataProvider>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   )
 }
 
