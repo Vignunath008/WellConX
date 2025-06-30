@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Monitor, WifiOff, Settings, AlertTriangle, CheckCircle, User, MapPin, Activity, Heart, Thermometer, Wind } from 'lucide-react'
+import { Monitor, WifiOff, Settings, AlertTriangle, CheckCircle } from 'lucide-react'
 import { Device } from '../../types/medical'
 
 interface DeviceMonitorProps {
