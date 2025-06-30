@@ -56,9 +56,9 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'critical': return 'text-red-600 bg-red-100'
-      case 'warning': return 'text-yellow-600 bg-yellow-100'
-      default: return 'text-green-600 bg-green-100'
+      case 'critical': return 'text-red-700 bg-red-50 border-red-200'
+      case 'warning': return 'text-alert-700 bg-alert-50 border-alert-200'
+      default: return 'text-health-700 bg-health-50 border-health-200'
     }
   }
 
@@ -87,36 +87,36 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
 
   return (
     <>
-      <header className="bg-white border-b border-gray-100 relative z-40 safe-area-inset-top">
+      <header className="medical-header safe-area-inset-top">
         <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
           {/* Left Section */}
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
             {/* Mobile Menu Button */}
             <button
               onClick={onMobileMenuClick}
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
+              className="lg:hidden p-2 rounded-medical hover:bg-background-hover transition-colors flex-shrink-0"
             >
-              <Menu className="h-5 w-5 text-gray-600" />
+              <Menu className="h-5 w-5 text-text-secondary" />
             </button>
 
             {/* Title - Responsive */}
             <div className="min-w-0 flex-1">
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-text-primary truncate">
                 <span className="hidden sm:inline">Dashboard</span>
                 <span className="sm:hidden">WellConX</span>
               </h2>
-              <p className="text-xs sm:text-sm text-gray-500 hidden md:block truncate">Real-time patient monitoring</p>
+              <p className="text-xs sm:text-sm text-text-secondary hidden md:block truncate">Real-time patient monitoring</p>
             </div>
             
             {/* Connection Status - Compact on mobile */}
             <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
               {isConnected ? (
-                <div className="flex items-center text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                <div className="flex items-center text-health-600 bg-health-50 px-2 py-1 rounded-full border border-health-200">
                   <Wifi className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="text-xs font-medium ml-1 hidden sm:inline">Connected</span>
                 </div>
               ) : (
-                <div className="flex items-center text-red-600 bg-red-50 px-2 py-1 rounded-full">
+                <div className="flex items-center text-red-600 bg-red-50 px-2 py-1 rounded-full border border-red-200">
                   <WifiOff className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="text-xs font-medium ml-1 hidden sm:inline">Offline</span>
                 </div>
@@ -130,19 +130,19 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
             <div className="relative hidden lg:block">
               <div className="flex items-center">
                 <div className="relative">
-                  <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-text-light" />
                   <input
                     type="text"
                     placeholder="Search patients..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="pl-9 pr-4 py-2 w-64 xl:w-80 border border-gray-200 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="pl-9 pr-4 py-2 w-64 xl:w-80 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm bg-background-card"
                   />
                   {searchTerm && (
                     <button
                       onClick={clearSearch}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-light hover:text-text-secondary"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -151,7 +151,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                 <button
                   onClick={handleSearch}
                   disabled={!searchTerm.trim()}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-3 py-2 rounded-r-xl transition-colors"
+                  className="bg-primary-600 hover:bg-primary-700 disabled:bg-border-medium disabled:cursor-not-allowed text-white px-3 py-2 rounded-r-medical transition-colors"
                 >
                   <Search className="h-4 w-4" />
                 </button>
@@ -161,7 +161,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
             {/* Mobile Search Button */}
             <button 
               onClick={() => setShowSearchResults(true)}
-              className="lg:hidden p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+              className="lg:hidden p-2 text-text-light hover:text-text-secondary transition-colors rounded-medical hover:bg-background-hover"
             >
               <Search className="h-5 w-5" />
             </button>
@@ -170,14 +170,14 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
             <div className="relative">
               <button 
                 onClick={handleAlertClick}
-                className="relative p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+                className="relative p-2 text-text-light hover:text-text-secondary transition-colors rounded-medical hover:bg-background-hover"
               >
                 <Bell className="h-5 w-5" />
                 {unreadAlerts > 0 && (
                   <motion.span 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center font-medium"
+                    className="absolute -top-1 -right-1 bg-alert-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center font-medium"
                   >
                     {unreadAlerts > 9 ? '9+' : unreadAlerts}
                   </motion.span>
@@ -191,20 +191,20 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                     initial={{ opacity: 0, y: -10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 max-h-80 sm:max-h-96 overflow-hidden"
+                    className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-background-card rounded-card shadow-medical border border-border-light z-50 max-h-80 sm:max-h-96 overflow-hidden"
                   >
-                    <div className="p-3 sm:p-4 border-b border-gray-200">
+                    <div className="p-3 sm:p-4 border-b border-border-light">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-base sm:text-lg font-semibold text-gray-900">Alerts</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-text-primary">Alerts</h3>
                         <button
                           onClick={() => setShowAlerts(false)}
-                          className="p-1 text-gray-400 hover:text-gray-600 rounded"
+                          className="p-1 text-text-light hover:text-text-secondary rounded"
                         >
                           <X className="h-4 w-4" />
                         </button>
                       </div>
                       {unreadAlerts > 0 && (
-                        <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                        <p className="text-xs sm:text-sm text-text-secondary mt-1">
                           {unreadAlerts} unread alert{unreadAlerts !== 1 ? 's' : ''}
                         </p>
                       )}
@@ -216,14 +216,14 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                           {alerts.slice(0, 8).map((alert) => (
                             <div
                               key={alert.id}
-                              className={`p-3 rounded-lg mb-2 border ${
+                              className={`p-3 rounded-medical mb-2 border ${
                                 alert.acknowledged 
-                                  ? 'bg-gray-50 border-gray-200 opacity-60' 
+                                  ? 'bg-background-hover border-border-light opacity-60' 
                                   : alert.type === 'critical' 
                                     ? 'bg-red-50 border-red-200' 
                                     : alert.type === 'warning'
-                                      ? 'bg-yellow-50 border-yellow-200'
-                                      : 'bg-blue-50 border-blue-200'
+                                      ? 'bg-alert-50 border-alert-200'
+                                      : 'bg-primary-50 border-primary-200'
                               }`}
                             >
                               <div className="flex items-start justify-between">
@@ -231,17 +231,17 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                                   <div className="flex items-center space-x-2 mb-1">
                                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                                       alert.type === 'critical' ? 'bg-red-100 text-red-800' :
-                                      alert.type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-                                      'bg-blue-100 text-blue-800'
+                                      alert.type === 'warning' ? 'bg-alert-100 text-alert-800' :
+                                      'bg-primary-100 text-primary-800'
                                     }`}>
                                       {alert.type.toUpperCase()}
                                     </span>
-                                    <span className="text-xs text-gray-500 truncate">
+                                    <span className="text-xs text-text-secondary truncate">
                                       Patient {alert.patientId}
                                     </span>
                                   </div>
-                                  <p className="text-sm text-gray-900 mb-1 line-clamp-2">{alert.message}</p>
-                                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                                  <p className="text-sm text-text-primary mb-1 line-clamp-2">{alert.message}</p>
+                                  <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
                                     <span>{alert.vitalType}: {alert.value}</span>
                                     <span>•</span>
                                     <span>Threshold: {alert.threshold}</span>
@@ -254,7 +254,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                                   {!alert.acknowledged && (
                                     <button
                                       onClick={() => handleAcknowledgeAlert(alert.id)}
-                                      className="p-1 text-green-600 hover:bg-green-100 rounded text-xs"
+                                      className="p-1 text-health-600 hover:bg-health-100 rounded text-xs"
                                       title="Acknowledge"
                                     >
                                       ✓
@@ -262,7 +262,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                                   )}
                                   <button
                                     onClick={() => handleDismissAlert(alert.id)}
-                                    className="p-1 text-gray-400 hover:bg-gray-100 rounded text-xs"
+                                    className="p-1 text-text-light hover:bg-background-hover rounded text-xs"
                                     title="Dismiss"
                                   >
                                     ×
@@ -273,13 +273,13 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                           ))}
                           
                           {alerts.length > 8 && (
-                            <div className="text-center p-3 border-t border-gray-200">
+                            <div className="text-center p-3 border-t border-border-light">
                               <button
                                 onClick={() => {
                                   setShowAlerts(false)
                                   navigate('/analytics')
                                 }}
-                                className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                                className="text-primary-600 hover:text-primary-700 text-sm font-medium"
                               >
                                 View All {alerts.length} Alerts
                               </button>
@@ -288,8 +288,8 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                         </div>
                       ) : (
                         <div className="p-6 sm:p-8 text-center">
-                          <Bell className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400 mx-auto mb-2" />
-                          <p className="text-gray-600 text-sm">No alerts</p>
+                          <Bell className="h-6 w-6 sm:h-8 sm:w-8 text-text-light mx-auto mb-2" />
+                          <p className="text-text-secondary text-sm">No alerts</p>
                         </div>
                       )}
                     </div>
@@ -302,7 +302,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
             <div className="relative">
               <button
                 onClick={toggleUserMenu}
-                className="flex items-center space-x-2 pl-2 border-l border-gray-200"
+                className="flex items-center space-x-2 pl-2 border-l border-border-light"
               >
                 {/* User Avatar */}
                 {user?.picture ? (
@@ -312,7 +312,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                     className="w-8 h-8 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
                     <span className="text-white font-semibold text-sm">
                       {user?.name?.charAt(0) || 'U'}
                     </span>
@@ -321,8 +321,8 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                 
                 {/* User Info - Hidden on mobile */}
                 <div className="text-right hidden md:block">
-                  <p className="text-sm font-medium text-gray-900 truncate max-w-24 lg:max-w-32">{user?.name}</p>
-                  <p className="text-xs text-gray-500 capitalize truncate max-w-24 lg:max-w-32">
+                  <p className="text-sm font-medium text-text-primary truncate max-w-24 lg:max-w-32">{user?.name}</p>
+                  <p className="text-xs text-text-secondary capitalize truncate max-w-24 lg:max-w-32">
                     {user?.role}
                   </p>
                 </div>
@@ -335,9 +335,9 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                     initial={{ opacity: 0, y: -10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden"
+                    className="absolute right-0 top-full mt-2 w-56 bg-background-card rounded-card shadow-medical border border-border-light z-50 overflow-hidden"
                   >
-                    <div className="p-4 border-b border-gray-100">
+                    <div className="p-4 border-b border-border-light">
                       <div className="flex items-center space-x-3">
                         {user?.picture ? (
                           <img 
@@ -346,15 +346,15 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                             className="w-10 h-10 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                          <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
                             <span className="text-white font-semibold">
                               {user?.name?.charAt(0) || 'U'}
                             </span>
                           </div>
                         )}
                         <div>
-                          <p className="font-medium text-gray-900">{user?.name}</p>
-                          <p className="text-xs text-gray-500">{user?.email}</p>
+                          <p className="font-medium text-text-primary">{user?.name}</p>
+                          <p className="text-xs text-text-secondary">{user?.email}</p>
                         </div>
                       </div>
                     </div>
@@ -365,7 +365,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                           setShowUserMenu(false)
                           navigate('/settings')
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-hover"
                       >
                         Profile Settings
                       </button>
@@ -376,7 +376,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                             setShowUserMenu(false)
                             navigate('/admin')
                           }}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-hover"
                         >
                           Admin Panel
                         </button>
@@ -416,26 +416,26 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              className="fixed top-4 left-4 right-4 bg-white rounded-2xl shadow-2xl z-50 lg:hidden max-h-[85vh] overflow-hidden safe-area-inset-top"
+              className="fixed top-4 left-4 right-4 bg-background-card rounded-card shadow-medical z-50 lg:hidden max-h-[85vh] overflow-hidden safe-area-inset-top"
             >
               {/* Mobile Search Header */}
-              <div className="p-4 border-b border-gray-200">
+              <div className="p-4 border-b border-border-light">
                 <div className="flex items-center space-x-3">
                   <div className="flex-1 relative">
-                    <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-text-light" />
                     <input
                       type="text"
                       placeholder="Search patients..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+                      className="pl-10 pr-4 py-3 w-full border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-background-card"
                       autoFocus
                     />
                   </div>
                   <button
                     onClick={() => setShowSearchResults(false)}
-                    className="p-2 text-gray-400 hover:text-gray-600"
+                    className="p-2 text-text-light hover:text-text-secondary"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -451,17 +451,17 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                         key={patient.id}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors cursor-pointer"
+                        className="bg-background-hover rounded-card p-4 hover:bg-border-light transition-colors cursor-pointer"
                         onClick={() => selectPatient(patient)}
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex items-start space-x-3 min-w-0 flex-1">
-                            <div className="bg-blue-100 p-2 rounded-lg flex-shrink-0">
-                              <User className="h-5 w-5 text-blue-600" />
+                            <div className="bg-primary-100 p-2 rounded-medical flex-shrink-0">
+                              <User className="h-5 w-5 text-primary-600" />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <h4 className="font-semibold text-gray-900 truncate">{patient.name}</h4>
-                              <div className="flex flex-col space-y-1 text-sm text-gray-600 mt-1">
+                              <h4 className="font-semibold text-text-primary truncate">{patient.name}</h4>
+                              <div className="flex flex-col space-y-1 text-sm text-text-secondary mt-1">
                                 <div className="flex items-center">
                                   <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
                                   <span className="truncate">{patient.room}</span>
@@ -471,27 +471,27 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                                   <span className="truncate text-xs">{patient.deviceId || 'No device'}</span>
                                 </div>
                               </div>
-                              <p className="text-xs text-gray-500 mt-1 line-clamp-2">{patient.diagnosis}</p>
+                              <p className="text-xs text-text-light mt-1 line-clamp-2">{patient.diagnosis}</p>
                             </div>
                           </div>
                           
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ml-2 ${getStatusColor(patient.status)}`}>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ml-2 border ${getStatusColor(patient.status)}`}>
                             {patient.status.toUpperCase()}
                           </span>
                         </div>
                         
                         {/* Quick Vitals on Mobile */}
-                        <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-gray-200">
+                        <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-border-light">
                           <div className="flex items-center space-x-1">
                             <Heart className="h-3 w-3 text-red-500" />
                             <span className="text-xs">{patient.vitals.heartRate} bpm</span>
                           </div>
                           <div className="flex items-center space-x-1">
-                            <Wind className="h-3 w-3 text-blue-500" />
+                            <Wind className="h-3 w-3 text-primary-500" />
                             <span className="text-xs">{patient.vitals.oxygenSaturation}%</span>
                           </div>
                           <div className="flex items-center space-x-1">
-                            <Thermometer className="h-3 w-3 text-orange-500" />
+                            <Thermometer className="h-3 w-3 text-alert-500" />
                             <span className="text-xs">{patient.vitals.temperature}°F</span>
                           </div>
                           <div className="flex items-center space-x-1">
@@ -504,9 +504,9 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                   </div>
                 ) : (
                   <div className="p-8 text-center">
-                    <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h4 className="text-lg font-medium text-gray-900 mb-2">No patients found</h4>
-                    <p className="text-gray-600">Try searching by name, room, or MRN</p>
+                    <Search className="h-12 w-12 text-text-light mx-auto mb-4" />
+                    <h4 className="text-lg font-medium text-text-primary mb-2">No patients found</h4>
+                    <p className="text-text-secondary">Try searching by name, room, or MRN</p>
                   </div>
                 )}
               </div>

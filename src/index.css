@@ -4,12 +4,16 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border-light;
   }
+  
   body {
-    @apply bg-gray-50 text-gray-900 font-sans;
+    @apply bg-background-primary text-text-primary font-medical;
     /* Prevent zoom on iOS when focusing inputs */
     -webkit-text-size-adjust: 100%;
+    /* Smooth font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   /* Ensure proper touch targets on mobile */
@@ -43,28 +47,32 @@
 }
 
 @layer components {
+  /* Modern Medical Card Styles */
   .card {
-    @apply bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200;
+    @apply medical-card hover:shadow-medical transition-all duration-300;
   }
   
+  /* Modern Button Styles */
   .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md text-sm sm:text-base min-h-[44px] flex items-center justify-center;
+    @apply medical-button-primary hover:shadow-lg;
   }
   
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg border border-gray-200 transition-all duration-200 hover:border-gray-300 text-sm sm:text-base min-h-[44px] flex items-center justify-center;
+    @apply medical-button-secondary hover:border-border-medium;
   }
   
+  /* Vital Sign Cards */
   .vital-card {
-    @apply bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-gray-100 hover:shadow-lg transition-all duration-300;
+    @apply bg-background-card rounded-medical p-4 border transition-all duration-300 hover:shadow-soft;
   }
   
+  /* Status Indicators */
   .status-dot {
     @apply w-3 h-3 rounded-full;
   }
   
   .status-online {
-    @apply bg-emerald-500;
+    @apply bg-health-500;
   }
   
   .status-offline {
@@ -72,11 +80,17 @@
   }
   
   .status-warning {
-    @apply bg-amber-500;
+    @apply bg-alert-500;
   }
   
+  /* Glass Card Effect */
   .glass-card {
-    @apply bg-white/80 backdrop-blur-sm border border-white/20 rounded-lg sm:rounded-xl;
+    @apply bg-background-card/90 backdrop-blur-sm border border-border-light rounded-card;
+  }
+  
+  /* Medical Form Inputs */
+  .medical-form-input {
+    @apply medical-input;
   }
   
   /* Line clamp utilities for text truncation */
@@ -104,7 +118,7 @@
   /* Touch-friendly scrollbars */
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+    scrollbar-color: rgba(96, 125, 139, 0.3) transparent;
   }
   
   .scrollbar-thin::-webkit-scrollbar {
@@ -117,12 +131,54 @@
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: rgba(156, 163, 175, 0.5);
+    background-color: rgba(96, 125, 139, 0.3);
     border-radius: 3px;
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(156, 163, 175, 0.7);
+    background-color: rgba(96, 125, 139, 0.5);
+  }
+  
+  /* Medical-specific components */
+  .medical-header {
+    @apply bg-background-card border-b border-border-light shadow-soft;
+  }
+  
+  .medical-sidebar {
+    @apply bg-background-card border-r border-border-light;
+  }
+  
+  .medical-nav-item {
+    @apply flex items-center px-4 py-3 text-sm font-medium rounded-medical transition-all duration-200;
+  }
+  
+  .medical-nav-item-active {
+    @apply bg-primary-50 text-primary-700 shadow-sm;
+  }
+  
+  .medical-nav-item-inactive {
+    @apply text-text-secondary hover:bg-background-hover hover:text-text-primary;
+  }
+  
+  /* Vital Sign Specific Styles */
+  .vital-heart-rate {
+    @apply bg-red-50 border-red-200 text-red-800;
+  }
+  
+  .vital-blood-pressure {
+    @apply bg-purple-50 border-purple-200 text-purple-800;
+  }
+  
+  .vital-oxygen {
+    @apply bg-blue-50 border-blue-200 text-blue-800;
+  }
+  
+  .vital-temperature {
+    @apply bg-orange-50 border-orange-200 text-orange-800;
+  }
+  
+  .vital-respiratory {
+    @apply bg-green-50 border-green-200 text-green-800;
   }
   
   /* Mobile-optimized form inputs */
@@ -137,6 +193,7 @@
   }
 }
 
+/* Medical-themed animations */
 .pulse-ring {
   animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
 }
@@ -163,6 +220,32 @@
   75% { transform: scale(1.05); }
 }
 
+/* Medical waveform animations */
+.waveform-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw-line 2s ease-in-out infinite;
+}
+
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Medical status indicators */
+.medical-status-stable {
+  @apply bg-health-500 text-white;
+}
+
+.medical-status-warning {
+  @apply bg-alert-500 text-white;
+}
+
+.medical-status-critical {
+  @apply bg-red-500 text-white;
+}
+
 /* Mobile swipe gestures */
 .swipe-container {
   touch-action: pan-x;
@@ -175,7 +258,6 @@
     min-width: 44px;
   }
   
-  /* Larger tap targets for mobile */
   .mobile-tap-target {
     min-height: 48px;
     min-width: 48px;
@@ -230,7 +312,7 @@
 
 /* Improved focus states for accessibility */
 .focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
 }
 
 /* Mobile-first grid layouts */
@@ -244,6 +326,19 @@
 
 .grid-mobile-3 {
   @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+}
+
+/* Medical-specific utilities */
+.medical-gradient-primary {
+  background: linear-gradient(135deg, #1E88E5 0%, #1976D2 100%);
+}
+
+.medical-gradient-health {
+  background: linear-gradient(135deg, #43A047 0%, #388E3C 100%);
+}
+
+.medical-gradient-alert {
+  background: linear-gradient(135deg, #FF7043 0%, #F57C00 100%);
 }
 
 /* Mobile-specific utilities */
@@ -320,19 +415,54 @@ body {
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .card {
-    @apply border-2 border-gray-400;
+    @apply border-2 border-border-dark;
   }
   
   .btn-primary {
-    @apply border-2 border-blue-800;
+    @apply border-2 border-primary-800;
   }
   
   .btn-secondary {
-    @apply border-2 border-gray-400;
+    @apply border-2 border-border-dark;
   }
 }
 
 /* Dark mode support (if needed) */
 @media (prefers-color-scheme: dark) {
   /* Add dark mode styles here if needed */
+}
+
+/* Medical device waveform styles */
+.medical-waveform {
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.medical-waveform-grid {
+  stroke: rgba(0, 255, 0, 0.15);
+  stroke-width: 1;
+}
+
+.medical-waveform-line {
+  stroke: #00ff00;
+  stroke-width: 2;
+  fill: none;
+}
+
+/* Professional medical typography */
+.medical-heading {
+  @apply text-text-primary font-semibold tracking-tight;
+}
+
+.medical-subheading {
+  @apply text-text-secondary font-medium;
+}
+
+.medical-body {
+  @apply text-text-primary leading-relaxed;
+}
+
+.medical-caption {
+  @apply text-text-light text-sm;
 }

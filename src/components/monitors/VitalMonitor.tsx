@@ -31,19 +31,19 @@ const VitalMonitor: React.FC<VitalMonitorProps> = ({
         }
       case 'warning': 
         return {
-          bg: 'bg-amber-50',
-          border: 'border-amber-200',
-          text: 'text-amber-700',
-          accent: 'text-amber-600',
-          dot: 'bg-amber-500'
+          bg: 'bg-alert-50',
+          border: 'border-alert-200',
+          text: 'text-alert-700',
+          accent: 'text-alert-600',
+          dot: 'bg-alert-500'
         }
       default: 
         return {
-          bg: 'bg-emerald-50',
-          border: 'border-emerald-200',
-          text: 'text-emerald-700',
-          accent: 'text-emerald-600',
-          dot: 'bg-emerald-500'
+          bg: 'bg-health-50',
+          border: 'border-health-200',
+          text: 'text-health-700',
+          accent: 'text-health-600',
+          dot: 'bg-health-500'
         }
     }
   }
@@ -51,15 +51,15 @@ const VitalMonitor: React.FC<VitalMonitorProps> = ({
   const getTrendIcon = () => {
     switch (trend) {
       case 'up': return <TrendingUp className="h-3 w-3 text-red-500" />
-      case 'down': return <TrendingDown className="h-3 w-3 text-blue-500" />
-      default: return <Minus className="h-3 w-3 text-gray-400" />
+      case 'down': return <TrendingDown className="h-3 w-3 text-primary-500" />
+      default: return <Minus className="h-3 w-3 text-text-light" />
     }
   }
 
   const colors = getStatusColors()
 
   return (
-    <div className={`${colors.bg} ${colors.border} border rounded-lg p-2.5 sm:p-3 transition-all duration-300 hover:shadow-md`}>
+    <div className={`${colors.bg} ${colors.border} border rounded-medical p-2.5 sm:p-3 transition-all duration-300 hover:shadow-soft`}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-1.5 min-w-0 flex-1">
           <div className={`p-1 rounded ${colors.bg} ${colors.accent} flex-shrink-0`}>
@@ -69,7 +69,7 @@ const VitalMonitor: React.FC<VitalMonitorProps> = ({
             <h3 className={`font-semibold text-xs ${colors.text} truncate`}>{title}</h3>
             <div className="flex items-center space-x-1 mt-0.5">
               <div className={`w-1 h-1 rounded-full ${colors.dot} ${status === 'critical' ? 'pulse-ring' : ''}`} />
-              <span className="text-xs text-gray-500">Live</span>
+              <span className="text-xs text-text-secondary font-medium">Live</span>
             </div>
           </div>
         </div>

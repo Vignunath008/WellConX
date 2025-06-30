@@ -29,14 +29,14 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-    <div className="bg-white w-72 border-r border-gray-100 flex flex-col h-full">
-      <div className="flex items-center px-8 py-6 border-b border-gray-100">
-        <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-2 rounded-xl shadow-lg">
+    <div className="medical-sidebar w-72 flex flex-col h-full">
+      <div className="flex items-center px-8 py-6 border-b border-border-light">
+        <div className="medical-gradient-primary p-2 rounded-card shadow-medical">
           <Activity className="h-6 w-6 text-white" />
         </div>
         <div className="ml-3">
-          <h1 className="text-xl font-bold text-gray-900">WellConX</h1>
-          <p className="text-sm text-gray-500">Patient Monitoring</p>
+          <h1 className="text-xl font-bold text-text-primary">WellConX</h1>
+          <p className="text-sm text-text-secondary">Patient Monitoring</p>
         </div>
       </div>
       
@@ -47,10 +47,10 @@ const Sidebar: React.FC = () => {
               key={item.name}
               to={item.href}
               className={({ isActive }) =>
-                `group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                `medical-nav-item ${
                   isActive
-                    ? 'bg-blue-50 text-blue-700 shadow-sm'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'medical-nav-item-active'
+                    : 'medical-nav-item-inactive'
                 }`
               }
             >
@@ -62,8 +62,8 @@ const Sidebar: React.FC = () => {
       </nav>
 
       {/* User Profile Section */}
-      <div className="p-4 border-t border-gray-100">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4">
+      <div className="p-4 border-t border-border-light">
+        <div className="medical-gradient-primary rounded-medical p-4">
           <div className="flex items-center space-x-3">
             {user?.picture ? (
               <img 
@@ -72,21 +72,21 @@ const Sidebar: React.FC = () => {
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
-              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
                 <span className="text-white font-semibold">
                   {user?.name?.charAt(0) || 'U'}
                 </span>
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
-              <p className="text-xs text-gray-500 truncate capitalize">
+              <p className="text-sm font-medium text-white truncate">{user?.name}</p>
+              <p className="text-xs text-blue-100 truncate capitalize">
                 {user?.role} • {user?.department}
               </p>
             </div>
             <button
               onClick={logout}
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+              className="p-2 text-blue-100 hover:text-white transition-colors rounded-medical hover:bg-white hover:bg-opacity-10"
               title="Logout"
             >
               <LogOut className="h-4 w-4" />
