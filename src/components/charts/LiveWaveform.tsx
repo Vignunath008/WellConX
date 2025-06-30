@@ -180,7 +180,7 @@ const LiveWaveform: React.FC<LiveWaveformProps> = ({
   }
 
   return (
-    <div className="bg-black rounded-lg border border-gray-700 overflow-hidden">
+    <div className="bg-black rounded-medical border border-gray-700 overflow-hidden">
       <div className="flex items-center justify-between p-2 sm:p-3 bg-gray-900 border-b border-gray-700">
         <div className="flex items-center space-x-2 min-w-0 flex-1">
           <h3 className="text-green-400 font-mono text-xs sm:text-sm font-semibold truncate">{title}</h3>

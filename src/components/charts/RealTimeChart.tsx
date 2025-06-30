@@ -155,7 +155,7 @@ const RealTimeChart: React.FC<RealTimeChartProps> = ({
           color: 'rgba(0, 0, 0, 0.05)'
         },
         ticks: {
-          color: '#6b7280',
+          color: '#607D8B',
           maxTicksLimit: window.innerWidth < 640 ? 4 : 6,
           font: {
             size: window.innerWidth < 640 ? 10 : 11
@@ -170,7 +170,7 @@ const RealTimeChart: React.FC<RealTimeChartProps> = ({
           color: 'rgba(0, 0, 0, 0.05)'
         },
         ticks: {
-          color: '#6b7280',
+          color: '#607D8B',
           font: {
             size: window.innerWidth < 640 ? 10 : 11
           },
@@ -188,18 +188,15 @@ const RealTimeChart: React.FC<RealTimeChartProps> = ({
   }, [data])
 
   return (
-    <div className="bg-white rounded-lg sm:rounded-xl border border-gray-100 p-3 sm:p-4 lg:p-6 hover:shadow-lg transition-all duration-300">
+    <div className="bg-white rounded-medical shadow-soft border border-gray-200 p-3 sm:p-4 lg:p-6 hover:shadow-medical transition-all duration-300">
       <div className="flex items-center justify-between mb-3 sm:mb-4 lg:mb-6">
         <div>
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900">{title}</h3>
-          <p className="text-xs sm:text-sm text-gray-500">Real-time monitoring</p>
+          <h3 className="text-base sm:text-lg font-semibold text-text-primary">{title}</h3>
+          <p className="text-xs sm:text-sm text-text-secondary">Real-time monitoring</p>
         </div>
         <div className="flex items-center space-x-2">
-          <div 
-            className="w-2 h-2 sm:w-3 sm:h-3 rounded-full pulse-ring"
-            style={{ backgroundColor: color }}
-          />
-          <span className="text-xs sm:text-sm text-gray-600 font-medium">Live</span>
+          <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full pulse-ring" style={{ backgroundColor: color }} />
+          <span className="text-xs sm:text-sm text-text-secondary font-medium">Live</span>
         </div>
       </div>
       
