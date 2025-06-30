@@ -17,7 +17,7 @@ interface DataContextType {
   acknowledgeAlert: (alertId: string) => void
   dismissAlert: (alertId: string) => void
   processHL7Message: (message: HL7Message) => void
-  addPatient: (patient: Omit<Patient, 'id' | 'lastUpdated'>) => void
+  addPatient: (patient: Omit<Patient, 'id' | 'lastUpdated'>) => Patient
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined)

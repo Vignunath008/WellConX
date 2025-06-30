@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useData } from '../contexts/DataContext'
-import { VitalMonitorGrid } from '../components/monitors/VitalMonitor'
 import RealTimeChart from '../components/charts/RealTimeChart'
 import LiveWaveform from '../components/charts/LiveWaveform'
 import AddPatientModal from '../components/modals/AddPatientModal'
