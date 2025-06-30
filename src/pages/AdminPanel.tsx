@@ -18,6 +18,7 @@ import {
   Edit, 
   Trash
 } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 interface StaffMember {
   id: string
@@ -131,102 +132,102 @@ const AdminPanel: React.FC = () => {
   // Render dashboard tab
   const renderDashboard = () => (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-gray-900">System Dashboard</h2>
+      <h2 className="text-xl font-bold text-text-primary">System Dashboard</h2>
       
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-primary-50 rounded-card p-6 border border-primary-200 shadow-soft">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-gray-100 p-3 rounded-lg">
-              <Users className="h-5 w-5 text-gray-700" />
+            <div className="bg-primary-100 p-3 rounded-medical">
+              <Users className="h-6 w-6 text-primary-600" />
             </div>
-            <span className="text-sm text-gray-700 font-medium">Users</span>
+            <span className="text-sm text-primary-600 font-medium">Users</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">{systemStats.activeUsers}</div>
-          <p className="text-sm text-gray-600 mt-1">Active users</p>
+          <div className="text-2xl font-bold text-primary-700">{systemStats.activeUsers}</div>
+          <p className="text-sm text-primary-600 mt-1">Active users</p>
         </div>
         
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
+        <div className="bg-health-50 rounded-card p-6 border border-health-200 shadow-soft">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-gray-100 p-3 rounded-lg">
-              <Activity className="h-5 w-5 text-gray-700" />
+            <div className="bg-health-100 p-3 rounded-medical">
+              <Activity className="h-6 w-6 text-health-600" />
             </div>
-            <span className="text-sm text-gray-700 font-medium">Devices</span>
+            <span className="text-sm text-health-600 font-medium">Devices</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">{systemStats.onlineDevices}</div>
-          <p className="text-sm text-gray-600 mt-1">Online devices</p>
+          <div className="text-2xl font-bold text-health-700">{systemStats.onlineDevices}</div>
+          <p className="text-sm text-health-600 mt-1">Online devices</p>
         </div>
         
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
+        <div className="bg-purple-50 rounded-card p-6 border border-purple-200 shadow-soft">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-gray-100 p-3 rounded-lg">
-              <BarChart3 className="h-5 w-5 text-gray-700" />
+            <div className="bg-purple-100 p-3 rounded-medical">
+              <BarChart3 className="h-6 w-6 text-purple-600" />
             </div>
-            <span className="text-sm text-gray-700 font-medium">Alerts</span>
+            <span className="text-sm text-purple-600 font-medium">Alerts</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">{systemStats.alertsToday}</div>
-          <p className="text-sm text-gray-600 mt-1">Alerts today</p>
+          <div className="text-2xl font-bold text-purple-700">{systemStats.alertsToday}</div>
+          <p className="text-sm text-purple-600 mt-1">Alerts today</p>
         </div>
         
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
+        <div className="bg-alert-50 rounded-card p-6 border border-alert-200 shadow-soft">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-gray-100 p-3 rounded-lg">
-              <Clock className="h-5 w-5 text-gray-700" />
+            <div className="bg-alert-100 p-3 rounded-medical">
+              <Clock className="h-6 w-6 text-alert-600" />
             </div>
-            <span className="text-sm text-gray-700 font-medium">Response</span>
+            <span className="text-sm text-alert-600 font-medium">Response</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">{systemStats.responseTime}</div>
-          <p className="text-sm text-gray-600 mt-1">Avg. response time</p>
+          <div className="text-2xl font-bold text-alert-700">{systemStats.responseTime}</div>
+          <p className="text-sm text-alert-600 mt-1">Avg. response time</p>
         </div>
       </div>
       
       {/* System Status */}
-      <div className="bg-white rounded-lg p-4 border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">System Status</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="bg-white rounded-card p-6 border border-border-light shadow-soft">
+        <h3 className="text-lg font-semibold text-text-primary mb-4">System Status</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-gray-600">System Uptime:</span>
-              <span className="text-gray-900 font-medium">{systemStats.uptime}</span>
+              <span className="text-text-secondary">System Uptime:</span>
+              <span className="text-health-600 font-medium">{systemStats.uptime}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-600">Storage Usage:</span>
+              <span className="text-text-secondary">Storage Usage:</span>
               <div className="flex items-center">
-                <div className="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                <div className="w-32 bg-background-hover rounded-full h-2 mr-2">
                   <div 
-                    className="bg-gray-600 h-2 rounded-full" 
+                    className="bg-primary-600 h-2 rounded-full" 
                     style={{ width: systemStats.storageUsed }}
                   ></div>
                 </div>
-                <span className="text-gray-900">{systemStats.storageUsed}</span>
+                <span className="text-text-primary">{systemStats.storageUsed}</span>
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-600">Last Backup:</span>
-              <span className="text-gray-900">{systemStats.lastBackup.toLocaleString()}</span>
+              <span className="text-text-secondary">Last Backup:</span>
+              <span className="text-text-primary">{systemStats.lastBackup.toLocaleString()}</span>
             </div>
           </div>
           
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-gray-600">HL7 Service:</span>
-              <span className="text-gray-900 font-medium">Operational</span>
+              <span className="text-text-secondary">HL7 Service:</span>
+              <span className="text-health-600 font-medium">Operational</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-600">Database:</span>
-              <span className="text-gray-900 font-medium">Connected</span>
+              <span className="text-text-secondary">Database:</span>
+              <span className="text-health-600 font-medium">Connected</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-600">Authentication:</span>
-              <span className="text-gray-900 font-medium">Secure</span>
+              <span className="text-text-secondary">Authentication:</span>
+              <span className="text-health-600 font-medium">Secure</span>
             </div>
           </div>
         </div>
       </div>
       
       {/* Recent Activity */}
-      <div className="bg-white rounded-lg p-4 border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+      <div className="bg-white rounded-card p-6 border border-border-light shadow-soft">
+        <h3 className="text-lg font-semibold text-text-primary mb-4">Recent Activity</h3>
         <div className="space-y-4">
           {[
             { action: 'User Login', user: 'Dr. Rajesh Sharma', time: '10 minutes ago' },
@@ -235,12 +236,12 @@ const AdminPanel: React.FC = () => {
             { action: 'Device Configured', user: 'Vikram Mehta', time: '1 hour ago' },
             { action: 'System Backup', user: 'System', time: '6 hours ago' }
           ].map((activity, index) => (
-            <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100">
+            <div key={index} className="flex items-center justify-between py-2 border-b border-border-light">
               <div>
-                <p className="font-medium text-gray-900">{activity.action}</p>
-                <p className="text-sm text-gray-600">{activity.user}</p>
+                <p className="font-medium text-text-primary">{activity.action}</p>
+                <p className="text-sm text-text-secondary">{activity.user}</p>
               </div>
-              <span className="text-xs text-gray-500">{activity.time}</span>
+              <span className="text-xs text-text-light">{activity.time}</span>
             </div>
           ))}
         </div>
@@ -252,89 +253,89 @@ const AdminPanel: React.FC = () => {
   const renderStaffManagement = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-900">Staff Management</h2>
+        <h2 className="text-xl font-bold text-text-primary">Staff Management</h2>
         <div className="flex items-center space-x-3">
           <div className="relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-text-light" />
             <input
               type="text"
               placeholder="Search staff..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="pl-10 pr-4 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
             />
           </div>
-          <button className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg font-medium transition-colors">
+          <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors">
             Add Staff
           </button>
         </div>
       </div>
       
       {/* Staff List */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-card border border-border-light overflow-hidden shadow-soft">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-border-light">
+            <thead className="bg-background-hover">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                   Name
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                   Role
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                   Department
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                   Status
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                   Last Login
                 </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-border-light">
               {filteredStaff.map((staff) => (
-                <tr key={staff.id} className="hover:bg-gray-50">
+                <tr key={staff.id} className="hover:bg-background-hover">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center">
-                        <span className="text-gray-700 font-medium">{staff.name.charAt(0)}</span>
+                      <div className="flex-shrink-0 h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center">
+                        <span className="text-primary-600 font-medium">{staff.name.charAt(0)}</span>
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{staff.name}</div>
-                        <div className="text-sm text-gray-500">{staff.email}</div>
+                        <div className="text-sm font-medium text-text-primary">{staff.name}</div>
+                        <div className="text-sm text-text-secondary">{staff.email}</div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900 capitalize">{staff.role}</div>
-                    <div className="text-sm text-gray-500">{staff.specialization}</div>
+                    <div className="text-sm text-text-primary capitalize">{staff.role}</div>
+                    <div className="text-sm text-text-secondary">{staff.specialization}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{staff.department}</div>
+                    <div className="text-sm text-text-primary">{staff.department}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      staff.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                      staff.status === 'active' ? 'bg-health-100 text-health-800' : 'bg-red-100 text-red-800'
                     }`}>
                       {staff.status.toUpperCase()}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                     {staff.lastLogin.toLocaleString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-gray-600 hover:text-gray-900 mr-3">
+                    <button className="text-primary-600 hover:text-primary-900 mr-3">
                       <Eye className="h-4 w-4" />
                     </button>
-                    <button className="text-gray-600 hover:text-gray-900 mr-3">
+                    <button className="text-purple-600 hover:text-purple-900 mr-3">
                       <Edit className="h-4 w-4" />
                     </button>
-                    <button className="text-gray-600 hover:text-gray-900">
+                    <button className="text-red-600 hover:text-red-900">
                       <Trash className="h-4 w-4" />
                     </button>
                   </td>
@@ -351,10 +352,10 @@ const AdminPanel: React.FC = () => {
   const renderRegistrationRequests = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-900">Registration Requests</h2>
+        <h2 className="text-xl font-bold text-text-primary">Registration Requests</h2>
         <button 
           onClick={refreshRegistrationRequests}
-          className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+          className="bg-background-hover hover:bg-border-light text-text-primary px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2"
         >
           <RefreshCw className="h-4 w-4" />
           <span>Refresh</span>
@@ -362,70 +363,70 @@ const AdminPanel: React.FC = () => {
       </div>
       
       {registrationRequests.filter(req => req.status === 'pending').length > 0 ? (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-card border border-border-light overflow-hidden shadow-soft">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-border-light">
+              <thead className="bg-background-hover">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     Name
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     Role
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     Department
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     Submitted
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     Status
                   </th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-border-light">
                 {registrationRequests.filter(req => req.status === 'pending').map((request) => (
-                  <tr key={request.id} className="hover:bg-gray-50">
+                  <tr key={request.id} className="hover:bg-background-hover">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center">
-                          <span className="text-gray-700 font-medium">{request.firstName.charAt(0)}</span>
+                        <div className="flex-shrink-0 h-10 w-10 bg-alert-100 rounded-full flex items-center justify-center">
+                          <span className="text-alert-600 font-medium">{request.firstName.charAt(0)}</span>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{request.firstName} {request.lastName}</div>
-                          <div className="text-sm text-gray-500">{request.email}</div>
+                          <div className="text-sm font-medium text-text-primary">{request.firstName} {request.lastName}</div>
+                          <div className="text-sm text-text-secondary">{request.email}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 capitalize">{request.role}</div>
-                      <div className="text-sm text-gray-500">{request.specialization}</div>
+                      <div className="text-sm text-text-primary capitalize">{request.role}</div>
+                      <div className="text-sm text-text-secondary">{request.specialization}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{request.department}</div>
+                      <div className="text-sm text-text-primary">{request.department}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                       {new Date(request.submittedAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                      <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-alert-100 text-alert-800">
                         PENDING
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button 
                         onClick={() => handleRegistrationAction(request.id, 'approve')}
-                        className="text-green-600 hover:text-green-900 mr-3"
+                        className="text-health-600 hover:text-health-900 mr-3"
                       >
                         <CheckCircle className="h-5 w-5" />
                       </button>
                       <button 
                         onClick={() => handleRegistrationAction(request.id, 'reject')}
-                        className="text-gray-600 hover:text-gray-900"
+                        className="text-red-600 hover:text-red-900"
                       >
                         <XCircle className="h-5 w-5" />
                       </button>
@@ -437,66 +438,66 @@ const AdminPanel: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-lg p-8 border border-gray-200 text-center">
-          <UserCheck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Pending Requests</h3>
-          <p className="text-gray-600">There are no registration requests waiting for approval.</p>
+        <div className="bg-white rounded-card p-8 border border-border-light text-center shadow-soft">
+          <UserCheck className="h-12 w-12 text-text-light mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-text-primary mb-2">No Pending Requests</h3>
+          <p className="text-text-secondary">There are no registration requests waiting for approval.</p>
         </div>
       )}
 
       {/* Processed Requests */}
       {registrationRequests.filter(req => req.status !== 'pending').length > 0 && (
         <div className="mt-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Processed Requests</h3>
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <h3 className="text-lg font-semibold text-text-primary mb-4">Processed Requests</h3>
+          <div className="bg-white rounded-card border border-border-light overflow-hidden shadow-soft">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-border-light">
+                <thead className="bg-background-hover">
                   <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       Name
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       Role
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       Department
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       Submitted
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       Status
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-border-light">
                   {registrationRequests.filter(req => req.status !== 'pending').map((request) => (
-                    <tr key={request.id} className="hover:bg-gray-50">
+                    <tr key={request.id} className="hover:bg-background-hover">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center">
-                            <span className="text-gray-700 font-medium">{request.firstName.charAt(0)}</span>
+                          <div className="flex-shrink-0 h-10 w-10 bg-alert-100 rounded-full flex items-center justify-center">
+                            <span className="text-alert-600 font-medium">{request.firstName.charAt(0)}</span>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{request.firstName} {request.lastName}</div>
-                            <div className="text-sm text-gray-500">{request.email}</div>
+                            <div className="text-sm font-medium text-text-primary">{request.firstName} {request.lastName}</div>
+                            <div className="text-sm text-text-secondary">{request.email}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 capitalize">{request.role}</div>
-                        <div className="text-sm text-gray-500">{request.specialization}</div>
+                        <div className="text-sm text-text-primary capitalize">{request.role}</div>
+                        <div className="text-sm text-text-secondary">{request.specialization}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{request.department}</div>
+                        <div className="text-sm text-text-primary">{request.department}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                         {new Date(request.submittedAt).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          request.status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                          request.status === 'approved' ? 'bg-health-100 text-health-800' : 'bg-red-100 text-red-800'
                         }`}>
                           {request.status.toUpperCase()}
                         </span>
@@ -515,40 +516,40 @@ const AdminPanel: React.FC = () => {
   // Render system settings tab
   const renderSystemSettings = () => (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-gray-900">System Settings</h2>
+      <h2 className="text-xl font-bold text-text-primary">System Settings</h2>
       
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Security Settings</h3>
+      <div className="bg-white rounded-card p-6 border border-border-light shadow-soft">
+        <h3 className="text-lg font-semibold text-text-primary mb-4">Security Settings</h3>
         <div className="space-y-4">
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
+          <div className="flex items-center justify-between py-2 border-b border-border-light">
             <div>
-              <p className="font-medium text-gray-900">Two-Factor Authentication</p>
-              <p className="text-sm text-gray-600">Require 2FA for all admin users</p>
+              <p className="font-medium text-text-primary">Two-Factor Authentication</p>
+              <p className="text-sm text-text-secondary">Require 2FA for all admin users</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" checked />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-600"></div>
+              <div className="w-11 h-6 bg-background-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border-light after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
             </label>
           </div>
           
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
+          <div className="flex items-center justify-between py-2 border-b border-border-light">
             <div>
-              <p className="font-medium text-gray-900">Session Timeout</p>
-              <p className="text-sm text-gray-600">Automatically log out inactive users</p>
+              <p className="font-medium text-text-primary">Session Timeout</p>
+              <p className="text-sm text-text-secondary">Automatically log out inactive users</p>
             </div>
-            <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500">
+            <select className="px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
               <option value="15">15 minutes</option>
               <option value="30" selected>30 minutes</option>
               <option value="60">60 minutes</option>
             </select>
           </div>
           
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
+          <div className="flex items-center justify-between py-2 border-b border-border-light">
             <div>
-              <p className="font-medium text-gray-900">Password Policy</p>
-              <p className="text-sm text-gray-600">Minimum requirements for passwords</p>
+              <p className="font-medium text-text-primary">Password Policy</p>
+              <p className="text-sm text-text-secondary">Minimum requirements for passwords</p>
             </div>
-            <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500">
+            <select className="px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
               <option value="standard">Standard (8+ chars)</option>
               <option value="strong" selected>Strong (12+ chars, special)</option>
               <option value="very-strong">Very Strong (16+ chars, complex)</option>
@@ -557,15 +558,15 @@ const AdminPanel: React.FC = () => {
         </div>
       </div>
       
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Management</h3>
+      <div className="bg-white rounded-card p-6 border border-border-light shadow-soft">
+        <h3 className="text-lg font-semibold text-text-primary mb-4">Data Management</h3>
         <div className="space-y-4">
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
+          <div className="flex items-center justify-between py-2 border-b border-border-light">
             <div>
-              <p className="font-medium text-gray-900">Data Retention</p>
-              <p className="text-sm text-gray-600">How long to keep patient data</p>
+              <p className="font-medium text-text-primary">Data Retention</p>
+              <p className="text-sm text-text-secondary">How long to keep patient data</p>
             </div>
-            <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500">
+            <select className="px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
               <option value="90">90 days</option>
               <option value="180">180 days</option>
               <option value="365" selected>1 year</option>
@@ -573,24 +574,24 @@ const AdminPanel: React.FC = () => {
             </select>
           </div>
           
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
+          <div className="flex items-center justify-between py-2 border-b border-border-light">
             <div>
-              <p className="font-medium text-gray-900">Automatic Backups</p>
-              <p className="text-sm text-gray-600">Schedule regular database backups</p>
+              <p className="font-medium text-text-primary">Automatic Backups</p>
+              <p className="text-sm text-text-secondary">Schedule regular database backups</p>
             </div>
-            <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500">
+            <select className="px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
               <option value="daily" selected>Daily</option>
               <option value="weekly">Weekly</option>
               <option value="monthly">Monthly</option>
             </select>
           </div>
           
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
+          <div className="flex items-center justify-between py-2 border-b border-border-light">
             <div>
-              <p className="font-medium text-gray-900">Export Format</p>
-              <p className="text-sm text-gray-600">Default format for data exports</p>
+              <p className="font-medium text-text-primary">Export Format</p>
+              <p className="text-sm text-text-secondary">Default format for data exports</p>
             </div>
-            <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500">
+            <select className="px-3 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card">
               <option value="json" selected>JSON</option>
               <option value="csv">CSV</option>
               <option value="xml">XML</option>
@@ -599,35 +600,35 @@ const AdminPanel: React.FC = () => {
         </div>
       </div>
       
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">System Maintenance</h3>
+      <div className="bg-white rounded-card p-6 border border-border-light shadow-soft">
+        <h3 className="text-lg font-semibold text-text-primary mb-4">System Maintenance</h3>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-900">Clear Cache</p>
-              <p className="text-sm text-gray-600">Remove temporary files and cached data</p>
+              <p className="font-medium text-text-primary">Clear Cache</p>
+              <p className="text-sm text-text-secondary">Remove temporary files and cached data</p>
             </div>
-            <button className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm">
+            <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical text-sm">
               Clear Now
             </button>
           </div>
           
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-900">Manual Backup</p>
-              <p className="text-sm text-gray-600">Create a full system backup</p>
+              <p className="font-medium text-text-primary">Manual Backup</p>
+              <p className="text-sm text-text-secondary">Create a full system backup</p>
             </div>
-            <button className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm">
+            <button className="bg-health-600 hover:bg-health-700 text-white px-4 py-2 rounded-medical text-sm">
               Backup Now
             </button>
           </div>
           
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-900">System Logs</p>
-              <p className="text-sm text-gray-600">Download system logs for troubleshooting</p>
+              <p className="font-medium text-text-primary">System Logs</p>
+              <p className="text-sm text-text-secondary">Download system logs for troubleshooting</p>
             </div>
-            <button className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm">
+            <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-medical text-sm">
               Download Logs
             </button>
           </div>
@@ -657,14 +658,14 @@ const AdminPanel: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="bg-gray-100 p-4 rounded-full mx-auto mb-4 w-16 h-16 flex items-center justify-center">
-            <Shield className="h-8 w-8 text-gray-700" />
+          <div className="bg-red-100 p-4 rounded-full mx-auto mb-4 w-16 h-16 flex items-center justify-center">
+            <Shield className="h-8 w-8 text-red-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
-          <p className="text-gray-600 mb-4">You don't have permission to access the admin panel.</p>
+          <h2 className="text-2xl font-bold text-text-primary mb-2">Access Denied</h2>
+          <p className="text-text-secondary mb-4">You don't have permission to access the admin panel.</p>
           <button
             onClick={() => window.history.back()}
-            className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg"
+            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical"
           >
             Go Back
           </button>
@@ -676,18 +677,18 @@ const AdminPanel: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Admin Panel</h1>
+        <h1 className="text-2xl font-bold text-text-primary">Admin Panel</h1>
         <div className="flex items-center space-x-3">
           <button
             onClick={refreshRegistrationRequests}
-            className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+            className="bg-background-hover hover:bg-border-light text-text-primary px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2"
           >
             <RefreshCw className="h-4 w-4" />
             <span>Refresh</span>
           </button>
           <button
             onClick={() => alert('System configuration exported')}
-            className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2"
           >
             <Download className="h-4 w-4" />
             <span>Export Config</span>
@@ -698,14 +699,14 @@ const AdminPanel: React.FC = () => {
       <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
         {/* Sidebar */}
         <div className="md:w-64 flex-shrink-0">
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div className="bg-white rounded-card border border-border-light overflow-hidden shadow-soft">
             <nav className="flex flex-col">
               <button
                 onClick={() => setActiveTab('dashboard')}
                 className={`flex items-center space-x-3 px-4 py-3 text-left ${
                   activeTab === 'dashboard'
-                    ? 'bg-gray-100 text-gray-900 border-l-4 border-gray-900'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-primary-50 text-primary-700 border-l-4 border-primary-700'
+                    : 'text-text-primary hover:bg-background-hover'
                 }`}
               >
                 <Server className="h-5 w-5" />
@@ -716,8 +717,8 @@ const AdminPanel: React.FC = () => {
                 onClick={() => setActiveTab('staff')}
                 className={`flex items-center space-x-3 px-4 py-3 text-left ${
                   activeTab === 'staff'
-                    ? 'bg-gray-100 text-gray-900 border-l-4 border-gray-900'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-primary-50 text-primary-700 border-l-4 border-primary-700'
+                    : 'text-text-primary hover:bg-background-hover'
                 }`}
               >
                 <Users className="h-5 w-5" />
@@ -728,14 +729,14 @@ const AdminPanel: React.FC = () => {
                 onClick={() => setActiveTab('registration')}
                 className={`flex items-center space-x-3 px-4 py-3 text-left ${
                   activeTab === 'registration'
-                    ? 'bg-gray-100 text-gray-900 border-l-4 border-gray-900'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-primary-50 text-primary-700 border-l-4 border-primary-700'
+                    : 'text-text-primary hover:bg-background-hover'
                 }`}
               >
                 <UserCheck className="h-5 w-5" />
                 <span className="font-medium">Registration Requests</span>
                 {registrationRequests.filter(r => r.status === 'pending').length > 0 && (
-                  <span className="ml-auto bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                  <span className="ml-auto bg-alert-100 text-alert-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
                     {registrationRequests.filter(r => r.status === 'pending').length}
                   </span>
                 )}
@@ -745,8 +746,8 @@ const AdminPanel: React.FC = () => {
                 onClick={() => setActiveTab('settings')}
                 className={`flex items-center space-x-3 px-4 py-3 text-left ${
                   activeTab === 'settings'
-                    ? 'bg-gray-100 text-gray-900 border-l-4 border-gray-900'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-primary-50 text-primary-700 border-l-4 border-primary-700'
+                    : 'text-text-primary hover:bg-background-hover'
                 }`}
               >
                 <Settings className="h-5 w-5" />
@@ -756,31 +757,36 @@ const AdminPanel: React.FC = () => {
           </div>
           
           {/* Admin Info Card */}
-          <div className="bg-gray-900 rounded-lg p-6 mt-6 text-white">
+          <motion.div 
+            className="medical-gradient-primary rounded-card p-6 mt-6 text-white shadow-medical"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
             <div className="flex items-center space-x-4 mb-4">
-              <div className="bg-gray-700 p-3 rounded-lg">
+              <div className="bg-white/20 p-3 rounded-medical backdrop-blur-sm">
                 <Shield className="h-6 w-6" />
               </div>
               <div>
                 <h3 className="font-bold text-lg">Admin Access</h3>
-                <p className="text-gray-300 text-sm">Full system privileges</p>
+                <p className="text-blue-100 text-sm">Full system privileges</p>
               </div>
             </div>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-300">User:</span>
+                <span className="text-blue-100">User:</span>
                 <span className="font-medium">{user?.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-300">Role:</span>
+                <span className="text-blue-100">Role:</span>
                 <span className="font-medium capitalize">{user?.role}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-300">Department:</span>
+                <span className="text-blue-100">Department:</span>
                 <span className="font-medium">{user?.department}</span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
         
         {/* Main Content */}
