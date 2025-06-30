@@ -60,14 +60,14 @@ const Sidebar: React.FC = () => {
         </div>
       </nav>
       
-      {/* Compact System Status */}
+      {/* Transparent System Status */}
       <div className="absolute bottom-4 left-4 right-4">
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-3 border border-green-100">
+        <div className="bg-green-50/30 backdrop-blur-sm rounded-lg p-3 border border-green-100/50">
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-green-500 rounded-full pulse-ring" />
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-gray-900 truncate">System Online</p>
-              <p className="text-xs text-gray-500 truncate">All systems operational</p>
+              <p className="text-xs font-medium text-gray-900/80 truncate">System Online</p>
+              <p className="text-xs text-gray-500/70 truncate">All systems operational</p>
             </div>
           </div>
         </div>
