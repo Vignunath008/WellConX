@@ -73,32 +73,24 @@ const Dashboard: React.FC = () => {
       title: 'Active Patients',
       value: activePatients,
       icon: Users,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
       change: '+2 from yesterday'
     },
     {
       title: 'Online Devices',
       value: `${onlineDevices}/${devices.length}`,
       icon: Monitor,
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-50',
       change: 'All systems operational'
     },
     {
       title: 'Critical Alerts',
       value: criticalAlerts,
       icon: AlertTriangle,
-      color: 'text-red-600',
-      bgColor: 'bg-red-50',
       change: criticalAlerts > 0 ? 'Requires attention' : 'All clear'
     },
     {
       title: 'Avg Response Time',
       value: '2.3min',
       icon: Clock,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
       change: '15% faster than last week'
     }
   ]
@@ -114,14 +106,14 @@ const Dashboard: React.FC = () => {
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
           <button 
             onClick={() => setShowAddModal(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+            className="bg-gray-900 hover:bg-black text-white px-4 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
           >
             <Plus className="h-4 w-4" />
             <span>Add Patient</span>
           </button>
           <button 
             onClick={handleViewAllPatients}
-            className="btn-secondary flex items-center justify-center space-x-2"
+            className="bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 px-4 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
           >
             <Activity className="h-4 w-4" />
             <span>View All</span>
@@ -132,10 +124,10 @@ const Dashboard: React.FC = () => {
       {/* Stats Overview - Mobile Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {statCards.map((stat, index) => (
-          <div key={index} className={`${stat.bgColor} rounded-lg sm:rounded-xl p-4 sm:p-5 border border-gray-100`}>
+          <div key={index} className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-5 border border-gray-200">
             <div className="flex items-center justify-between mb-3">
-              <div className={`p-2 sm:p-2.5 rounded-lg bg-white shadow-sm ${stat.color}`}>
-                <stat.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+              <div className="p-2 sm:p-2.5 rounded-lg bg-gray-100 shadow-sm">
+                <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-700" />
               </div>
               <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             </div>
@@ -158,13 +150,13 @@ const Dashboard: React.FC = () => {
         </div>
 
         {patients.length === 0 ? (
-          <div className="bg-white rounded-lg sm:rounded-xl border border-gray-100 p-6 sm:p-8 text-center">
+          <div className="bg-white rounded-lg sm:rounded-xl border border-gray-200 p-6 sm:p-8 text-center">
             <Users className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400 mx-auto mb-3 sm:mb-4" />
             <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No Patients Currently Monitored</h3>
             <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Add your first patient to start real-time monitoring</p>
             <button 
               onClick={() => setShowAddModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium transition-colors flex items-center space-x-2 mx-auto"
+              className="bg-gray-900 hover:bg-black text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium transition-colors flex items-center space-x-2 mx-auto"
             >
               <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
               <span>Add First Patient</span>
@@ -173,14 +165,14 @@ const Dashboard: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {patients.map((patient) => (
-              <div key={patient.id} className="bg-white rounded-lg border border-gray-100 p-4 hover:shadow-lg transition-all duration-300 w-full overflow-hidden">
+              <div key={patient.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-lg transition-all duration-300 w-full overflow-hidden">
                 {/* Patient Header - Mobile Optimized */}
                 <div className="space-y-3 mb-4">
                   {/* Top Row - Name and Status */}
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3 min-w-0 flex-1">
-                      <div className="bg-blue-50 p-2 rounded-lg flex-shrink-0">
-                        <Activity className="h-5 w-5 text-blue-600" />
+                      <div className="bg-gray-100 p-2 rounded-lg flex-shrink-0">
+                        <Activity className="h-5 w-5 text-gray-700" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <h3 className="text-lg font-bold text-gray-900 truncate">{patient.name}</h3>
@@ -195,9 +187,9 @@ const Dashboard: React.FC = () => {
                     </div>
                     
                     <div className={`px-2.5 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
-                      patient.status === 'critical' ? 'bg-red-100 text-red-800' :
-                      patient.status === 'warning' ? 'bg-amber-100 text-amber-800' :
-                      'bg-emerald-100 text-emerald-800'
+                      patient.status === 'critical' ? 'bg-gray-100 text-gray-800 border border-gray-300' :
+                      patient.status === 'warning' ? 'bg-gray-100 text-gray-800 border border-gray-300' :
+                      'bg-gray-100 text-gray-800 border border-gray-300'
                     }`}>
                       {patient.status.toUpperCase()}
                     </div>
@@ -220,17 +212,17 @@ const Dashboard: React.FC = () => {
                   </div>
 
                   {/* Diagnosis */}
-                  <div className="bg-blue-50 rounded-lg p-3">
+                  <div className="bg-gray-50 rounded-lg p-3">
                     <div className="text-sm">
-                      <span className="font-medium text-blue-800">Diagnosis: </span>
-                      <span className="text-blue-700">{patient.diagnosis}</span>
+                      <span className="font-medium text-gray-800">Diagnosis: </span>
+                      <span className="text-gray-700">{patient.diagnosis}</span>
                     </div>
                   </div>
 
                   {/* Live Status Indicator */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full pulse-ring" />
+                      <div className="w-2 h-2 bg-gray-500 rounded-full pulse-ring" />
                       <span className="text-xs font-medium text-gray-500">Live Monitoring Active</span>
                     </div>
                     <div className="text-xs text-gray-500">
@@ -246,52 +238,52 @@ const Dashboard: React.FC = () => {
                   {/* Mobile-First Vital Signs Grid */}
                   <div className="grid grid-cols-2 gap-2">
                     {/* Heart Rate */}
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                       <div className="flex items-center space-x-2 mb-2">
-                        <Heart className="h-4 w-4 text-red-600 heartbeat" />
-                        <span className="text-xs font-medium text-red-700">Heart Rate</span>
+                        <Heart className="h-4 w-4 text-gray-700 heartbeat" />
+                        <span className="text-xs font-medium text-gray-700">Heart Rate</span>
                       </div>
                       <div className="flex items-baseline space-x-1">
-                        <span className="text-xl font-bold text-red-700">{Math.round(patient.vitals.heartRate)}</span>
-                        <span className="text-xs text-red-600">bpm</span>
+                        <span className="text-xl font-bold text-gray-900">{Math.round(patient.vitals.heartRate)}</span>
+                        <span className="text-xs text-gray-600">bpm</span>
                       </div>
                     </div>
 
                     {/* Blood Pressure */}
-                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                       <div className="flex items-center space-x-2 mb-2">
-                        <Activity className="h-4 w-4 text-purple-600" />
-                        <span className="text-xs font-medium text-purple-700">Blood Pressure</span>
+                        <Activity className="h-4 w-4 text-gray-700" />
+                        <span className="text-xs font-medium text-gray-700">Blood Pressure</span>
                       </div>
                       <div className="flex items-baseline space-x-1">
-                        <span className="text-lg font-bold text-purple-700">
+                        <span className="text-lg font-bold text-gray-900">
                           {Math.round(patient.vitals.bloodPressure.systolic)}/{Math.round(patient.vitals.bloodPressure.diastolic)}
                         </span>
-                        <span className="text-xs text-purple-600">mmHg</span>
+                        <span className="text-xs text-gray-600">mmHg</span>
                       </div>
                     </div>
 
                     {/* SpO2 */}
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                       <div className="flex items-center space-x-2 mb-2">
-                        <Wind className="h-4 w-4 text-blue-600" />
-                        <span className="text-xs font-medium text-blue-700">SpO2</span>
+                        <Wind className="h-4 w-4 text-gray-700" />
+                        <span className="text-xs font-medium text-gray-700">SpO2</span>
                       </div>
                       <div className="flex items-baseline space-x-1">
-                        <span className="text-xl font-bold text-blue-700">{Math.round(patient.vitals.oxygenSaturation)}</span>
-                        <span className="text-xs text-blue-600">%</span>
+                        <span className="text-xl font-bold text-gray-900">{Math.round(patient.vitals.oxygenSaturation)}</span>
+                        <span className="text-xs text-gray-600">%</span>
                       </div>
                     </div>
 
                     {/* Temperature */}
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                       <div className="flex items-center space-x-2 mb-2">
-                        <Thermometer className="h-4 w-4 text-orange-600" />
-                        <span className="text-xs font-medium text-orange-700">Temperature</span>
+                        <Thermometer className="h-4 w-4 text-gray-700" />
+                        <span className="text-xs font-medium text-gray-700">Temperature</span>
                       </div>
                       <div className="flex items-baseline space-x-1">
-                        <span className="text-xl font-bold text-orange-700">{patient.vitals.temperature.toFixed(1)}</span>
-                        <span className="text-xs text-orange-600">°F</span>
+                        <span className="text-xl font-bold text-gray-900">{patient.vitals.temperature.toFixed(1)}</span>
+                        <span className="text-xs text-gray-600">°F</span>
                       </div>
                     </div>
                   </div>
@@ -309,7 +301,7 @@ const Dashboard: React.FC = () => {
                       <LiveWaveform
                         title={`ECG (${patient.vitals.heartRate} bpm)`}
                         data={waveforms[patient.id].ecg}
-                        color="#00ff00"
+                        color="#000000"
                         height={80}
                         speed={1.5}
                         amplitude={1.2}
@@ -318,7 +310,7 @@ const Dashboard: React.FC = () => {
                       <LiveWaveform
                         title={`SpO2 (${patient.vitals.oxygenSaturation}%)`}
                         data={waveforms[patient.id].pleth}
-                        color="#00ffff"
+                        color="#000000"
                         height={80}
                         speed={1.5}
                         amplitude={2.0}
@@ -327,7 +319,7 @@ const Dashboard: React.FC = () => {
                       <LiveWaveform
                         title={`Resp (${patient.vitals.respiratoryRate}/min)`}
                         data={waveforms[patient.id].respiration}
-                        color="#ffff00"
+                        color="#000000"
                         height={80}
                         speed={1.0}
                         amplitude={1.5}
@@ -341,14 +333,14 @@ const Dashboard: React.FC = () => {
                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 pt-3 border-t border-gray-200">
                   <button 
                     onClick={() => handleViewHistory(patient.id)}
-                    className="btn-secondary text-sm flex items-center justify-center space-x-2 py-2.5 flex-1"
+                    className="bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 px-4 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 text-sm flex-1"
                   >
                     <Clock className="h-4 w-4" />
                     <span>View History</span>
                   </button>
                   <button 
                     onClick={() => handleViewDetails(patient.id)}
-                    className="btn-primary text-sm flex items-center justify-center space-x-2 py-2.5 flex-1"
+                    className="bg-gray-900 hover:bg-black text-white px-4 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 text-sm flex-1"
                   >
                     <Eye className="h-4 w-4" />
                     <span>View Details</span>
@@ -371,7 +363,7 @@ const Dashboard: React.FC = () => {
             <RealTimeChart
               title="Heart Rate Trend"
               data={chartData.map(d => ({ timestamp: d.timestamp, value: d.heartRate }))}
-              color="#ef4444"
+              color="#000000"
               unit=" bpm"
               yAxisMin={40}
               yAxisMax={140}
@@ -385,7 +377,7 @@ const Dashboard: React.FC = () => {
             <RealTimeChart
               title="SpO2 Trend"
               data={chartData.map(d => ({ timestamp: d.timestamp, value: d.oxygenSaturation }))}
-              color="#3b82f6"
+              color="#000000"
               unit="%"
               yAxisMin={85}
               yAxisMax={100}
@@ -399,7 +391,7 @@ const Dashboard: React.FC = () => {
             <RealTimeChart
               title="Temperature Trend"
               data={chartData.map(d => ({ timestamp: d.timestamp, value: d.temperature }))}
-              color="#f59e0b"
+              color="#000000"
               unit="°F"
               yAxisMin={95}
               yAxisMax={104}
