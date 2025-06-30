@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { 
   Users, 
@@ -31,21 +31,11 @@ interface StaffMember {
   lastLogin: Date
 }
 
-interface RegistrationRequest {
-  id: string
-  name: string
-  email: string
-  role: 'doctor' | 'nurse'
-  department: string
-  specialization: string
-  submittedAt: Date
-  status: 'pending' | 'approved' | 'rejected'
-}
-
 const AdminPanel: React.FC = () => {
-  const { user } = useAuth()
+  const { user, getRegistrationRequests, approveRegistration, rejectRegistration } = useAuth()
   const [activeTab, setActiveTab] = useState('dashboard')
   const [searchTerm, setSearchTerm] = useState('')
+  const [registrationRequests, setRegistrationRequests] = useState<any[]>([])
   
   // For staff management
   const [staffMembers] = useState<StaffMember[]>([
@@ -80,30 +70,15 @@ const AdminPanel: React.FC = () => {
       lastLogin: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) // 5 days ago
     }
   ])
-  
-  // For registration requests
-  const [registrationRequests, setRegistrationRequests] = useState<RegistrationRequest[]>([
-    {
-      id: 'req-001',
-      name: 'Dr. Michael Brown',
-      email: 'michael.brown@hospital.com',
-      role: 'doctor',
-      department: 'Emergency',
-      specialization: 'Emergency Medicine',
-      submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
-      status: 'pending'
-    },
-    {
-      id: 'req-002',
-      name: 'Nurse Jessica Lee',
-      email: 'jessica.lee@hospital.com',
-      role: 'nurse',
-      department: 'Pediatrics',
-      specialization: 'Pediatric Care',
-      submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1), // 1 day ago
-      status: 'pending'
-    }
-  ])
+
+  // Load registration requests
+  useEffect(() => {
+    const requests = getRegistrationRequests()
+    setRegistrationRequests(requests.map(req => ({
+      ...req,
+      submittedAt: new Date(req.submittedAt)
+    })))
+  }, [getRegistrationRequests])
 
   // System stats for dashboard
   const systemStats = {
@@ -127,6 +102,15 @@ const AdminPanel: React.FC = () => {
 
   // Handle registration approval/rejection
   const handleRegistrationAction = (requestId: string, action: 'approve' | 'reject') => {
+    if (action === 'approve') {
+      approveRegistration(requestId)
+      alert('Registration approved. The user can now log in.')
+    } else {
+      rejectRegistration(requestId)
+      alert('Registration rejected.')
+    }
+    
+    // Update the local state
     setRegistrationRequests(prev => 
       prev.map(req => 
         req.id === requestId 
@@ -134,26 +118,15 @@ const AdminPanel: React.FC = () => {
           : req
       )
     )
+  }
 
-    if (action === 'approve') {
-      // In a real app, this would create a new user account
-      const request = registrationRequests.find(req => req.id === requestId)
-      if (request) {
-        const approvedUsers = JSON.parse(localStorage.getItem('wellconx_approved_users') || '[]')
-        approvedUsers.push({
-          id: `user-${Date.now()}`,
-          name: request.name,
-          email: request.email,
-          role: request.role,
-          department: request.department
-        })
-        localStorage.setItem('wellconx_approved_users', JSON.stringify(approvedUsers))
-        
-        alert(`Registration approved for ${request.name}. A new account has been created.`)
-      }
-    } else {
-      alert('Registration request rejected.')
-    }
+  // Refresh registration requests
+  const refreshRegistrationRequests = () => {
+    const requests = getRegistrationRequests()
+    setRegistrationRequests(requests.map(req => ({
+      ...req,
+      submittedAt: new Date(req.submittedAt)
+    })))
   }
 
   // Render dashboard tab
@@ -381,7 +354,7 @@ const AdminPanel: React.FC = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-900">Registration Requests</h2>
         <button 
-          onClick={() => setRegistrationRequests([])}
+          onClick={refreshRegistrationRequests}
           className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
         >
           <RefreshCw className="h-4 w-4" />
@@ -389,7 +362,7 @@ const AdminPanel: React.FC = () => {
         </button>
       </div>
       
-      {registrationRequests.length > 0 ? (
+      {registrationRequests.filter(req => req.status === 'pending').length > 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
@@ -416,15 +389,15 @@ const AdminPanel: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {registrationRequests.map((request) => (
+                {registrationRequests.filter(req => req.status === 'pending').map((request) => (
                   <tr key={request.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center">
-                          <span className="text-purple-600 font-medium">{request.name.charAt(0)}</span>
+                          <span className="text-purple-600 font-medium">{request.firstName.charAt(0)}</span>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{request.name}</div>
+                          <div className="text-sm font-medium text-gray-900">{request.firstName} {request.lastName}</div>
                           <div className="text-sm text-gray-500">{request.email}</div>
                         </div>
                       </div>
@@ -437,34 +410,26 @@ const AdminPanel: React.FC = () => {
                       <div className="text-sm text-gray-900">{request.department}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {request.submittedAt.toLocaleDateString()}
+                      {new Date(request.submittedAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                        request.status === 'approved' ? 'bg-green-100 text-green-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {request.status.toUpperCase()}
+                      <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                        PENDING
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      {request.status === 'pending' && (
-                        <>
-                          <button 
-                            onClick={() => handleRegistrationAction(request.id, 'approve')}
-                            className="text-green-600 hover:text-green-900 mr-3"
-                          >
-                            <CheckCircle className="h-5 w-5" />
-                          </button>
-                          <button 
-                            onClick={() => handleRegistrationAction(request.id, 'reject')}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            <XCircle className="h-5 w-5" />
-                          </button>
-                        </>
-                      )}
+                      <button 
+                        onClick={() => handleRegistrationAction(request.id, 'approve')}
+                        className="text-green-600 hover:text-green-900 mr-3"
+                      >
+                        <CheckCircle className="h-5 w-5" />
+                      </button>
+                      <button 
+                        onClick={() => handleRegistrationAction(request.id, 'reject')}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        <XCircle className="h-5 w-5" />
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -477,6 +442,72 @@ const AdminPanel: React.FC = () => {
           <UserCheck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No Pending Requests</h3>
           <p className="text-gray-600">There are no registration requests waiting for approval.</p>
+        </div>
+      )}
+
+      {/* Processed Requests */}
+      {registrationRequests.filter(req => req.status !== 'pending').length > 0 && (
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Processed Requests</h3>
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Department
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Submitted
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {registrationRequests.filter(req => req.status !== 'pending').map((request) => (
+                    <tr key={request.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <span className="text-purple-600 font-medium">{request.firstName.charAt(0)}</span>
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">{request.firstName} {request.lastName}</div>
+                            <div className="text-sm text-gray-500">{request.email}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900 capitalize">{request.role}</div>
+                        <div className="text-sm text-gray-500">{request.specialization}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{request.department}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(request.submittedAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          request.status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}>
+                          {request.status.toUpperCase()}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -649,7 +680,7 @@ const AdminPanel: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-900">Admin Panel</h1>
         <div className="flex items-center space-x-3">
           <button
-            onClick={() => alert('System status refreshed')}
+            onClick={refreshRegistrationRequests}
             className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
           >
             <RefreshCw className="h-4 w-4" />

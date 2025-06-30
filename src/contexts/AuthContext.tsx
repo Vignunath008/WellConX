@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { jwtDecode } from 'jwt-decode'
 
 interface User {
   id: string
@@ -10,29 +9,33 @@ interface User {
   picture?: string
 }
 
-interface GoogleUser {
-  iss: string
-  nbf: number
-  aud: string
-  sub: string
+interface RegistrationRequest {
+  id: string
+  firstName: string
+  lastName: string
   email: string
-  email_verified: boolean
-  azp: string
-  name: string
-  picture: string
-  given_name: string
-  family_name: string
-  iat: number
-  exp: number
-  jti: string
+  phone: string
+  dateOfBirth: string
+  gender: 'male' | 'female'
+  role: 'doctor' | 'nurse'
+  licenseNumber: string
+  specialization: string
+  department: string
+  yearsOfExperience: string
+  currentEmployer: string
+  submittedAt: string
+  status: 'pending' | 'approved' | 'rejected'
 }
 
 interface AuthContextType {
   user: User | null
   login: (email: string, password: string) => Promise<boolean>
-  loginWithGoogle: (credential: string) => Promise<boolean>
   logout: () => void
   isLoading: boolean
+  registerUser: (userData: Omit<RegistrationRequest, 'id' | 'submittedAt' | 'status'>) => Promise<boolean>
+  getRegistrationRequests: () => RegistrationRequest[]
+  approveRegistration: (requestId: string) => void
+  rejectRegistration: (requestId: string) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -106,88 +109,90 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false
   }
 
-  const loginWithGoogle = async (credential: string): Promise<boolean> => {
-    setIsLoading(true)
-    
-    try {
-      // Decode the JWT token from Google
-      const decodedUser = jwtDecode<GoogleUser>(credential)
-      
-      // Check if this Google user is in our approved users
-      const approvedUsers = JSON.parse(localStorage.getItem('wellconx_approved_users') || '[]')
-      let foundUser = approvedUsers.find((u: User) => u.email === decodedUser.email)
-      
-      // For demo purposes, auto-approve Google users with specific domains
-      // In a real app, you would check against your database
-      if (!foundUser) {
-        // Check if it's one of our demo users
-        const demoUsers: User[] = [
-          {
-            id: '1',
-            name: 'Dr. Sarah Johnson',
-            email: 'doctor@wellconx.com',
-            role: 'doctor',
-            department: 'Cardiology'
-          },
-          {
-            id: '2',
-            name: 'Nurse Mary Wilson',
-            email: 'nurse@wellconx.com',
-            role: 'nurse',
-            department: 'ICU'
-          },
-          {
-            id: '3',
-            name: 'Admin User',
-            email: 'admin@wellconx.com',
-            role: 'admin',
-            department: 'IT'
-          }
-        ]
-        
-        foundUser = demoUsers.find(u => u.email === decodedUser.email)
-        
-        // If not a demo user, create a new user with default role
-        if (!foundUser) {
-          // Auto-approve for demo purposes
-          // In a real app, you might want to put this in a pending state
-          foundUser = {
-            id: `google-${Date.now()}`,
-            name: decodedUser.name,
-            email: decodedUser.email,
-            role: 'doctor', // Default role
-            department: 'General', // Default department
-            picture: decodedUser.picture
-          }
-          
-          // Save to approved users
-          approvedUsers.push(foundUser)
-          localStorage.setItem('wellconx_approved_users', JSON.stringify(approvedUsers))
-        } else {
-          // Add picture from Google if not present
-          foundUser.picture = decodedUser.picture
-        }
-      }
-      
-      // Set the user in state and localStorage
-      setUser(foundUser)
-      localStorage.setItem('wellconx_user', JSON.stringify(foundUser))
-      setIsLoading(false)
-      return true
-    } catch (error) {
-      console.error('Google login error:', error)
-      setIsLoading(false)
-      return false
-    }
-  }
-
   const logout = () => {
     setUser(null)
     localStorage.removeItem('wellconx_user')
   }
 
+  const registerUser = async (userData: Omit<RegistrationRequest, 'id' | 'submittedAt' | 'status'>): Promise<boolean> => {
+    setIsLoading(true)
+    
+    try {
+      // Create registration request
+      const registrationRequest: RegistrationRequest = {
+        ...userData,
+        id: `req-${Date.now()}`,
+        submittedAt: new Date().toISOString(),
+        status: 'pending'
+      }
+      
+      // Store in localStorage
+      const existingRequests = JSON.parse(localStorage.getItem('wellconx_registration_requests') || '[]')
+      existingRequests.push(registrationRequest)
+      localStorage.setItem('wellconx_registration_requests', JSON.stringify(existingRequests))
+      
+      setIsLoading(false)
+      return true
+    } catch (error) {
+      console.error('Registration error:', error)
+      setIsLoading(false)
+      return false
+    }
+  }
+
+  const getRegistrationRequests = (): RegistrationRequest[] => {
+    return JSON.parse(localStorage.getItem('wellconx_registration_requests') || '[]')
+  }
+
+  const approveRegistration = (requestId: string) => {
+    const requests = JSON.parse(localStorage.getItem('wellconx_registration_requests') || '[]')
+    const requestIndex = requests.findIndex((req: RegistrationRequest) => req.id === requestId)
+    
+    if (requestIndex !== -1) {
+      const request = requests[requestIndex]
+      request.status = 'approved'
+      
+      // Update the request
+      requests[requestIndex] = request
+      localStorage.setItem('wellconx_registration_requests', JSON.stringify(requests))
+      
+      // Create a new user from the approved request
+      const newUser: User = {
+        id: `user-${Date.now()}`,
+        name: `${request.firstName} ${request.lastName}`,
+        email: request.email,
+        role: request.role,
+        department: request.department
+      }
+      
+      // Add to approved users
+      const approvedUsers = JSON.parse(localStorage.getItem('wellconx_approved_users') || '[]')
+      approvedUsers.push(newUser)
+      localStorage.setItem('wellconx_approved_users', JSON.stringify(approvedUsers))
+    }
+  }
+
+  const rejectRegistration = (requestId: string) => {
+    const requests = JSON.parse(localStorage.getItem('wellconx_registration_requests') || '[]')
+    const requestIndex = requests.findIndex((req: RegistrationRequest) => req.id === requestId)
+    
+    if (requestIndex !== -1) {
+      requests[requestIndex].status = 'rejected'
+      localStorage.setItem('wellconx_registration_requests', JSON.stringify(requests))
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, login, loginWithGoogle, logout, isLoading }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      login, 
+      logout, 
+      isLoading,
+      registerUser,
+      getRegistrationRequests,
+      approveRegistration,
+      rejectRegistration
+    }}>
       {children}
     </AuthContext.Provider>
   )

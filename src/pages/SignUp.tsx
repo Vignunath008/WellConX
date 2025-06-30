@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { GoogleLogin } from '@react-oauth/google'
 import { Activity, Eye, EyeOff, Upload, CheckCircle, AlertCircle } from 'lucide-react'
 
 const SignUp: React.FC = () => {
-  const { user, loginWithGoogle } = useAuth()
+  const { user, registerUser } = useAuth()
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
     // Personal Information
@@ -43,7 +42,6 @@ const SignUp: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
-  const [googleError, setGoogleError] = useState('')
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -131,44 +129,35 @@ const SignUp: React.FC = () => {
     setIsSubmitting(true)
 
     try {
-      // Simulate API call to submit registration
-      await new Promise(resolve => setTimeout(resolve, 2000))
-
-      // In a real app, this would send data to the backend
+      // Submit registration request
       const registrationData = {
-        ...formData,
-        submittedAt: new Date().toISOString(),
-        status: 'pending_approval',
-        id: `REQ-${Date.now()}`
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        dateOfBirth: formData.dateOfBirth,
+        gender: formData.gender,
+        role: formData.role,
+        licenseNumber: formData.licenseNumber,
+        specialization: formData.specialization,
+        department: formData.department,
+        yearsOfExperience: formData.yearsOfExperience,
+        currentEmployer: formData.currentEmployer
       }
 
-      // Store in localStorage for demo purposes
-      const existingRequests = JSON.parse(localStorage.getItem('wellconx_registration_requests') || '[]')
-      existingRequests.push(registrationData)
-      localStorage.setItem('wellconx_registration_requests', JSON.stringify(existingRequests))
+      const success = await registerUser(registrationData)
 
-      setSubmitted(true)
+      if (success) {
+        setSubmitted(true)
+      } else {
+        setErrors({ submit: 'Registration failed. Please try again.' })
+      }
     } catch (error) {
       console.error('Registration error:', error)
       setErrors({ submit: 'Registration failed. Please try again.' })
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const handleGoogleSuccess = async (credentialResponse: any) => {
-    setGoogleError('')
-    
-    if (credentialResponse.credential) {
-      const success = await loginWithGoogle(credentialResponse.credential)
-      if (!success) {
-        setGoogleError('Failed to register with Google. Please try again.')
-      }
-    }
-  }
-
-  const handleGoogleError = () => {
-    setGoogleError('Google sign-in failed. Please try again or use email registration.')
   }
 
   const specializations = {
@@ -223,40 +212,6 @@ const SignUp: React.FC = () => {
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Personal Information</h3>
         <p className="text-gray-600">Please provide your basic personal details</p>
-      </div>
-
-      <div className="bg-blue-50 p-4 rounded-lg mb-6">
-        <p className="text-sm text-blue-800 mb-4">
-          <strong>Quick Registration with Google</strong><br />
-          Sign up faster by using your Google account. We'll import your basic information automatically.
-        </p>
-        <div className="flex justify-center">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            useOneTap
-            theme={isMobile ? "outline" : "filled_blue"}
-            shape="rectangular"
-            size={isMobile ? "medium" : "large"}
-            text="signup_with"
-            width={isMobile ? "250px" : "320px"}
-          />
-        </div>
-        
-        {googleError && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-xs text-red-600">{googleError}</p>
-          </div>
-        )}
-      </div>
-
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-200"></div>
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-white text-gray-500">Or continue with email</span>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -333,7 +288,7 @@ const SignUp: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">Gender *</label>
           <select
             value={formData.gender}
-            onChange={(e) => handleInputChange('gender', e.target.value)}
+            onChange={(e) => handleInputChange('gender', e.target.value as 'male' | 'female')}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="male">Male</option>
@@ -356,7 +311,7 @@ const SignUp: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">Role *</label>
           <select
             value={formData.role}
-            onChange={(e) => handleInputChange('role', e.target.value)}
+            onChange={(e) => handleInputChange('role', e.target.value as 'doctor' | 'nurse')}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="doctor">Doctor</option>

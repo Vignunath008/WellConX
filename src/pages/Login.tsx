@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Navigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { GoogleLogin } from '@react-oauth/google'
 import { Activity, Eye, EyeOff, Shield, Users, BarChart3 } from 'lucide-react'
 
 const Login: React.FC = () => {
@@ -9,22 +8,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
-  const [googleError, setGoogleError] = useState('')
-  const { user, login, loginWithGoogle, isLoading } = useAuth()
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    
-    return () => {
-      window.removeEventListener('resize', checkMobile)
-    }
-  }, [])
+  const { user, login, isLoading } = useAuth()
 
   if (user) {
     return <Navigate to="/" replace />
@@ -33,28 +17,11 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    setGoogleError('')
     
     const success = await login(email, password)
     if (!success) {
       setError('Invalid credentials. Try demo accounts: doctor@wellconx.com, nurse@wellconx.com, or admin@wellconx.com with password: demo123')
     }
-  }
-
-  const handleGoogleSuccess = async (credentialResponse: any) => {
-    setError('')
-    setGoogleError('')
-    
-    if (credentialResponse.credential) {
-      const success = await loginWithGoogle(credentialResponse.credential)
-      if (!success) {
-        setGoogleError('Failed to authenticate with Google. Please try again.')
-      }
-    }
-  }
-
-  const handleGoogleError = () => {
-    setGoogleError('Google sign-in failed. Please try again or use email login.')
   }
 
   const features = [
@@ -207,36 +174,6 @@ const Login: React.FC = () => {
               >
                 {isLoading ? 'Signing in...' : 'Sign in with Email'}
               </button>
-
-              <div className="mt-6 relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Or continue with</span>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <div className="flex justify-center">
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={handleGoogleError}
-                    useOneTap
-                    theme={isMobile ? "outline" : "filled_blue"}
-                    shape="rectangular"
-                    size={isMobile ? "medium" : "large"}
-                    text="signin_with"
-                    width={isMobile ? "250px" : "320px"}
-                  />
-                </div>
-                
-                {googleError && (
-                  <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-xs text-red-600">{googleError}</p>
-                  </div>
-                )}
-              </div>
             </div>
           </form>
           
