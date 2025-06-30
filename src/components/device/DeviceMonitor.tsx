@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Monitor, WifiOff, Settings, AlertTriangle, CheckCircle } from 'lucide-react'
+import { Monitor, WifiOff, Settings, AlertTriangle, CheckCircle, User, MapPin, Activity, Heart, Thermometer, Wind } from 'lucide-react'
 import { Device } from '../../types/medical'
 
 interface DeviceMonitorProps {
@@ -67,44 +67,44 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ device, onConfigure, onVi
 
   return (
     <motion.div 
-      className={`rounded-xl border-2 p-6 ${getStatusColors()} transition-all duration-300 hover:shadow-lg`}
+      className={`rounded-lg border-2 p-4 ${getStatusColors()} transition-all duration-300 hover:shadow-lg`}
       whileHover={{ scale: 1.02 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-3">
-          <div className="bg-white p-2 rounded-lg shadow-sm">
-            <Monitor className="h-6 w-6 text-medical-600" />
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center space-x-3 min-w-0 flex-1">
+          <div className="bg-white p-2 rounded-lg shadow-sm flex-shrink-0">
+            <Monitor className="h-5 w-5 text-medical-600" />
           </div>
-          <div>
-            <h3 className="font-semibold text-gray-900">{device.name}</h3>
-            <p className="text-sm text-gray-600">{device.model}</p>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-semibold text-gray-900 truncate">{device.name}</h3>
+            <p className="text-sm text-gray-600 truncate">{device.model}</p>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 flex-shrink-0">
           <span className="text-2xl">{getBrandLogo()}</span>
           {getStatusIcon()}
         </div>
       </div>
 
       <div className="space-y-3">
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-2 gap-3 text-sm">
           <div>
-            <span className="text-gray-600">Device ID:</span>
-            <p className="font-medium">{device.id}</p>
+            <span className="text-gray-600 text-xs">Device ID:</span>
+            <p className="font-medium truncate">{device.id}</p>
           </div>
           <div>
-            <span className="text-gray-600">Location:</span>
-            <p className="font-medium">{device.location}</p>
+            <span className="text-gray-600 text-xs">Location:</span>
+            <p className="font-medium truncate">{device.location}</p>
           </div>
           <div>
-            <span className="text-gray-600">IP Address:</span>
-            <p className="font-medium font-mono text-xs">{device.ipAddress}</p>
+            <span className="text-gray-600 text-xs">IP Address:</span>
+            <p className="font-medium font-mono text-xs truncate">{device.ipAddress}</p>
           </div>
           <div>
-            <span className="text-gray-600">Serial:</span>
-            <p className="font-medium font-mono text-xs">{device.serialNumber}</p>
+            <span className="text-gray-600 text-xs">Serial:</span>
+            <p className="font-medium font-mono text-xs truncate">{device.serialNumber}</p>
           </div>
         </div>
         
@@ -140,7 +140,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ device, onConfigure, onVi
         )}
       </div>
 
-      <div className="mt-6 flex space-x-2">
+      <div className="mt-4 flex space-x-2">
         <button 
           onClick={handleConfigureClick}
           className="flex-1 bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
