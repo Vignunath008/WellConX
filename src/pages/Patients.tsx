@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useData } from '../contexts/DataContext'
 import { VitalSignsDisplay } from '../components/VitalCard'
 import AddPatientModal from '../components/modals/AddPatientModal'
-import { User, MapPin, Monitor, Plus, Search, Filter, Download, Calendar } from 'lucide-react'
+import { User, MapPin, Monitor, Plus, Search, Filter, Download, Calendar, Eye, Clock } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const Patients: React.FC = () => {
+  const navigate = useNavigate()
   const { patients, devices, addPatient } = useData()
   const [showAddModal, setShowAddModal] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
@@ -53,6 +55,14 @@ const Patients: React.FC = () => {
     
     // Show success message
     alert(`Patient Added Successfully!\n\nName: ${newPatient.name}\nRoom: ${newPatient.room}\nMRN: ${newPatient.medicalRecordNumber}\nStatus: ${newPatient.status.toUpperCase()}\n\nThe patient has been added to the monitoring system and will appear in the dashboard.`)
+  }
+
+  const handleViewHistory = (patientId: string) => {
+    navigate(`/patients/${patientId}/history`)
+  }
+
+  const handleViewDetails = (patientId: string) => {
+    navigate(`/patients/${patientId}`)
   }
 
   const exportPatientData = () => {
@@ -289,10 +299,11 @@ const Patients: React.FC = () => {
               </div>
               <div className="flex space-x-2">
                 <button 
-                  onClick={() => alert(`Viewing history for ${patient.name}\n\nShowing:\n- Vital signs trends\n- Alert history\n- Medical notes\n- Device data logs`)}
-                  className="btn-secondary text-sm"
+                  onClick={() => handleViewHistory(patient.id)}
+                  className="btn-secondary text-sm flex items-center space-x-1"
                 >
-                  View History
+                  <Clock className="h-4 w-4" />
+                  <span>View History</span>
                 </button>
                 <button 
                   onClick={() => {
@@ -314,10 +325,11 @@ const Patients: React.FC = () => {
                   Export Data
                 </button>
                 <button 
-                  onClick={() => alert(`Opening detailed view for ${patient.name}\n\nFeatures:\n- Real-time waveforms\n- Detailed vital signs\n- Alert management\n- Medical history\n- Device controls`)}
-                  className="btn-primary text-sm"
+                  onClick={() => handleViewDetails(patient.id)}
+                  className="btn-primary text-sm flex items-center space-x-1"
                 >
-                  View Details
+                  <Eye className="h-4 w-4" />
+                  <span>View Details</span>
                 </button>
               </div>
             </div>

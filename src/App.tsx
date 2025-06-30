@@ -4,6 +4,8 @@ import { DataProvider } from './contexts/DataContext'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import Patients from './pages/Patients'
+import PatientDetails from './pages/PatientDetails'
+import PatientHistory from './pages/PatientHistory'
 import Devices from './pages/Devices'
 import DeviceSetup from './pages/DeviceSetup'
 import Analytics from './pages/Analytics'
@@ -28,6 +30,8 @@ function App() {
             }>
               <Route index element={<Dashboard />} />
               <Route path="patients" element={<Patients />} />
+              <Route path="patients/:patientId" element={<PatientDetails />} />
+              <Route path="patients/:patientId/history" element={<PatientHistory />} />
               <Route path="devices" element={<Devices />} />
               <Route path="devices/setup" element={<DeviceSetup />} />
               <Route path="analytics" element={<Analytics />} />

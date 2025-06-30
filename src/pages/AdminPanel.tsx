@@ -96,14 +96,48 @@ const AdminPanel: React.FC = () => {
     const requests = JSON.parse(localStorage.getItem('wellconx_registration_requests') || '[]')
     setRegistrationRequests(requests)
 
-    // Load approved staff members
+    // Load approved staff members and add demo users
     const approvedUsers = JSON.parse(localStorage.getItem('wellconx_approved_users') || '[]')
-    const staff = approvedUsers.map((user: any) => ({
+    
+    // Add demo staff members if none exist
+    const demoStaff: StaffMember[] = [
+      {
+        id: 'STAFF-001',
+        name: 'Dr. Sarah Johnson',
+        email: 'doctor@wellconx.com',
+        role: 'doctor',
+        department: 'Cardiology',
+        specialization: 'Interventional Cardiology',
+        licenseNumber: 'MD-12345',
+        phone: '+1 (555) 123-4567',
+        yearsOfExperience: '10-15',
+        status: 'active',
+        lastLogin: new Date(),
+        joinedDate: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000) // 1 year ago
+      },
+      {
+        id: 'STAFF-002',
+        name: 'Nurse Mary Wilson',
+        email: 'nurse@wellconx.com',
+        role: 'nurse',
+        department: 'ICU',
+        specialization: 'Critical Care',
+        licenseNumber: 'RN-67890',
+        phone: '+1 (555) 234-5678',
+        yearsOfExperience: '6-10',
+        status: 'active',
+        lastLogin: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+        joinedDate: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000) // 6 months ago
+      }
+    ]
+
+    const staff = [...demoStaff, ...approvedUsers.map((user: any) => ({
       ...user,
       lastLogin: new Date(user.lastLogin || Date.now()),
       joinedDate: new Date(user.joinedDate || Date.now()),
       status: user.status || 'active'
-    }))
+    }))]
+    
     setStaffMembers(staff)
   }, [])
 
@@ -174,12 +208,14 @@ const AdminPanel: React.FC = () => {
     )
     setStaffMembers(updatedStaff)
 
-    // Update approved users
-    const approvedUsers = JSON.parse(localStorage.getItem('wellconx_approved_users') || '[]')
-    const updatedApprovedUsers = approvedUsers.map((user: any) =>
-      user.id === editingStaff.id ? editingStaff : user
-    )
-    localStorage.setItem('wellconx_approved_users', JSON.stringify(updatedApprovedUsers))
+    // Update approved users (excluding demo users)
+    if (!editingStaff.id.startsWith('STAFF-00')) {
+      const approvedUsers = JSON.parse(localStorage.getItem('wellconx_approved_users') || '[]')
+      const updatedApprovedUsers = approvedUsers.map((user: any) =>
+        user.id === editingStaff.id ? editingStaff : user
+      )
+      localStorage.setItem('wellconx_approved_users', JSON.stringify(updatedApprovedUsers))
+    }
 
     setShowEditModal(false)
     setEditingStaff(null)
@@ -189,6 +225,12 @@ const AdminPanel: React.FC = () => {
   const handleRemoveStaff = (staffId: string) => {
     const staff = staffMembers.find(s => s.id === staffId)
     if (!staff) return
+
+    // Prevent removal of demo users
+    if (staffId.startsWith('STAFF-00')) {
+      alert('❌ Cannot remove demo users. This is a demonstration account.')
+      return
+    }
 
     if (confirm(`Are you sure you want to remove ${staff.name} from the system?\n\nThis action cannot be undone and will:\n• Remove their access to WellConX\n• Delete their account\n• Remove them from all assignments`)) {
       // Remove from staff list
@@ -217,12 +259,14 @@ const AdminPanel: React.FC = () => {
       )
       setStaffMembers(updatedStaff)
 
-      // Update approved users
-      const approvedUsers = JSON.parse(localStorage.getItem('wellconx_approved_users') || '[]')
-      const updatedApprovedUsers = approvedUsers.map((user: any) =>
-        user.id === staffId ? { ...user, status: newStatus } : user
-      )
-      localStorage.setItem('wellconx_approved_users', JSON.stringify(updatedApprovedUsers))
+      // Update approved users (excluding demo users)
+      if (!staffId.startsWith('STAFF-00')) {
+        const approvedUsers = JSON.parse(localStorage.getItem('wellconx_approved_users') || '[]')
+        const updatedApprovedUsers = approvedUsers.map((user: any) =>
+          user.id === staffId ? { ...user, status: newStatus } : user
+        )
+        localStorage.setItem('wellconx_approved_users', JSON.stringify(updatedApprovedUsers))
+      }
 
       alert(`✅ ${staff.name} has been ${newStatus === 'active' ? 'activated' : 'deactivated'}.`)
     }
@@ -277,6 +321,8 @@ const AdminPanel: React.FC = () => {
     const activeStaff = staffMembers.filter(s => s.status === 'active').length
     const totalPatients = patients.length
     const onlineDevices = devices.filter(d => d.status === 'online').length
+    const totalDoctors = staffMembers.filter(s => s.role === 'doctor').length
+    const totalNurses = staffMembers.filter(s => s.role === 'nurse').length
 
     return {
       pendingRequests,
@@ -284,7 +330,9 @@ const AdminPanel: React.FC = () => {
       activeStaff,
       totalPatients,
       onlineDevices,
-      totalDevices: devices.length
+      totalDevices: devices.length,
+      totalDoctors,
+      totalNurses
     }
   }
 
@@ -318,7 +366,7 @@ const AdminPanel: React.FC = () => {
             <div>
               <p className="text-sm text-blue-600">Total Staff</p>
               <p className="text-2xl font-bold text-blue-700">{stats.totalStaff}</p>
-              <p className="text-xs text-blue-500">{stats.activeStaff} active</p>
+              <p className="text-xs text-blue-500">{stats.totalDoctors} doctors, {stats.totalNurses} nurses</p>
             </div>
             <Users className="h-8 w-8 text-blue-600" />
           </div>
@@ -375,6 +423,9 @@ const AdminPanel: React.FC = () => {
                 </span>
               </div>
             ))}
+            {registrationRequests.length === 0 && (
+              <p className="text-gray-500 text-center py-4">No registration requests</p>
+            )}
           </div>
         </div>
 
@@ -400,6 +451,63 @@ const AdminPanel: React.FC = () => {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Patient Overview */}
+      <div className="bg-white rounded-xl p-6 border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Patient Overview</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left py-3 px-4 font-medium text-gray-900">Patient</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-900">Room</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-900">Status</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-900">Device</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-900">Last Updated</th>
+              </tr>
+            </thead>
+            <tbody>
+              {patients.slice(0, 10).map((patient) => (
+                <tr key={patient.id} className="border-t border-gray-100">
+                  <td className="py-3 px-4">
+                    <div>
+                      <div className="font-medium text-gray-900">{patient.name}</div>
+                      <div className="text-sm text-gray-500">
+                        {patient.age}y {patient.gender} • MRN: {patient.medicalRecordNumber}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">
+                    <div className="font-medium">{patient.room}</div>
+                  </td>
+                  <td className="py-3 px-4">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      patient.status === 'critical' ? 'bg-red-100 text-red-800' :
+                      patient.status === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-green-100 text-green-800'
+                    }`}>
+                      {patient.status.toUpperCase()}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <div className="text-sm">{patient.deviceId || 'Not assigned'}</div>
+                  </td>
+                  <td className="py-3 px-4">
+                    <div className="text-sm text-gray-500">
+                      {patient.lastUpdated.toLocaleString()}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {patients.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No patients in the system</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -745,6 +853,13 @@ const AdminPanel: React.FC = () => {
               ))}
             </tbody>
           </table>
+          {patients.length === 0 && (
+            <div className="text-center py-12">
+              <UserCheck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No patients in system</h3>
+              <p className="text-gray-600">No patients are currently being monitored.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
