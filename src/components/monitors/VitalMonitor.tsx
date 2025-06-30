@@ -59,16 +59,16 @@ const VitalMonitor: React.FC<VitalMonitorProps> = ({
   const colors = getStatusColors()
 
   return (
-    <div className={`${colors.bg} ${colors.border} border-2 rounded-lg p-3 sm:p-4 transition-all duration-300 hover:shadow-md`}>
-      <div className="flex items-center justify-between mb-2 sm:mb-3">
-        <div className="flex items-center space-x-2 min-w-0 flex-1">
-          <div className={`p-1 sm:p-1.5 rounded-lg ${colors.bg} ${colors.accent} flex-shrink-0`}>
+    <div className={`${colors.bg} ${colors.border} border rounded-lg p-2.5 sm:p-3 transition-all duration-300 hover:shadow-md`}>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center space-x-1.5 min-w-0 flex-1">
+          <div className={`p-1 rounded ${colors.bg} ${colors.accent} flex-shrink-0`}>
             {icon}
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className={`font-semibold text-xs sm:text-sm ${colors.text} truncate`}>{title}</h3>
+            <h3 className={`font-semibold text-xs ${colors.text} truncate`}>{title}</h3>
             <div className="flex items-center space-x-1 mt-0.5">
-              <div className={`w-1.5 h-1.5 rounded-full ${colors.dot} ${status === 'critical' ? 'pulse-ring' : ''}`} />
+              <div className={`w-1 h-1 rounded-full ${colors.dot} ${status === 'critical' ? 'pulse-ring' : ''}`} />
               <span className="text-xs text-gray-500">Live</span>
             </div>
           </div>
@@ -79,7 +79,7 @@ const VitalMonitor: React.FC<VitalMonitorProps> = ({
       </div>
       
       <div className="flex items-baseline space-x-1">
-        <span className={`text-xl sm:text-2xl font-bold ${colors.text} leading-none`}>{value}</span>
+        <span className={`text-lg sm:text-xl font-bold ${colors.text} leading-none`}>{value}</span>
         <span className={`text-xs ${colors.accent} opacity-75`}>{unit}</span>
       </div>
     </div>
@@ -122,12 +122,12 @@ export const VitalMonitorGrid: React.FC<VitalMonitorGridProps> = ({ vitals }) =>
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
       <VitalMonitor
         title="Heart Rate"
         value={Math.round(vitals.heartRate)}
         unit="bpm"
-        icon={<Heart className="h-3 w-3 sm:h-4 sm:w-4 heartbeat" />}
+        icon={<Heart className="h-3 w-3 heartbeat" />}
         status={getHeartRateStatus(vitals.heartRate)}
       />
       
@@ -135,7 +135,7 @@ export const VitalMonitorGrid: React.FC<VitalMonitorGridProps> = ({ vitals }) =>
         title="Blood Pressure"
         value={`${Math.round(vitals.bloodPressure.systolic)}/${Math.round(vitals.bloodPressure.diastolic)}`}
         unit="mmHg"
-        icon={<Activity className="h-3 w-3 sm:h-4 sm:w-4" />}
+        icon={<Activity className="h-3 w-3" />}
         status={getBPStatus(vitals.bloodPressure.systolic, vitals.bloodPressure.diastolic)}
       />
       
@@ -143,7 +143,7 @@ export const VitalMonitorGrid: React.FC<VitalMonitorGridProps> = ({ vitals }) =>
         title="SpO2"
         value={Math.round(vitals.oxygenSaturation)}
         unit="%"
-        icon={<Wind className="h-3 w-3 sm:h-4 sm:w-4" />}
+        icon={<Wind className="h-3 w-3" />}
         status={getSpO2Status(vitals.oxygenSaturation)}
       />
       
@@ -151,7 +151,7 @@ export const VitalMonitorGrid: React.FC<VitalMonitorGridProps> = ({ vitals }) =>
         title="Temperature"
         value={vitals.temperature.toFixed(1)}
         unit="°F"
-        icon={<Thermometer className="h-3 w-3 sm:h-4 sm:w-4" />}
+        icon={<Thermometer className="h-3 w-3" />}
         status={getTempStatus(vitals.temperature)}
       />
       
@@ -159,7 +159,7 @@ export const VitalMonitorGrid: React.FC<VitalMonitorGridProps> = ({ vitals }) =>
         title="Resp Rate"
         value={Math.round(vitals.respiratoryRate)}
         unit="/min"
-        icon={<Wind className="h-3 w-3 sm:h-4 sm:w-4" />}
+        icon={<Wind className="h-3 w-3" />}
         status={getRespStatus(vitals.respiratoryRate)}
       />
     </div>

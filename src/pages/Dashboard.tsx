@@ -105,7 +105,7 @@ const Dashboard: React.FC = () => {
   ]
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-6 px-2 sm:px-0 max-w-full overflow-hidden">
       {/* Header - Mobile Optimized */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
         <div>
@@ -172,101 +172,184 @@ const Dashboard: React.FC = () => {
             </button>
           </div>
         ) : (
-          patients.map((patient) => (
-            <div key={patient.id} className="bg-white rounded-lg sm:rounded-xl border border-gray-100 p-4 sm:p-6 hover:shadow-lg transition-all duration-300">
-              {/* Patient Header - Mobile Optimized */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
-                <div className="flex items-start space-x-3">
-                  <div className="bg-blue-50 p-2.5 sm:p-3 rounded-lg sm:rounded-xl flex-shrink-0">
-                    <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-base sm:text-lg font-bold text-gray-900 truncate">{patient.name}</h3>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-xs sm:text-sm text-gray-500 mt-1 space-y-1 sm:space-y-0">
-                      <span>{patient.age}y {patient.gender}</span>
-                      <span className="hidden sm:inline">•</span>
-                      <span className="truncate">{patient.room}</span>
-                      <span className="hidden sm:inline">•</span>
-                      <span className="truncate text-xs">{patient.deviceId || 'No device assigned'}</span>
+          <div className="space-y-4">
+            {patients.map((patient) => (
+              <div key={patient.id} className="bg-white rounded-lg border border-gray-100 p-4 hover:shadow-lg transition-all duration-300 w-full overflow-hidden">
+                {/* Patient Header - Mobile Optimized */}
+                <div className="space-y-3 mb-4">
+                  {/* Top Row - Name and Status */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start space-x-3 min-w-0 flex-1">
+                      <div className="bg-blue-50 p-2 rounded-lg flex-shrink-0">
+                        <Activity className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-lg font-bold text-gray-900 truncate">{patient.name}</h3>
+                        <div className="text-sm text-gray-600 mt-1">
+                          <div className="flex items-center space-x-2">
+                            <span>{patient.age} years old</span>
+                            <span>•</span>
+                            <span className="capitalize">{patient.gender}</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{patient.diagnosis}</p>
+                    
+                    <div className={`px-2.5 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
+                      patient.status === 'critical' ? 'bg-red-100 text-red-800' :
+                      patient.status === 'warning' ? 'bg-amber-100 text-amber-800' :
+                      'bg-emerald-100 text-emerald-800'
+                    }`}>
+                      {patient.status.toUpperCase()}
+                    </div>
+                  </div>
+
+                  {/* Patient Info Grid - Mobile Optimized */}
+                  <div className="grid grid-cols-1 gap-2 text-sm bg-gray-50 rounded-lg p-3">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-gray-700">Room:</span>
+                      <span className="text-gray-900">{patient.room}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-gray-700">MRN:</span>
+                      <span className="text-gray-900 text-xs">{patient.medicalRecordNumber}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-gray-700">Device:</span>
+                      <span className="text-gray-900 text-xs truncate max-w-32">{patient.deviceId || 'Not assigned'}</span>
+                    </div>
+                  </div>
+
+                  {/* Diagnosis */}
+                  <div className="bg-blue-50 rounded-lg p-3">
+                    <div className="text-sm">
+                      <span className="font-medium text-blue-800">Diagnosis: </span>
+                      <span className="text-blue-700">{patient.diagnosis}</span>
+                    </div>
+                  </div>
+
+                  {/* Live Status Indicator */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full pulse-ring" />
+                      <span className="text-xs font-medium text-gray-500">Live Monitoring Active</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      Updated: {patient.lastUpdated.toLocaleTimeString()}
+                    </div>
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between sm:flex-col sm:items-end sm:space-y-2">
-                  <div className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium ${
-                    patient.status === 'critical' ? 'bg-red-100 text-red-800' :
-                    patient.status === 'warning' ? 'bg-amber-100 text-amber-800' :
-                    'bg-emerald-100 text-emerald-800'
-                  }`}>
-                    {patient.status.toUpperCase()}
-                  </div>
-                  <div className="flex items-center space-x-1 sm:space-x-2">
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full pulse-ring" />
-                    <span className="text-xs font-medium text-gray-500">Live</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Vital Signs - Mobile Optimized Grid */}
-              <VitalMonitorGrid vitals={patient.vitals} />
-              
-              {/* Live Waveforms - Mobile Responsive */}
-              {waveforms[patient.id] && (
-                <div className="mt-4 sm:mt-6">
-                  <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4">
-                    Live Waveforms
-                  </h4>
+                {/* Vital Signs - Mobile Optimized */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-3">Current Vital Signs</h4>
                   
-                  {/* Mobile: Stack vertically, Desktop: Grid */}
-                  <div className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-1 lg:grid-cols-3 sm:gap-4">
-                    <LiveWaveform
-                      title={`ECG (${patient.vitals.heartRate} bpm)`}
-                      data={waveforms[patient.id].ecg}
-                      color="#00ff00"
-                      height={100}
-                      speed={1.5}
-                      amplitude={1.2}
-                      unit="mV"
-                    />
-                    <LiveWaveform
-                      title={`SpO2 (${patient.vitals.oxygenSaturation}%)`}
-                      data={waveforms[patient.id].pleth}
-                      color="#00ffff"
-                      height={100}
-                      speed={1.5}
-                      amplitude={2.0}
-                      unit="SpO2"
-                    />
-                    <LiveWaveform
-                      title={`Resp (${patient.vitals.respiratoryRate}/min)`}
-                      data={waveforms[patient.id].respiration}
-                      color="#ffff00"
-                      height={100}
-                      speed={1.0}
-                      amplitude={1.5}
-                      unit="Resp"
-                    />
+                  {/* Mobile-First Vital Signs Grid */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {/* Heart Rate */}
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Heart className="h-4 w-4 text-red-600 heartbeat" />
+                        <span className="text-xs font-medium text-red-700">Heart Rate</span>
+                      </div>
+                      <div className="flex items-baseline space-x-1">
+                        <span className="text-xl font-bold text-red-700">{Math.round(patient.vitals.heartRate)}</span>
+                        <span className="text-xs text-red-600">bpm</span>
+                      </div>
+                    </div>
+
+                    {/* Blood Pressure */}
+                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Activity className="h-4 w-4 text-purple-600" />
+                        <span className="text-xs font-medium text-purple-700">Blood Pressure</span>
+                      </div>
+                      <div className="flex items-baseline space-x-1">
+                        <span className="text-lg font-bold text-purple-700">
+                          {Math.round(patient.vitals.bloodPressure.systolic)}/{Math.round(patient.vitals.bloodPressure.diastolic)}
+                        </span>
+                        <span className="text-xs text-purple-600">mmHg</span>
+                      </div>
+                    </div>
+
+                    {/* SpO2 */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Wind className="h-4 w-4 text-blue-600" />
+                        <span className="text-xs font-medium text-blue-700">SpO2</span>
+                      </div>
+                      <div className="flex items-baseline space-x-1">
+                        <span className="text-xl font-bold text-blue-700">{Math.round(patient.vitals.oxygenSaturation)}</span>
+                        <span className="text-xs text-blue-600">%</span>
+                      </div>
+                    </div>
+
+                    {/* Temperature */}
+                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Thermometer className="h-4 w-4 text-orange-600" />
+                        <span className="text-xs font-medium text-orange-700">Temperature</span>
+                      </div>
+                      <div className="flex items-baseline space-x-1">
+                        <span className="text-xl font-bold text-orange-700">{patient.vitals.temperature.toFixed(1)}</span>
+                        <span className="text-xs text-orange-600">°F</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              )}
-              
-              {/* Action Buttons - Mobile Optimized */}
-              <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-                <div className="text-xs sm:text-sm text-gray-500">
-                  Last updated: {patient.lastUpdated.toLocaleTimeString()}
-                </div>
-                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                
+                {/* Live Waveforms - Mobile Responsive */}
+                {waveforms[patient.id] && (
+                  <div className="mb-4">
+                    <h4 className="text-sm font-semibold text-gray-900 mb-3">
+                      Live Waveforms
+                    </h4>
+                    
+                    {/* Mobile: Stack vertically */}
+                    <div className="space-y-3">
+                      <LiveWaveform
+                        title={`ECG (${patient.vitals.heartRate} bpm)`}
+                        data={waveforms[patient.id].ecg}
+                        color="#00ff00"
+                        height={80}
+                        speed={1.5}
+                        amplitude={1.2}
+                        unit="mV"
+                      />
+                      <LiveWaveform
+                        title={`SpO2 (${patient.vitals.oxygenSaturation}%)`}
+                        data={waveforms[patient.id].pleth}
+                        color="#00ffff"
+                        height={80}
+                        speed={1.5}
+                        amplitude={2.0}
+                        unit="SpO2"
+                      />
+                      <LiveWaveform
+                        title={`Resp (${patient.vitals.respiratoryRate}/min)`}
+                        data={waveforms[patient.id].respiration}
+                        color="#ffff00"
+                        height={80}
+                        speed={1.0}
+                        amplitude={1.5}
+                        unit="Resp"
+                      />
+                    </div>
+                  </div>
+                )}
+                
+                {/* Action Buttons - Mobile Optimized */}
+                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 pt-3 border-t border-gray-200">
                   <button 
                     onClick={() => handleViewHistory(patient.id)}
-                    className="btn-secondary text-sm flex items-center justify-center space-x-2 py-2.5"
+                    className="btn-secondary text-sm flex items-center justify-center space-x-2 py-2.5 flex-1"
                   >
                     <Clock className="h-4 w-4" />
                     <span>View History</span>
                   </button>
                   <button 
                     onClick={() => handleViewDetails(patient.id)}
-                    className="btn-primary text-sm flex items-center justify-center space-x-2 py-2.5"
+                    className="btn-primary text-sm flex items-center justify-center space-x-2 py-2.5 flex-1"
                   >
                     <Eye className="h-4 w-4" />
                     <span>View Details</span>
@@ -274,8 +357,8 @@ const Dashboard: React.FC = () => {
                   </button>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
 
@@ -293,7 +376,7 @@ const Dashboard: React.FC = () => {
               unit=" bpm"
               yAxisMin={40}
               yAxisMax={140}
-              height={250}
+              height={200}
               thresholds={{
                 warning: { min: 60, max: 100 },
                 critical: { min: 50, max: 120 }
@@ -307,7 +390,7 @@ const Dashboard: React.FC = () => {
               unit="%"
               yAxisMin={85}
               yAxisMax={100}
-              height={250}
+              height={200}
               thresholds={{
                 warning: { min: 95 },
                 critical: { min: 90 }
@@ -321,7 +404,7 @@ const Dashboard: React.FC = () => {
               unit="°F"
               yAxisMin={95}
               yAxisMax={104}
-              height={250}
+              height={200}
               thresholds={{
                 warning: { min: 97, max: 99.5 },
                 critical: { min: 95, max: 101 }
