@@ -9,23 +9,35 @@
   body {
     @apply bg-gray-50 text-gray-900 font-sans;
   }
+  
+  /* Ensure proper touch targets on mobile */
+  button, a, input, select, textarea {
+    @apply min-h-[44px] sm:min-h-[auto];
+  }
+  
+  /* Improve text readability on mobile */
+  @media (max-width: 640px) {
+    body {
+      font-size: 16px; /* Prevent zoom on iOS */
+    }
+  }
 }
 
 @layer components {
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200;
+    @apply bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200;
   }
   
   .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md;
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl transition-all duration-200 shadow-sm hover:shadow-md text-sm sm:text-base;
   }
   
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-xl border border-gray-200 transition-all duration-200 hover:border-gray-300;
+    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl border border-gray-200 transition-all duration-200 hover:border-gray-300 text-sm sm:text-base;
   }
   
   .vital-card {
-    @apply bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-all duration-300;
+    @apply bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-all duration-300;
   }
   
   .status-dot {
@@ -45,7 +57,46 @@
   }
   
   .glass-card {
-    @apply bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl;
+    @apply bg-white/80 backdrop-blur-sm border border-white/20 rounded-xl sm:rounded-2xl;
+  }
+  
+  /* Mobile-specific improvements */
+  @media (max-width: 640px) {
+    .card {
+      @apply rounded-lg;
+    }
+    
+    .btn-primary, .btn-secondary {
+      @apply rounded-lg py-3 px-4 text-sm;
+    }
+    
+    .vital-card {
+      @apply rounded-lg p-4;
+    }
+  }
+  
+  /* Touch-friendly scrollbars on mobile */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(156, 163, 175, 0.7);
   }
 }
 
@@ -73,4 +124,105 @@
   25% { transform: scale(1.1); }
   50% { transform: scale(1); }
   75% { transform: scale(1.05); }
+}
+
+/* Mobile swipe gestures */
+.swipe-container {
+  touch-action: pan-x;
+}
+
+/* Improved mobile touch targets */
+@media (max-width: 768px) {
+  button, .btn-primary, .btn-secondary {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  input, select, textarea {
+    min-height: 44px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+}
+
+/* Safe area handling for mobile devices */
+@supports (padding: max(0px)) {
+  .safe-area-inset-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .safe-area-inset-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .safe-area-inset-left {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+  
+  .safe-area-inset-right {
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* Responsive text sizes */
+.text-responsive-xs {
+  @apply text-xs sm:text-sm;
+}
+
+.text-responsive-sm {
+  @apply text-sm sm:text-base;
+}
+
+.text-responsive-base {
+  @apply text-base sm:text-lg;
+}
+
+.text-responsive-lg {
+  @apply text-lg sm:text-xl;
+}
+
+.text-responsive-xl {
+  @apply text-xl sm:text-2xl;
+}
+
+.text-responsive-2xl {
+  @apply text-2xl sm:text-3xl;
+}
+
+/* Mobile-optimized spacing */
+.space-mobile {
+  @apply space-y-4 sm:space-y-6;
+}
+
+.gap-mobile {
+  @apply gap-4 sm:gap-6;
+}
+
+.p-mobile {
+  @apply p-4 sm:p-6;
+}
+
+.px-mobile {
+  @apply px-4 sm:px-6;
+}
+
+.py-mobile {
+  @apply py-4 sm:py-6;
+}
+
+/* Improved focus states for accessibility */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+/* Mobile-first grid layouts */
+.grid-mobile-1 {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.grid-mobile-2 {
+  @apply grid grid-cols-1 md:grid-cols-2;
+}
+
+.grid-mobile-3 {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
 }
