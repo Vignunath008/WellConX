@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useData } from '../contexts/DataContext'
 import DeviceMonitor from '../components/device/DeviceMonitor'
-import { Monitor, Plus, Filter, Search, Wifi, WifiOff, Settings, RefreshCw, Download, X, Activity, Heart, Wind, Thermometer, CheckCircle, AlertTriangle, Zap } from 'lucide-react'
+import { Monitor, Plus, Search, Wifi, WifiOff, Settings, RefreshCw, Download, X, Activity, Heart, Wind, Thermometer, CheckCircle, Zap } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const Devices: React.FC = () => {
