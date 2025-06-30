@@ -16,7 +16,8 @@ import {
   RefreshCw, 
   Eye, 
   Edit, 
-  Trash
+  Trash,
+  Plus
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -265,8 +266,9 @@ const AdminPanel: React.FC = () => {
               className="pl-10 pr-4 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
             />
           </div>
-          <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors">
-            Add Staff
+          <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2">
+            <Plus className="h-4 w-4" />
+            <span>Add Staff</span>
           </button>
         </div>
       </div>
