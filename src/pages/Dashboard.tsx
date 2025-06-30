@@ -5,7 +5,7 @@ import { VitalMonitorGrid } from '../components/monitors/VitalMonitor'
 import RealTimeChart from '../components/charts/RealTimeChart'
 import LiveWaveform from '../components/charts/LiveWaveform'
 import AddPatientModal from '../components/modals/AddPatientModal'
-import { Users, Monitor, AlertTriangle, Activity, Clock, TrendingUp, Plus } from 'lucide-react'
+import { Users, Monitor, AlertTriangle, Activity, Clock, TrendingUp, Plus, Eye } from 'lucide-react'
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate()
@@ -58,6 +58,15 @@ const Dashboard: React.FC = () => {
 
   const handleViewAllPatients = () => {
     navigate('/patients')
+  }
+
+  // Navigation handlers for dashboard buttons
+  const handleViewHistory = (patientId: string) => {
+    navigate(`/patients/${patientId}/history`)
+  }
+
+  const handleViewDetails = (patientId: string) => {
+    navigate(`/patients/${patientId}`)
   }
 
   const statCards = [
@@ -235,8 +244,20 @@ const Dashboard: React.FC = () => {
                   Last updated: {patient.lastUpdated.toLocaleTimeString()}
                 </div>
                 <div className="flex space-x-3">
-                  <button className="btn-secondary text-sm">View History</button>
-                  <button className="btn-primary text-sm">View Details</button>
+                  <button 
+                    onClick={() => handleViewHistory(patient.id)}
+                    className="btn-secondary text-sm flex items-center space-x-1"
+                  >
+                    <Clock className="h-4 w-4" />
+                    <span>View History</span>
+                  </button>
+                  <button 
+                    onClick={() => handleViewDetails(patient.id)}
+                    className="btn-primary text-sm flex items-center space-x-1"
+                  >
+                    <Eye className="h-4 w-4" />
+                    <span>View Details</span>
+                  </button>
                 </div>
               </div>
             </div>
