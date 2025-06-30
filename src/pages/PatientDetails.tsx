@@ -4,7 +4,7 @@ import { useData } from '../contexts/DataContext'
 import { VitalMonitorGrid } from '../components/monitors/VitalMonitor'
 import LiveWaveform from '../components/charts/LiveWaveform'
 import RealTimeChart from '../components/charts/RealTimeChart'
-import { ArrowLeft, User, MapPin, Monitor, Calendar, FileText, Edit, Save, X, AlertTriangle, Clock, Activity, Zap } from 'lucide-react'
+import { ArrowLeft, User, MapPin, Monitor, Calendar, FileText, Edit, Save, X, AlertTriangle, Clock, Activity, Zap, Brain } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const PatientDetails: React.FC = () => {
@@ -467,6 +467,14 @@ const PatientDetails: React.FC = () => {
         >
           <Zap className="h-5 w-5" />
           <span>Advanced Monitoring</span>
+        </button>
+
+        <button
+          onClick={() => navigate(`/patients/${patient.id}/ai`)}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2"
+        >
+          <Brain className="h-5 w-5" />
+          <span>AI Monitoring</span>
         </button>
       </div>
     </div>
