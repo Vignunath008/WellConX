@@ -4,7 +4,7 @@ import { useData } from '../contexts/DataContext'
 import { VitalMonitorGrid } from '../components/monitors/VitalMonitor'
 import LiveWaveform from '../components/charts/LiveWaveform'
 import RealTimeChart from '../components/charts/RealTimeChart'
-import { ArrowLeft, User, Monitor, Calendar, FileText, Edit, Save, X, AlertTriangle, Clock, Activity, Zap, Brain, ChevronDown, ChevronUp } from 'lucide-react'
+import { ArrowLeft, User, Monitor, Edit, Save, X, AlertTriangle, Clock, Activity, Zap, Brain, ChevronDown, ChevronUp } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const PatientDetails: React.FC = () => {
