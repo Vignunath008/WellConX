@@ -113,7 +113,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const demoPatients: Patient[] = [
       {
         id: 'PAT-001',
-        name: 'John Smith',
+        name: 'Rahul Verma',
         age: 65,
         gender: 'male',
         room: 'ICU-101',
@@ -134,7 +134,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       },
       {
         id: 'PAT-002',
-        name: 'Maria Garcia',
+        name: 'Ananya Singh',
         age: 45,
         gender: 'female',
         room: 'ICU-102',

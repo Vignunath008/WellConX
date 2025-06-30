@@ -67,25 +67,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000))
     
-    // Demo users
+    // Demo users with Indian names
     const demoUsers: User[] = [
       {
         id: '1',
-        name: 'Dr. Sarah Johnson',
+        name: 'Dr. Rajesh Sharma',
         email: 'doctor@wellconx.com',
         role: 'doctor',
         department: 'Cardiology'
       },
       {
         id: '2',
-        name: 'Nurse Mary Wilson',
+        name: 'Nurse Priya Patel',
         email: 'nurse@wellconx.com',
         role: 'nurse',
         department: 'ICU'
       },
       {
         id: '3',
-        name: 'Admin User',
+        name: 'Vikram Mehta',
         email: 'admin@wellconx.com',
         role: 'admin',
         department: 'IT'

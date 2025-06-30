@@ -170,15 +170,15 @@
   }
   
   .vital-oxygen {
-    @apply bg-blue-50 border-blue-200 text-blue-800;
+    @apply bg-primary-50 border-primary-200 text-primary-800;
   }
   
   .vital-temperature {
-    @apply bg-orange-50 border-orange-200 text-orange-800;
+    @apply bg-alert-50 border-alert-200 text-alert-800;
   }
   
   .vital-respiratory {
-    @apply bg-green-50 border-green-200 text-green-800;
+    @apply bg-health-50 border-health-200 text-health-800;
   }
   
   /* Mobile-optimized form inputs */

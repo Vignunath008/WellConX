@@ -204,10 +204,10 @@ const AdvancedMonitoring: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Patient Not Found</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-2">Patient Not Found</h2>
           <button
             onClick={() => navigate('/patients')}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical"
           >
             Back to Patients
           </button>
@@ -228,9 +228,9 @@ const AdvancedMonitoring: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'critical': return 'text-red-600 bg-red-100 border-red-300'
-      case 'warning': return 'text-yellow-600 bg-yellow-100 border-yellow-300'
-      default: return 'text-green-600 bg-green-100 border-green-300'
+      case 'critical': return 'text-red-600 bg-red-50 border-red-200'
+      case 'warning': return 'text-alert-600 bg-alert-50 border-alert-200'
+      default: return 'text-health-600 bg-health-50 border-health-200'
     }
   }
 
@@ -262,12 +262,12 @@ const AdvancedMonitoring: React.FC = () => {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
-        <div className="bg-black bg-opacity-90 text-white p-3 rounded-lg text-sm">
+        <div className="bg-background-card bg-opacity-90 text-text-primary p-3 rounded-medical border border-border-light shadow-soft text-sm">
           <p className="font-medium">{new Date(label).toLocaleTimeString()}</p>
-          <p className="text-yellow-300">
+          <p className="text-primary-600">
             {selectedParam.name}: {payload[0].value.toFixed(selectedParam.precision)} {selectedParam.unit}
           </p>
-          <p className={`text-xs ${data.isCritical ? 'text-red-300' : data.isNormal ? 'text-green-300' : 'text-yellow-300'}`}>
+          <p className={`text-xs ${data.isCritical ? 'text-red-600' : data.isNormal ? 'text-health-600' : 'text-alert-600'}`}>
             Status: {data.isCritical ? 'Critical' : data.isNormal ? 'Normal' : 'Warning'}
           </p>
         </div>
@@ -277,21 +277,21 @@ const AdvancedMonitoring: React.FC = () => {
   }
 
   return (
-    <div className={`${isFullscreen ? 'fixed inset-0 z-50 bg-black' : ''} space-y-6`}>
+    <div className={`${isFullscreen ? 'fixed inset-0 z-50 bg-background-primary' : ''} space-y-6`}>
       {/* Header */}
-      <div className={`flex items-center justify-between ${isFullscreen ? 'text-white p-6' : ''}`}>
+      <div className={`flex items-center justify-between ${isFullscreen ? 'text-text-primary p-6' : ''}`}>
         <div className="flex items-center space-x-4">
           <button
             onClick={() => navigate(`/patients/${patient.id}`)}
-            className={`p-2 rounded-lg transition-colors ${isFullscreen ? 'hover:bg-gray-800 text-white' : 'hover:bg-gray-100'}`}
+            className={`p-2 rounded-medical transition-colors ${isFullscreen ? 'hover:bg-background-hover text-text-primary' : 'hover:bg-background-hover'}`}
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
-            <h1 className={`text-2xl font-bold ${isFullscreen ? 'text-white' : 'text-gray-900'}`}>
+            <h1 className={`text-2xl font-bold ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`}>
               Advanced Monitoring - {patient.name}
             </h1>
-            <p className={`${isFullscreen ? 'text-gray-300' : 'text-gray-600'}`}>
+            <p className={`${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
               Real-time parameter analysis with precision monitoring
             </p>
           </div>
@@ -301,8 +301,8 @@ const AdvancedMonitoring: React.FC = () => {
           <select
             value={timeScale}
             onChange={(e) => setTimeScale(e.target.value)}
-            className={`px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              isFullscreen ? 'bg-gray-800 text-white border-gray-600' : 'border-gray-300'
+            className={`px-3 py-2 border rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+              isFullscreen ? 'bg-background-card text-text-primary border-border-light' : 'border-border-light'
             }`}
           >
             <option value="10s">10 seconds</option>
@@ -313,8 +313,8 @@ const AdvancedMonitoring: React.FC = () => {
           
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className={`p-2 rounded-lg transition-colors ${
-              isFullscreen ? 'hover:bg-gray-800 text-white' : 'hover:bg-gray-100'
+            className={`p-2 rounded-medical transition-colors ${
+              isFullscreen ? 'hover:bg-background-hover text-text-primary' : 'hover:bg-background-hover'
             }`}
           >
             {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
@@ -322,7 +322,7 @@ const AdvancedMonitoring: React.FC = () => {
           
           <button
             onClick={exportData}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2"
           >
             <Download className="h-4 w-4" />
             <span>Export</span>
@@ -333,8 +333,8 @@ const AdvancedMonitoring: React.FC = () => {
       <div className={`grid grid-cols-1 ${isFullscreen ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6 ${isFullscreen ? 'px-6' : ''}`}>
         {/* Parameter Selection */}
         <div className={`${isFullscreen ? 'lg:col-span-1' : 'lg:col-span-1'}`}>
-          <div className={`rounded-xl p-6 border ${isFullscreen ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
-            <h2 className={`text-lg font-semibold mb-6 ${isFullscreen ? 'text-white' : 'text-gray-900'}`}>
+          <div className={`rounded-card p-6 border shadow-soft ${isFullscreen ? 'bg-background-card border-border-light' : 'bg-background-card border-border-light'}`}>
+            <h2 className={`text-lg font-semibold mb-6 ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`}>
               Parameters
             </h2>
             
@@ -348,38 +348,38 @@ const AdvancedMonitoring: React.FC = () => {
                   <button
                     key={param.id}
                     onClick={() => setSelectedParameter(param.id)}
-                    className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+                    className={`w-full p-4 rounded-medical border-2 transition-all text-left ${
                       selectedParameter === param.id
                         ? isFullscreen 
-                          ? 'border-blue-500 bg-blue-900 bg-opacity-50' 
-                          : 'border-blue-500 bg-blue-50'
+                          ? 'border-primary-500 bg-primary-50' 
+                          : 'border-primary-500 bg-primary-50'
                         : isFullscreen
-                          ? 'border-gray-600 hover:border-gray-500 bg-gray-800'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-border-light hover:border-border-medium bg-background-card'
+                          : 'border-border-light hover:border-border-medium'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2">
-                        <Icon className={`h-4 w-4 ${isFullscreen ? 'text-gray-300' : 'text-gray-600'}`} style={{ color: param.color }} />
-                        <span className={`text-sm font-medium ${isFullscreen ? 'text-white' : 'text-gray-900'}`}>
+                        <Icon className={`h-4 w-4 ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`} style={{ color: param.color }} />
+                        <span className={`text-sm font-medium ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`}>
                           {param.name}
                         </span>
                       </div>
-                      <span className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(status)}`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(status)}`}>
                         {status.toUpperCase()}
                       </span>
                     </div>
                     
                     <div className="flex items-baseline space-x-2">
-                      <span className={`text-xl font-bold ${isFullscreen ? 'text-white' : 'text-gray-900'}`}>
+                      <span className={`text-xl font-bold ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`}>
                         {currentVal.toFixed(param.precision)}
                       </span>
-                      <span className={`text-sm ${isFullscreen ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <span className={`text-sm ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
                         {param.unit}
                       </span>
                     </div>
                     
-                    <div className={`text-xs mt-1 ${isFullscreen ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <div className={`text-xs mt-1 ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
                       Normal: {param.normalRange.min}-{param.normalRange.max} {param.unit}
                     </div>
                   </button>
@@ -391,25 +391,25 @@ const AdvancedMonitoring: React.FC = () => {
 
         {/* Main Chart */}
         <div className={`${isFullscreen ? 'lg:col-span-3' : 'lg:col-span-2'}`}>
-          <div className={`rounded-xl p-6 border ${isFullscreen ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
+          <div className={`rounded-card p-6 border shadow-soft ${isFullscreen ? 'bg-background-card border-border-light' : 'bg-background-card border-border-light'}`}>
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
                 <selectedParam.icon className="h-6 w-6" style={{ color: selectedParam.color }} />
                 <div>
-                  <h2 className={`text-lg font-semibold ${isFullscreen ? 'text-white' : 'text-gray-900'}`}>
+                  <h2 className={`text-lg font-semibold ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`}>
                     {selectedParam.name} - Precision Monitoring
                   </h2>
-                  <p className={`text-sm ${isFullscreen ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <p className={`text-sm ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
                     Real-time data with {selectedParam.precision === 0 ? 'integer' : `${selectedParam.precision} decimal`} precision
                   </p>
                 </div>
               </div>
               
               <div className="text-right">
-                <div className={`text-3xl font-bold ${isFullscreen ? 'text-white' : 'text-gray-900'}`} style={{ color: selectedParam.color }}>
+                <div className={`text-3xl font-bold ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`} style={{ color: selectedParam.color }}>
                   {currentValue.toFixed(selectedParam.precision)}
                 </div>
-                <div className={`text-sm ${isFullscreen ? 'text-gray-400' : 'text-gray-600'}`}>
+                <div className={`text-sm ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
                   {selectedParam.unit}
                 </div>
               </div>
@@ -418,28 +418,28 @@ const AdvancedMonitoring: React.FC = () => {
             <div style={{ height: isFullscreen ? '500px' : '400px' }}>
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={currentData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={isFullscreen ? '#374151' : '#e5e7eb'} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={isFullscreen ? '#E1E5E9' : '#E1E5E9'} />
                   <XAxis 
                     dataKey="timestamp" 
                     tickFormatter={(value) => new Date(value).toLocaleTimeString()}
-                    stroke={isFullscreen ? '#9ca3af' : '#6b7280'}
+                    stroke={isFullscreen ? '#607D8B' : '#607D8B'}
                   />
                   <YAxis 
                     domain={['dataMin - 5', 'dataMax + 5']}
-                    stroke={isFullscreen ? '#9ca3af' : '#6b7280'}
+                    stroke={isFullscreen ? '#607D8B' : '#607D8B'}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   
                   {/* Normal range */}
                   <ReferenceLine 
                     y={selectedParam.normalRange.min} 
-                    stroke="#10b981" 
+                    stroke="#43A047" 
                     strokeDasharray="5 5" 
                     label="Normal Min"
                   />
                   <ReferenceLine 
                     y={selectedParam.normalRange.max} 
-                    stroke="#10b981" 
+                    stroke="#43A047" 
                     strokeDasharray="5 5" 
                     label="Normal Max"
                   />
@@ -476,24 +476,24 @@ const AdvancedMonitoring: React.FC = () => {
       {/* Enhanced Waveforms */}
       {waveformData.ecg && (
         <div className={`${isFullscreen ? 'px-6' : ''}`}>
-          <div className={`rounded-xl p-6 border ${isFullscreen ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
-            <h2 className={`text-lg font-semibold mb-6 ${isFullscreen ? 'text-white' : 'text-gray-900'}`}>
+          <div className={`rounded-card p-6 border shadow-soft ${isFullscreen ? 'bg-background-card border-border-light' : 'bg-background-card border-border-light'}`}>
+            <h2 className={`text-lg font-semibold mb-6 ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`}>
               Enhanced Waveform Analysis
             </h2>
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* ECG Waveform */}
-              <div className={`p-4 rounded-lg ${isFullscreen ? 'bg-gray-800' : 'bg-gray-50'}`}>
+              <div className={`p-4 rounded-medical ${isFullscreen ? 'bg-background-hover' : 'bg-background-hover'}`}>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className={`font-semibold ${isFullscreen ? 'text-white' : 'text-gray-900'}`}>
+                  <h3 className={`font-semibold ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`}>
                     ECG Lead II
                   </h3>
-                  <div className={`text-sm ${isFullscreen ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <div className={`text-sm ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
                     {patient.vitals.heartRate} bpm
                   </div>
                 </div>
                 
-                <div className="h-32 bg-black rounded relative overflow-hidden">
+                <div className="h-32 bg-black rounded-medical relative overflow-hidden">
                   <svg className="w-full h-full">
                     <defs>
                       <pattern id="ecg-grid" width="10" height="10" patternUnits="userSpaceOnUse">
@@ -516,23 +516,23 @@ const AdvancedMonitoring: React.FC = () => {
                   <div className="absolute top-0 right-0 w-1 h-full bg-white opacity-80 animate-pulse" />
                 </div>
                 
-                <div className={`mt-2 text-xs ${isFullscreen ? 'text-gray-400' : 'text-gray-500'}`}>
+                <div className={`mt-2 text-xs ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
                   R-R Interval: {(60000 / patient.vitals.heartRate).toFixed(0)}ms
                 </div>
               </div>
 
               {/* Plethysmography */}
-              <div className={`p-4 rounded-lg ${isFullscreen ? 'bg-gray-800' : 'bg-gray-50'}`}>
+              <div className={`p-4 rounded-medical ${isFullscreen ? 'bg-background-hover' : 'bg-background-hover'}`}>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className={`font-semibold ${isFullscreen ? 'text-white' : 'text-gray-900'}`}>
+                  <h3 className={`font-semibold ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`}>
                     Plethysmography
                   </h3>
-                  <div className={`text-sm ${isFullscreen ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <div className={`text-sm ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
                     {patient.vitals.oxygenSaturation}%
                   </div>
                 </div>
                 
-                <div className="h-32 bg-black rounded relative overflow-hidden">
+                <div className="h-32 bg-black rounded-medical relative overflow-hidden">
                   <svg className="w-full h-full">
                     <rect width="100%" height="100%" fill="url(#ecg-grid)" />
                     
@@ -549,23 +549,23 @@ const AdvancedMonitoring: React.FC = () => {
                   <div className="absolute top-0 right-0 w-1 h-full bg-cyan-400 opacity-80 animate-pulse" />
                 </div>
                 
-                <div className={`mt-2 text-xs ${isFullscreen ? 'text-gray-400' : 'text-gray-500'}`}>
+                <div className={`mt-2 text-xs ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
                   Perfusion Index: {(Math.random() * 5 + 1).toFixed(1)}%
                 </div>
               </div>
 
               {/* Respiration */}
-              <div className={`p-4 rounded-lg ${isFullscreen ? 'bg-gray-800' : 'bg-gray-50'}`}>
+              <div className={`p-4 rounded-medical ${isFullscreen ? 'bg-background-hover' : 'bg-background-hover'}`}>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className={`font-semibold ${isFullscreen ? 'text-white' : 'text-gray-900'}`}>
+                  <h3 className={`font-semibold ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`}>
                     Respiration
                   </h3>
-                  <div className={`text-sm ${isFullscreen ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <div className={`text-sm ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
                     {patient.vitals.respiratoryRate}/min
                   </div>
                 </div>
                 
-                <div className="h-32 bg-black rounded relative overflow-hidden">
+                <div className="h-32 bg-black rounded-medical relative overflow-hidden">
                   <svg className="w-full h-full">
                     <rect width="100%" height="100%" fill="url(#ecg-grid)" />
                     
@@ -582,7 +582,7 @@ const AdvancedMonitoring: React.FC = () => {
                   <div className="absolute top-0 right-0 w-1 h-full bg-yellow-400 opacity-80 animate-pulse" />
                 </div>
                 
-                <div className={`mt-2 text-xs ${isFullscreen ? 'text-gray-400' : 'text-gray-500'}`}>
+                <div className={`mt-2 text-xs ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
                   I:E Ratio: 1:{(4000 / patient.vitals.respiratoryRate / 1000).toFixed(1)}
                 </div>
               </div>
@@ -593,8 +593,8 @@ const AdvancedMonitoring: React.FC = () => {
 
       {/* Parameter Statistics */}
       <div className={`${isFullscreen ? 'px-6 pb-6' : ''}`}>
-        <div className={`rounded-xl p-6 border ${isFullscreen ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
-          <h2 className={`text-lg font-semibold mb-6 ${isFullscreen ? 'text-white' : 'text-gray-900'}`}>
+        <div className={`rounded-card p-6 border shadow-soft ${isFullscreen ? 'bg-background-card border-border-light' : 'bg-background-card border-border-light'}`}>
+          <h2 className={`text-lg font-semibold mb-6 ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`}>
             Statistical Analysis - {selectedParam.name}
           </h2>
           
@@ -616,14 +616,14 @@ const AdvancedMonitoring: React.FC = () => {
                 { label: 'Std Dev', value: stdDev.toFixed(selectedParam.precision + 1), unit: selectedParam.unit },
                 { label: 'CV', value: cv.toFixed(1), unit: '%' }
               ].map((stat, index) => (
-                <div key={index} className={`p-3 rounded-lg ${isFullscreen ? 'bg-gray-800' : 'bg-gray-50'}`}>
-                  <div className={`text-xs ${isFullscreen ? 'text-gray-400' : 'text-gray-600'} mb-1`}>
+                <div key={index} className={`p-3 rounded-medical ${isFullscreen ? 'bg-background-hover' : 'bg-background-hover'}`}>
+                  <div className={`text-xs ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'} mb-1`}>
                     {stat.label}
                   </div>
-                  <div className={`text-lg font-bold ${isFullscreen ? 'text-white' : 'text-gray-900'}`}>
+                  <div className={`text-lg font-bold ${isFullscreen ? 'text-text-primary' : 'text-text-primary'}`}>
                     {stat.value}
                   </div>
-                  <div className={`text-xs ${isFullscreen ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <div className={`text-xs ${isFullscreen ? 'text-text-secondary' : 'text-text-secondary'}`}>
                     {stat.unit}
                   </div>
                 </div>

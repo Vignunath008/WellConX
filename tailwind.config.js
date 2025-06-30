@@ -201,7 +201,7 @@ export default {
           '@apply bg-background-card rounded-card shadow-soft border border-border-light': {},
         },
         '.medical-button-primary': {
-          '@apply bg-primary-500 hover:bg-primary-600 text-text-white font-medium py-3 px-6 rounded-medical transition-all duration-200 shadow-medical': {},
+          '@apply bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-6 rounded-medical transition-all duration-200 shadow-medical': {},
         },
         '.medical-button-secondary': {
           '@apply bg-background-card hover:bg-background-hover text-text-primary font-medium py-3 px-6 rounded-medical border border-border-light transition-all duration-200': {},
