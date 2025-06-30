@@ -18,7 +18,11 @@ import {
   Edit, 
   Trash,
   Monitor,
-  Save
+  Save,
+  Plus,
+  FileText,
+  UserPlus,
+  Briefcase
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -31,6 +35,7 @@ interface StaffMember {
   specialization: string
   status: 'active' | 'inactive'
   lastLogin: Date
+  isNewlyApproved?: boolean
 }
 
 const AdminPanel: React.FC = () => {
@@ -38,9 +43,11 @@ const AdminPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [searchTerm, setSearchTerm] = useState('')
   const [registrationRequests, setRegistrationRequests] = useState<any[]>([])
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null)
   
   // For staff management
-  const [staffMembers] = useState<StaffMember[]>([
+  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([
     {
       id: 'staff-001',
       name: 'Dr. Rajesh Sharma',
@@ -126,6 +133,29 @@ const AdminPanel: React.FC = () => {
   const handleRegistrationAction = (requestId: string, action: 'approve' | 'reject') => {
     if (action === 'approve') {
       approveRegistration(requestId)
+      
+      // Find the approved request
+      const approvedRequest = registrationRequests.find(req => req.id === requestId)
+      
+      // Add to staff members with newly approved flag
+      if (approvedRequest) {
+        const newStaffMember: StaffMember = {
+          id: `staff-${Date.now()}`,
+          name: `${approvedRequest.firstName} ${approvedRequest.lastName}`,
+          email: approvedRequest.email,
+          role: approvedRequest.role,
+          department: approvedRequest.department,
+          specialization: approvedRequest.specialization,
+          status: 'active',
+          lastLogin: new Date(),
+          isNewlyApproved: true
+        }
+        
+        setStaffMembers(prev => [newStaffMember, ...prev])
+        setSelectedStaff(newStaffMember)
+        setShowOnboarding(true)
+      }
+      
       alert('Registration approved. The user can now log in.')
     } else {
       rejectRegistration(requestId)
@@ -287,8 +317,9 @@ const AdminPanel: React.FC = () => {
               className="pl-10 pr-4 py-2 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 bg-background-card"
             />
           </div>
-          <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors">
-            Add Staff
+          <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2">
+            <UserPlus className="h-4 w-4" />
+            <span>Add Staff</span>
           </button>
         </div>
       </div>
@@ -321,14 +352,19 @@ const AdminPanel: React.FC = () => {
             </thead>
             <tbody className="bg-background-card divide-y divide-border-light">
               {filteredStaff.map((staff) => (
-                <tr key={staff.id} className="hover:bg-background-hover">
+                <tr key={staff.id} className={`hover:bg-background-hover ${staff.isNewlyApproved ? 'bg-health-50' : ''}`}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center">
                         <span className="text-primary-600 font-medium">{staff.name.charAt(0)}</span>
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-text-primary">{staff.name}</div>
+                        <div className="text-sm font-medium text-text-primary flex items-center">
+                          {staff.name}
+                          {staff.isNewlyApproved && (
+                            <span className="ml-2 px-2 py-1 text-xs bg-health-100 text-health-800 rounded-full">New</span>
+                          )}
+                        </div>
                         <div className="text-sm text-text-secondary">{staff.email}</div>
                       </div>
                     </div>
@@ -351,13 +387,20 @@ const AdminPanel: React.FC = () => {
                     {staff.lastLogin.toLocaleString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-primary-600 hover:text-primary-900 mr-3">
+                    <button 
+                      onClick={() => {
+                        setSelectedStaff(staff)
+                        setShowOnboarding(true)
+                      }}
+                      className="text-primary-600 hover:text-primary-900 mr-3"
+                      title="Setup"
+                    >
                       <Eye className="h-4 w-4" />
                     </button>
-                    <button className="text-primary-600 hover:text-primary-900 mr-3">
+                    <button className="text-primary-600 hover:text-primary-900 mr-3" title="Edit">
                       <Edit className="h-4 w-4" />
                     </button>
-                    <button className="text-red-600 hover:text-red-900">
+                    <button className="text-red-600 hover:text-red-900" title="Delete">
                       <Trash className="h-4 w-4" />
                     </button>
                   </td>
@@ -367,6 +410,163 @@ const AdminPanel: React.FC = () => {
           </table>
         </div>
       </div>
+      
+      {/* Staff Onboarding Modal */}
+      {showOnboarding && selectedStaff && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-background-card rounded-card shadow-medical max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div className="medical-gradient-primary p-6 text-white">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-white/20 p-2 rounded-medical">
+                    <UserCheck className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold">Staff Onboarding</h2>
+                    <p className="text-blue-100">{selectedStaff.name} - {selectedStaff.role}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowOnboarding(false)}
+                  className="p-2 hover:bg-white/20 rounded-medical transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+              <div className="space-y-6">
+                <div className="bg-health-50 p-4 rounded-medical border border-health-200">
+                  <h3 className="font-semibold text-text-primary mb-2 flex items-center">
+                    <CheckCircle className="h-5 w-5 text-health-600 mr-2" />
+                    Account Created Successfully
+                  </h3>
+                  <p className="text-text-secondary text-sm">
+                    {selectedStaff.name}'s account has been created and they can now log in using their email and password.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold text-text-primary mb-4">Onboarding Checklist</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-start p-4 bg-background-hover rounded-medical">
+                      <div className="mr-3 mt-0.5">
+                        <div className="h-6 w-6 rounded-full bg-primary-100 flex items-center justify-center">
+                          <span className="text-primary-600 font-medium">1</span>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-text-primary">System Access</h4>
+                        <p className="text-sm text-text-secondary mb-2">
+                          Ensure the staff member can log in and access appropriate modules.
+                        </p>
+                        <button className="text-sm bg-primary-600 text-white px-3 py-1 rounded-medical">
+                          Send Welcome Email
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start p-4 bg-background-hover rounded-medical">
+                      <div className="mr-3 mt-0.5">
+                        <div className="h-6 w-6 rounded-full bg-primary-100 flex items-center justify-center">
+                          <span className="text-primary-600 font-medium">2</span>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-text-primary">Patient Assignment</h4>
+                        <p className="text-sm text-text-secondary mb-2">
+                          Assign patients to this staff member for monitoring.
+                        </p>
+                        <button className="text-sm bg-primary-600 text-white px-3 py-1 rounded-medical">
+                          Assign Patients
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start p-4 bg-background-hover rounded-medical">
+                      <div className="mr-3 mt-0.5">
+                        <div className="h-6 w-6 rounded-full bg-primary-100 flex items-center justify-center">
+                          <span className="text-primary-600 font-medium">3</span>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-text-primary">Device Access</h4>
+                        <p className="text-sm text-text-secondary mb-2">
+                          Configure device access permissions for this staff member.
+                        </p>
+                        <button className="text-sm bg-primary-600 text-white px-3 py-1 rounded-medical">
+                          Configure Devices
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start p-4 bg-background-hover rounded-medical">
+                      <div className="mr-3 mt-0.5">
+                        <div className="h-6 w-6 rounded-full bg-primary-100 flex items-center justify-center">
+                          <span className="text-primary-600 font-medium">4</span>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-text-primary">Training</h4>
+                        <p className="text-sm text-text-secondary mb-2">
+                          Schedule system training for the new staff member.
+                        </p>
+                        <button className="text-sm bg-primary-600 text-white px-3 py-1 rounded-medical">
+                          Schedule Training
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold text-text-primary mb-4">Additional Resources</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 border border-border-light rounded-medical flex items-center space-x-3">
+                      <FileText className="h-5 w-5 text-primary-600" />
+                      <div>
+                        <h4 className="font-medium text-text-primary">User Manual</h4>
+                        <p className="text-sm text-text-secondary">Complete system documentation</p>
+                      </div>
+                    </div>
+                    <div className="p-4 border border-border-light rounded-medical flex items-center space-x-3">
+                      <Monitor className="h-5 w-5 text-primary-600" />
+                      <div>
+                        <h4 className="font-medium text-text-primary">Device Guide</h4>
+                        <p className="text-sm text-text-secondary">Medical device setup instructions</p>
+                      </div>
+                    </div>
+                    <div className="p-4 border border-border-light rounded-medical flex items-center space-x-3">
+                      <Activity className="h-5 w-5 text-primary-600" />
+                      <div>
+                        <h4 className="font-medium text-text-primary">Monitoring Tutorial</h4>
+                        <p className="text-sm text-text-secondary">Patient monitoring walkthrough</p>
+                      </div>
+                    </div>
+                    <div className="p-4 border border-border-light rounded-medical flex items-center space-x-3">
+                      <Briefcase className="h-5 w-5 text-primary-600" />
+                      <div>
+                        <h4 className="font-medium text-text-primary">Department Policies</h4>
+                        <p className="text-sm text-text-secondary">Standard operating procedures</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-background-hover p-4 border-t border-border-light flex justify-end">
+              <button 
+                onClick={() => setShowOnboarding(false)}
+                className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical"
+              >
+                Complete Onboarding
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 
@@ -491,6 +691,9 @@ const AdminPanel: React.FC = () => {
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       Status
                     </th>
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-background-card divide-y divide-border-light">
@@ -523,6 +726,28 @@ const AdminPanel: React.FC = () => {
                         }`}>
                           {request.status.toUpperCase()}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        {request.status === 'approved' && (
+                          <button 
+                            onClick={() => {
+                              // Find if this user is already in staff members
+                              const existingStaff = staffMembers.find(staff => 
+                                staff.email.toLowerCase() === request.email.toLowerCase()
+                              )
+                              
+                              if (existingStaff) {
+                                setSelectedStaff(existingStaff)
+                                setShowOnboarding(true)
+                              } else {
+                                alert('Staff member not found in the system.')
+                              }
+                            }}
+                            className="text-primary-600 hover:text-primary-900"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -665,7 +890,7 @@ const AdminPanel: React.FC = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-text-primary">Device Management</h2>
         <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-medical font-medium transition-colors flex items-center space-x-2">
-          <Monitor className="h-4 w-4" />
+          <Plus className="h-4 w-4" />
           <span>Add Device</span>
         </button>
       </div>
@@ -837,6 +1062,51 @@ const AdminPanel: React.FC = () => {
             <Save className="h-4 w-4" />
             <span>Save Configuration</span>
           </button>
+        </div>
+      </div>
+      
+      {/* New Device Registration */}
+      <div className="bg-background-card rounded-card p-6 border border-border-light shadow-soft">
+        <h3 className="text-lg font-semibold text-text-primary mb-4">New Device Registration</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-4 border border-border-light rounded-medical hover:border-primary-300 hover:bg-primary-50 transition-colors cursor-pointer">
+            <div className="text-center">
+              <div className="bg-primary-100 p-3 rounded-full inline-flex items-center justify-center mb-3">
+                <Monitor className="h-6 w-6 text-primary-600" />
+              </div>
+              <h4 className="font-medium text-text-primary mb-1">Philips IntelliVue</h4>
+              <p className="text-sm text-text-secondary">MP Series Monitors</p>
+              <button className="mt-3 bg-primary-600 text-white px-3 py-1 rounded-medical text-sm">
+                Register
+              </button>
+            </div>
+          </div>
+          
+          <div className="p-4 border border-border-light rounded-medical hover:border-primary-300 hover:bg-primary-50 transition-colors cursor-pointer">
+            <div className="text-center">
+              <div className="bg-primary-100 p-3 rounded-full inline-flex items-center justify-center mb-3">
+                <Monitor className="h-6 w-6 text-primary-600" />
+              </div>
+              <h4 className="font-medium text-text-primary mb-1">GE Healthcare</h4>
+              <p className="text-sm text-text-secondary">DASH Series Monitors</p>
+              <button className="mt-3 bg-primary-600 text-white px-3 py-1 rounded-medical text-sm">
+                Register
+              </button>
+            </div>
+          </div>
+          
+          <div className="p-4 border border-border-light rounded-medical hover:border-primary-300 hover:bg-primary-50 transition-colors cursor-pointer">
+            <div className="text-center">
+              <div className="bg-primary-100 p-3 rounded-full inline-flex items-center justify-center mb-3">
+                <Monitor className="h-6 w-6 text-primary-600" />
+              </div>
+              <h4 className="font-medium text-text-primary mb-1">Mindray</h4>
+              <p className="text-sm text-text-secondary">BeneView Series</p>
+              <button className="mt-3 bg-primary-600 text-white px-3 py-1 rounded-medical text-sm">
+                Register
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
