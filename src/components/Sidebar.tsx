@@ -29,42 +29,44 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-    <div className="medical-sidebar w-72 flex flex-col h-full">
-      <div className="flex items-center px-8 py-6 border-b border-border-light">
-        <div className="medical-gradient-primary p-2 rounded-card shadow-medical">
+    <div className="flex flex-col h-full w-72 bg-white border-r border-gray-200">
+      {/* Logo */}
+      <div className="flex items-center gap-3 px-6 py-6 border-b border-gray-200">
+        <div className="bg-primary-600 p-2 rounded-xl">
           <Activity className="h-6 w-6 text-white" />
         </div>
-        <div className="ml-3">
-          <h1 className="text-xl font-bold text-text-primary">WellConX</h1>
-          <p className="text-sm text-text-secondary">Patient Monitoring</p>
+        <div>
+          <h1 className="text-xl font-bold text-gray-900">WellConX</h1>
+          <p className="text-sm text-gray-500">Patient Monitoring</p>
         </div>
       </div>
       
-      <nav className="mt-8 px-4 flex-1">
-        <div className="space-y-2">
+      {/* Navigation */}
+      <nav className="flex-1 px-4 py-6">
+        <div className="space-y-1">
           {navigation.map((item) => (
             <NavLink
               key={item.name}
               to={item.href}
               className={({ isActive }) =>
-                `medical-nav-item ${
+                `nav-item ${
                   isActive
-                    ? 'medical-nav-item-active'
-                    : 'medical-nav-item-inactive'
+                    ? 'nav-item-active'
+                    : 'nav-item-inactive'
                 }`
               }
             >
-              <item.icon className="mr-3 h-5 w-5" />
+              <item.icon className="h-5 w-5" />
               {item.name}
             </NavLink>
           ))}
         </div>
       </nav>
 
-      {/* User Profile Section */}
-      <div className="p-4 border-t border-border-light">
-        <div className="medical-gradient-primary rounded-medical p-4">
-          <div className="flex items-center space-x-3">
+      {/* User Profile */}
+      <div className="p-4 border-t border-gray-200">
+        <div className="bg-gray-50 rounded-xl p-4">
+          <div className="flex items-center gap-3">
             {user?.picture ? (
               <img 
                 src={user.picture} 
@@ -72,21 +74,21 @@ const Sidebar: React.FC = () => {
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
-              <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
                 <span className="text-white font-semibold">
                   {user?.name?.charAt(0) || 'U'}
                 </span>
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">{user?.name}</p>
-              <p className="text-xs text-blue-100 truncate capitalize">
+              <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
+              <p className="text-xs text-gray-500 truncate capitalize">
                 {user?.role} • {user?.department}
               </p>
             </div>
             <button
               onClick={logout}
-              className="p-2 text-blue-100 hover:text-white transition-colors rounded-medical hover:bg-white hover:bg-opacity-10"
+              className="btn-ghost btn-sm"
               title="Logout"
             >
               <LogOut className="h-4 w-4" />

@@ -7,102 +7,153 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Modern Medical Color Palette
+        // Modern Neutral Color Palette
+        gray: {
+          25: '#FCFCFD',
+          50: '#F9FAFB',
+          100: '#F2F4F7',
+          200: '#EAECF0',
+          300: '#D0D5DD',
+          400: '#98A2B3',
+          500: '#667085',
+          600: '#475467',
+          700: '#344054',
+          800: '#1D2939',
+          900: '#101828',
+          950: '#0C111D',
+        },
         primary: {
-          50: '#E3F2FD',
-          100: '#BBDEFB',
-          200: '#90CAF9',
-          300: '#64B5F6',
-          400: '#42A5F5',
-          500: '#1E88E5', // Primary Blue
-          600: '#1976D2',
-          700: '#1565C0',
-          800: '#0D47A1',
-          900: '#0A3D91',
+          25: '#F5F8FF',
+          50: '#EFF4FF',
+          100: '#D1E0FF',
+          200: '#B2CCFF',
+          300: '#84ADFF',
+          400: '#528BFF',
+          500: '#2970FF',
+          600: '#155EEF',
+          700: '#004EEB',
+          800: '#0040C1',
+          900: '#00359E',
+          950: '#002266',
         },
-        health: {
-          50: '#E8F5E8',
-          100: '#C8E6C9',
-          200: '#A5D6A7',
-          300: '#81C784',
-          400: '#66BB6A',
-          500: '#43A047', // Mint Green for health indicators
-          600: '#388E3C',
-          700: '#2E7D32',
-          800: '#1B5E20',
-          900: '#0D4F14',
+        success: {
+          25: '#F6FEF9',
+          50: '#ECFDF3',
+          100: '#D1FADF',
+          200: '#A6F4C5',
+          300: '#6CE9A6',
+          400: '#32D583',
+          500: '#12B76A',
+          600: '#039855',
+          700: '#027A48',
+          800: '#05603A',
+          900: '#054F31',
+          950: '#022C22',
         },
-        alert: {
-          50: '#FFF3E0',
-          100: '#FFE0B2',
-          200: '#FFCC80',
-          300: '#FFB74D',
-          400: '#FFA726',
-          500: '#FF7043', // Soft Coral for alerts
-          600: '#F57C00',
-          700: '#E65100',
-          800: '#D84315',
-          900: '#BF360C',
+        warning: {
+          25: '#FFFCF5',
+          50: '#FFFAEB',
+          100: '#FEF0C7',
+          200: '#FEDF89',
+          300: '#FEC84B',
+          400: '#FDB022',
+          500: '#F79009',
+          600: '#DC6803',
+          700: '#B54708',
+          800: '#93370D',
+          900: '#7A2E0E',
+          950: '#4E1D09',
         },
-        background: {
-          primary: '#F4F6F8', // Off-white background
-          card: '#FFFFFF', // White cards
-          hover: '#FAFBFC',
+        error: {
+          25: '#FFFBFA',
+          50: '#FEF3F2',
+          100: '#FEE4E2',
+          200: '#FECDCA',
+          300: '#FDA29B',
+          400: '#F97066',
+          500: '#F04438',
+          600: '#D92D20',
+          700: '#B42318',
+          800: '#912018',
+          900: '#7A271A',
+          950: '#55160C',
         },
+        // Semantic colors
+        background: '#FFFFFF',
+        surface: '#F9FAFB',
+        border: '#EAECF0',
         text: {
-          primary: '#263238', // Dark slate grey
-          secondary: '#607D8B', // Muted grey for labels
-          light: '#90A4AE',
-          white: '#FFFFFF',
-        },
-        border: {
-          light: '#E1E5E9',
-          medium: '#CFD8DC',
-          dark: '#B0BEC5',
-        },
-        // Legacy support
-        foreground: 'rgb(38 50 56)',
-        medical: {
-          50: '#E3F2FD',
-          100: '#BBDEFB',
-          200: '#90CAF9',
-          300: '#64B5F6',
-          400: '#42A5F5',
-          500: '#1E88E5',
-          600: '#1976D2',
-          700: '#1565C0',
-          800: '#0D47A1',
-          900: '#0A3D91',
+          primary: '#101828',
+          secondary: '#344054',
+          tertiary: '#475467',
+          quaternary: '#667085',
+          disabled: '#98A2B3',
+          placeholder: '#98A2B3',
+          inverse: '#FFFFFF',
         }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        medical: ['Inter', 'Roboto', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        'display-2xl': ['4.5rem', { lineHeight: '5.625rem', letterSpacing: '-0.02em' }],
+        'display-xl': ['3.75rem', { lineHeight: '4.5rem', letterSpacing: '-0.02em' }],
+        'display-lg': ['3rem', { lineHeight: '3.75rem', letterSpacing: '-0.02em' }],
+        'display-md': ['2.25rem', { lineHeight: '2.75rem', letterSpacing: '-0.02em' }],
+        'display-sm': ['1.875rem', { lineHeight: '2.375rem' }],
+        'display-xs': ['1.5rem', { lineHeight: '2rem' }],
+        'text-xl': ['1.25rem', { lineHeight: '1.875rem' }],
+        'text-lg': ['1.125rem', { lineHeight: '1.75rem' }],
+        'text-md': ['1rem', { lineHeight: '1.5rem' }],
+        'text-sm': ['0.875rem', { lineHeight: '1.25rem' }],
+        'text-xs': ['0.75rem', { lineHeight: '1.125rem' }],
+      },
+      spacing: {
+        '4.5': '1.125rem',
+        '5.5': '1.375rem',
+        '6.5': '1.625rem',
+        '7.5': '1.875rem',
+        '8.5': '2.125rem',
+        '9.5': '2.375rem',
+        '10.5': '2.625rem',
+        '11.5': '2.875rem',
+        '12.5': '3.125rem',
+        '13': '3.25rem',
+        '15': '3.75rem',
+        '17': '4.25rem',
+        '18': '4.5rem',
+        '19': '4.75rem',
+        '21': '5.25rem',
+        '22': '5.5rem',
+        '25': '6.25rem',
+        '30': '7.5rem',
+      },
+      borderRadius: {
+        'none': '0',
+        'sm': '0.375rem',
+        'DEFAULT': '0.5rem',
+        'md': '0.5rem',
+        'lg': '0.75rem',
+        'xl': '1rem',
+        '2xl': '1.25rem',
+        '3xl': '1.5rem',
+      },
+      boxShadow: {
+        'xs': '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
+        'sm': '0px 1px 2px 0px rgba(16, 24, 40, 0.06), 0px 1px 3px 0px rgba(16, 24, 40, 0.10)',
+        'md': '0px 2px 4px -2px rgba(16, 24, 40, 0.06), 0px 4px 8px -2px rgba(16, 24, 40, 0.10)',
+        'lg': '0px 4px 6px -2px rgba(16, 24, 40, 0.03), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)',
+        'xl': '0px 8px 8px -4px rgba(16, 24, 40, 0.03), 0px 20px 24px -4px rgba(16, 24, 40, 0.08)',
+        '2xl': '0px 24px 48px -12px rgba(16, 24, 40, 0.18)',
+        '3xl': '0px 32px 64px -12px rgba(16, 24, 40, 0.14)',
       },
       animation: {
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'heartbeat': 'heartbeat 1.2s ease-in-out infinite',
-        'pulse-ring': 'pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite',
-        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'fade-in': 'fadeIn 0.5s ease-out',
         'slide-up': 'slideUp 0.3s ease-out',
+        'slide-down': 'slideDown 0.3s ease-out',
+        'scale-in': 'scaleIn 0.2s ease-out',
       },
       keyframes: {
-        heartbeat: {
-          '0%, 100%': { transform: 'scale(1)' },
-          '25%': { transform: 'scale(1.1)' },
-          '50%': { transform: 'scale(1)' },
-          '75%': { transform: 'scale(1.05)' },
-        },
-        'pulse-ring': {
-          '0%': {
-            transform: 'scale(0.8)',
-            opacity: '1',
-          },
-          '100%': {
-            transform: 'scale(2.4)',
-            opacity: '0',
-          },
-        },
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
@@ -111,112 +162,103 @@ export default {
           '0%': { transform: 'translateY(10px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
+        slideDown: {
+          '0%': { transform: 'translateY(-10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        scaleIn: {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
       },
-      boxShadow: {
-        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
-        'medical': '0 4px 20px -2px rgba(30, 136, 229, 0.1), 0 2px 8px -2px rgba(30, 136, 229, 0.06)',
-        'health': '0 4px 20px -2px rgba(67, 160, 71, 0.1), 0 2px 8px -2px rgba(67, 160, 71, 0.06)',
-        'alert': '0 4px 20px -2px rgba(255, 112, 67, 0.1), 0 2px 8px -2px rgba(255, 112, 67, 0.06)',
-      },
-      screens: {
-        'xs': '475px',
-        'sm': '640px',
-        'md': '768px',
-        'lg': '1024px',
-        'xl': '1280px',
-        '2xl': '1536px',
-        // Mobile-first breakpoints
-        'mobile': {'max': '639px'},
-        'tablet': {'min': '640px', 'max': '1023px'},
-        'desktop': {'min': '1024px'},
-      },
-      spacing: {
-        'safe-top': 'env(safe-area-inset-top)',
-        'safe-bottom': 'env(safe-area-inset-bottom)',
-        'safe-left': 'env(safe-area-inset-left)',
-        'safe-right': 'env(safe-area-inset-right)',
-        // Medical spacing
-        '18': '4.5rem',
-        '22': '5.5rem',
-      },
-      fontSize: {
-        'xs': ['0.75rem', { lineHeight: '1rem' }],
-        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
-        'base': ['1rem', { lineHeight: '1.5rem' }],
-        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
-        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
-        '2xl': ['1.5rem', { lineHeight: '2rem' }],
-        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
-        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
-      },
-      borderRadius: {
-        'medical': '12px',
-        'card': '16px',
-      },
-      maxWidth: {
-        'mobile': '100vw',
-        'tablet': '768px',
-        'desktop': '1024px',
-      },
-      minHeight: {
-        'touch': '44px',
-        'mobile-screen': '100vh',
-        'mobile-safe': 'calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))',
-      },
-      zIndex: {
-        'mobile-nav': '1000',
-        'mobile-overlay': '999',
-        'mobile-modal': '1001',
-      }
     },
   },
   plugins: [
     function({ addUtilities, addComponents }) {
       const newUtilities = {
-        '.touch-manipulation': {
-          'touch-action': 'manipulation',
+        '.text-balance': {
+          'text-wrap': 'balance',
         },
-        '.scroll-smooth': {
-          'scroll-behavior': 'smooth',
-          '-webkit-overflow-scrolling': 'touch',
-        },
-        '.no-tap-highlight': {
-          '-webkit-tap-highlight-color': 'transparent',
-        },
-        '.mobile-viewport': {
-          'width': '100vw',
-          'min-height': '100vh',
-          'min-height': '100dvh',
-        },
-        '.safe-area-full': {
-          'padding-top': 'env(safe-area-inset-top)',
-          'padding-bottom': 'env(safe-area-inset-bottom)',
-          'padding-left': 'env(safe-area-inset-left)',
-          'padding-right': 'env(safe-area-inset-right)',
-        }
       }
       
       const newComponents = {
-        '.medical-card': {
-          '@apply bg-background-card rounded-card shadow-soft border border-border-light': {},
+        // Button Components
+        '.btn': {
+          '@apply inline-flex items-center justify-center gap-2 rounded-lg text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed': {},
         },
-        '.medical-button-primary': {
-          '@apply bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-6 rounded-medical transition-all duration-200 shadow-medical': {},
+        '.btn-primary': {
+          '@apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-600 shadow-sm': {},
         },
-        '.medical-button-secondary': {
-          '@apply bg-background-card hover:bg-background-hover text-text-primary font-medium py-3 px-6 rounded-medical border border-border-light transition-all duration-200': {},
+        '.btn-secondary': {
+          '@apply btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-primary-600 shadow-sm': {},
         },
-        '.medical-input': {
-          '@apply w-full px-4 py-3 border border-border-light rounded-medical focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-background-card text-text-primary': {},
+        '.btn-ghost': {
+          '@apply btn text-gray-700 hover:bg-gray-50 focus:ring-primary-600': {},
         },
-        '.vital-card-normal': {
-          '@apply bg-health-50 border border-health-200 text-health-800': {},
+        '.btn-sm': {
+          '@apply px-3 py-2 text-sm': {},
         },
-        '.vital-card-warning': {
-          '@apply bg-alert-50 border border-alert-200 text-alert-800': {},
+        '.btn-md': {
+          '@apply px-4 py-2.5 text-sm': {},
         },
-        '.vital-card-critical': {
-          '@apply bg-red-50 border border-red-200 text-red-800': {},
+        '.btn-lg': {
+          '@apply px-4.5 py-2.5 text-md': {},
+        },
+        '.btn-xl': {
+          '@apply px-5 py-3 text-md': {},
+        },
+        '.btn-2xl': {
+          '@apply px-7 py-4 text-lg': {},
+        },
+        
+        // Card Components
+        '.card': {
+          '@apply bg-white rounded-xl border border-gray-200 shadow-sm': {},
+        },
+        '.card-hover': {
+          '@apply card hover:shadow-md transition-shadow duration-200': {},
+        },
+        
+        // Input Components
+        '.input': {
+          '@apply block w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 sm:text-sm transition-colors': {},
+        },
+        '.input-error': {
+          '@apply border-error-300 focus:border-error-500 focus:ring-error-500': {},
+        },
+        
+        // Status Components
+        '.status-dot': {
+          '@apply inline-flex h-2 w-2 rounded-full': {},
+        },
+        '.status-online': {
+          '@apply bg-success-500': {},
+        },
+        '.status-offline': {
+          '@apply bg-gray-400': {},
+        },
+        '.status-warning': {
+          '@apply bg-warning-500': {},
+        },
+        '.status-error': {
+          '@apply bg-error-500': {},
+        },
+        
+        // Badge Components
+        '.badge': {
+          '@apply inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium': {},
+        },
+        '.badge-success': {
+          '@apply badge bg-success-50 text-success-700 ring-1 ring-inset ring-success-600/20': {},
+        },
+        '.badge-warning': {
+          '@apply badge bg-warning-50 text-warning-800 ring-1 ring-inset ring-warning-600/20': {},
+        },
+        '.badge-error': {
+          '@apply badge bg-error-50 text-error-700 ring-1 ring-inset ring-error-600/20': {},
+        },
+        '.badge-gray': {
+          '@apply badge bg-gray-50 text-gray-600 ring-1 ring-inset ring-gray-500/10': {},
         },
       }
       
