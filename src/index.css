@@ -189,6 +189,103 @@
   .skeleton-button {
     @apply skeleton h-10 w-24;
   }
+
+  /* Button Components */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-600 shadow-sm;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-primary-600 shadow-sm;
+  }
+  
+  .btn-ghost {
+    @apply btn text-gray-700 hover:bg-gray-50 focus:ring-primary-600;
+  }
+  
+  .btn-sm {
+    @apply px-3 py-2 text-sm;
+  }
+  
+  .btn-md {
+    @apply px-4 py-2.5 text-sm;
+  }
+  
+  .btn-lg {
+    @apply px-4.5 py-2.5 text-md;
+  }
+  
+  .btn-xl {
+    @apply px-5 py-3 text-md;
+  }
+  
+  .btn-2xl {
+    @apply px-7 py-4 text-lg;
+  }
+  
+  /* Card Components */
+  .card {
+    @apply bg-white rounded-xl border border-gray-200 shadow-sm;
+  }
+  
+  .card-hover {
+    @apply card hover:shadow-md transition-shadow duration-200;
+  }
+  
+  /* Input Components */
+  .input {
+    @apply block w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 sm:text-sm transition-colors;
+  }
+  
+  .input-error {
+    @apply border-error-300 focus:border-error-500 focus:ring-error-500;
+  }
+  
+  /* Status Components */
+  .status-dot {
+    @apply inline-flex h-2 w-2 rounded-full;
+  }
+  
+  .status-online {
+    @apply bg-success-500;
+  }
+  
+  .status-offline {
+    @apply bg-gray-400;
+  }
+  
+  .status-warning {
+    @apply bg-warning-500;
+  }
+  
+  .status-error {
+    @apply bg-error-500;
+  }
+  
+  /* Badge Components */
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium;
+  }
+  
+  .badge-success {
+    @apply badge bg-success-50 text-success-700 ring-1 ring-inset ring-success-600/20;
+  }
+  
+  .badge-warning {
+    @apply badge bg-warning-50 text-warning-800 ring-1 ring-inset ring-warning-600/20;
+  }
+  
+  .badge-error {
+    @apply badge bg-error-50 text-error-700 ring-1 ring-inset ring-error-600/20;
+  }
+  
+  .badge-gray {
+    @apply badge bg-gray-50 text-gray-600 ring-1 ring-inset ring-gray-500/10;
+  }
 }
 
 @layer utilities {
