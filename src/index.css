@@ -216,11 +216,11 @@
   }
   
   .btn-lg {
-    @apply px-4.5 py-2.5 text-md;
+    @apply px-4.5 py-2.5 text-base;
   }
   
   .btn-xl {
-    @apply px-5 py-3 text-md;
+    @apply px-5 py-3 text-base;
   }
   
   .btn-2xl {
