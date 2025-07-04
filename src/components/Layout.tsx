@@ -8,7 +8,7 @@ const Layout: React.FC = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
 
   return (
-    <div className="flex h-screen bg-background-primary overflow-hidden">
+    <div className="flex h-screen bg-gray-25 overflow-hidden">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar />
@@ -23,11 +23,9 @@ const Layout: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <Header onMobileMenuClick={() => setIsMobileSidebarOpen(true)} />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background-primary">
-          <div className="p-3 sm:p-4 lg:p-6">
-            <div className="max-w-7xl mx-auto">
-              <Outlet />
-            </div>
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-25">
+          <div className="py-6">
+            <Outlet />
           </div>
         </main>
       </div>
