@@ -32,15 +32,22 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
     )
   }
 
-  const handleSearch = () => {
-    if (searchTerm.trim()) {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSearchTerm(value)
+    if (value.trim()) {
       setShowSearchResults(true)
+    } else {
+      setShowSearchResults(false)
     }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch()
+    if (e.key === 'Enter' && searchTerm.trim()) {
+      const results = searchPatients(searchTerm)
+      if (results.length > 0) {
+        selectPatient(results[0])
+      }
     }
   }
 
@@ -73,24 +80,35 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
     setShowUserMenu(!showUserMenu)
   }
 
+  const handleLogout = () => {
+    setShowUserMenu(false)
+    logout()
+    navigate('/login')
+  }
+
+  const handleSettingsClick = () => {
+    setShowUserMenu(false)
+    navigate('/settings')
+  }
+
   return (
     <>
       <header className="sticky top-0 z-40 bg-white border-b border-gray-200 safe-top">
-        <div className="container-fluid">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Left Section */}
-            <div className="flex items-center gap-4 min-w-0 flex-1">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
               {/* Mobile Menu Button */}
               <button
                 onClick={onMobileMenuClick}
-                className="lg:hidden btn-ghost btn-sm"
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <Menu className="h-5 w-5" />
               </button>
 
               {/* Logo/Title */}
               <div className="min-w-0 flex-1">
-                <h1 className="text-lg font-semibold text-gray-900 truncate">
+                <h1 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
                   <span className="hidden sm:inline">WellConX Dashboard</span>
                   <span className="sm:hidden">WellConX</span>
                 </h1>
@@ -98,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
             </div>
             
             {/* Right Section */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* Desktop Search */}
               <div className="relative hidden lg:block">
                 <div className="flex items-center">
@@ -108,9 +126,9 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                       type="text"
                       placeholder="Search patients..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={handleSearch}
                       onKeyPress={handleKeyPress}
-                      className="input pl-10 pr-4 w-80"
+                      className="pl-10 pr-10 py-2 w-80 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     />
                     {searchTerm && (
                       <button
@@ -122,12 +140,43 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                     )}
                   </div>
                 </div>
+
+                {/* Desktop Search Results */}
+                {showSearchResults && searchResults.length > 0 && (
+                  <div className="absolute top-full mt-2 w-full bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto">
+                    <div className="p-2">
+                      {searchResults.map((patient) => (
+                        <button
+                          key={patient.id}
+                          onClick={() => selectPatient(patient)}
+                          className="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium text-gray-900">{patient.name}</h4>
+                              <p className="text-sm text-gray-500">
+                                Room {patient.room} • {patient.age}y {patient.gender}
+                              </p>
+                            </div>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              patient.status === 'critical' ? 'bg-red-100 text-red-800' :
+                              patient.status === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-green-100 text-green-800'
+                            }`}>
+                              {patient.status}
+                            </span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Mobile Search Button */}
               <button 
                 onClick={() => setShowSearchResults(true)}
-                className="lg:hidden btn-ghost btn-sm"
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <Search className="h-5 w-5" />
               </button>
@@ -136,11 +185,11 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
               <div className="relative">
                 <button 
                   onClick={handleAlertClick}
-                  className="btn-ghost btn-sm relative"
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative"
                 >
                   <Bell className="h-5 w-5" />
                   {unreadAlerts > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-error-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
                       {unreadAlerts > 9 ? '9+' : unreadAlerts}
                     </span>
                   )}
@@ -153,14 +202,14 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                       initial={{ opacity: 0, y: -10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                      className="absolute right-0 top-full mt-2 w-96 bg-white rounded-xl shadow-xl border border-gray-200 z-50 max-h-96 overflow-hidden"
+                      className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-gray-200 z-50 max-h-96 overflow-hidden"
                     >
                       <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center justify-between">
                           <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
                           <button
                             onClick={() => setShowAlerts(false)}
-                            className="btn-ghost btn-sm"
+                            className="p-1 hover:bg-gray-100 rounded transition-colors"
                           >
                             <X className="h-4 w-4" />
                           </button>
@@ -182,19 +231,19 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                                   alert.acknowledged 
                                     ? 'bg-gray-25 border-gray-200 opacity-60' 
                                     : alert.type === 'critical' 
-                                      ? 'bg-error-25 border-error-200' 
+                                      ? 'bg-red-25 border-red-200' 
                                       : alert.type === 'warning'
-                                        ? 'bg-warning-25 border-warning-200'
-                                        : 'bg-primary-25 border-primary-200'
+                                        ? 'bg-yellow-25 border-yellow-200'
+                                        : 'bg-blue-25 border-blue-200'
                                 }`}
                               >
                                 <div className="flex items-start justify-between">
-                                  <div className="flex-1 min-w-0">
+                                  <div className="flex-1 min-w-0 pr-2">
                                     <div className="flex items-center gap-2 mb-1">
-                                      <span className={`badge ${
-                                        alert.type === 'critical' ? 'badge-error' :
-                                        alert.type === 'warning' ? 'badge-warning' :
-                                        'bg-primary-50 text-primary-700 ring-1 ring-inset ring-primary-600/20'
+                                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                        alert.type === 'critical' ? 'bg-red-100 text-red-800' :
+                                        alert.type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                                        'bg-blue-100 text-blue-800'
                                       }`}>
                                         {alert.type.toUpperCase()}
                                       </span>
@@ -210,11 +259,11 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                                     </div>
                                   </div>
                                   
-                                  <div className="flex items-center gap-1 ml-2">
+                                  <div className="flex items-center gap-1 flex-shrink-0">
                                     {!alert.acknowledged && (
                                       <button
                                         onClick={() => handleAcknowledgeAlert(alert.id)}
-                                        className="text-success-600 hover:bg-success-100 rounded p-1 text-xs"
+                                        className="text-green-600 hover:bg-green-100 rounded p-1 text-xs"
                                         title="Acknowledge"
                                       >
                                         ✓
@@ -248,7 +297,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
               <div className="relative">
                 <button
                   onClick={toggleUserMenu}
-                  className="flex items-center gap-2 btn-ghost btn-sm"
+                  className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   {user?.picture ? (
                     <img 
@@ -307,11 +356,8 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                       
                       <div className="py-2">
                         <button
-                          onClick={() => {
-                            setShowUserMenu(false)
-                            navigate('/settings')
-                          }}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          onClick={handleSettingsClick}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                         >
                           Settings
                         </button>
@@ -322,18 +368,15 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                               setShowUserMenu(false)
                               navigate('/admin')
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                           >
                             Admin Panel
                           </button>
                         )}
                         
                         <button
-                          onClick={() => {
-                            setShowUserMenu(false)
-                            logout()
-                          }}
-                          className="w-full text-left px-4 py-2 text-sm text-error-600 hover:bg-error-50"
+                          onClick={handleLogout}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
                         >
                           Sign Out
                         </button>
@@ -373,15 +416,15 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                       type="text"
                       placeholder="Search patients..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={handleSearch}
                       onKeyPress={handleKeyPress}
-                      className="input pl-10 pr-4"
+                      className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       autoFocus
                     />
                   </div>
                   <button
                     onClick={() => setShowSearchResults(false)}
-                    className="btn-ghost btn-sm"
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -396,7 +439,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                         key={patient.id}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="card-hover p-4 cursor-pointer"
+                        className="p-4 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
                         onClick={() => selectPatient(patient)}
                       >
                         <div className="flex items-start justify-between">
@@ -413,10 +456,10 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
                             </div>
                           </div>
                           
-                          <span className={`status-indicator ${
-                            patient.status === 'critical' ? 'status-critical' :
-                            patient.status === 'warning' ? 'status-warning' :
-                            'status-stable'
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
+                            patient.status === 'critical' ? 'bg-red-100 text-red-800' :
+                            patient.status === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-green-100 text-green-800'
                           }`}>
                             {patient.status}
                           </span>
@@ -440,14 +483,14 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
       {/* Click outside handlers */}
       {showAlerts && (
         <div 
-          className="fixed inset-0 z-40" 
+          className="fixed inset-0 z-30" 
           onClick={() => setShowAlerts(false)}
         />
       )}
 
       {showUserMenu && (
         <div 
-          className="fixed inset-0 z-40" 
+          className="fixed inset-0 z-30" 
           onClick={() => setShowUserMenu(false)}
         />
       )}

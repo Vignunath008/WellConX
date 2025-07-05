@@ -151,272 +151,275 @@ const Analytics: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Analytics & Reports</h1>
-        <div className="flex items-center space-x-3">
-          <select
-            value={selectedPatient}
-            onChange={(e) => setSelectedPatient(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-medical-500 focus:border-medical-500"
-          >
-            <option value="all">All Patients</option>
-            {patients.map(patient => (
-              <option key={patient.id} value={patient.id}>{patient.name}</option>
-            ))}
-          </select>
-          <select
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-medical-500 focus:border-medical-500"
-          >
-            <option value="24h">Last 24 Hours</option>
-            <option value="7d">Last 7 Days</option>
-            <option value="30d">Last 30 Days</option>
-            <option value="90d">Last 90 Days</option>
-          </select>
-          <button className="btn-secondary">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </button>
-          <button onClick={exportData} className="btn-primary">
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </button>
-        </div>
-      </div>
-
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="card p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-3xl font-bold text-medical-600">
-                {Math.round(patientAnalytics.reduce((acc, p) => acc + p.stabilityScore, 0) / patientAnalytics.length)}%
-              </div>
-              <div className="text-sm text-gray-600 mt-1">Avg Stability Score</div>
-            </div>
-            <Heart className="h-8 w-8 text-medical-600" />
-          </div>
-        </div>
-        
-        <div className="card p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-3xl font-bold text-green-600">{patients.length}</div>
-              <div className="text-sm text-gray-600 mt-1">Active Patients</div>
-            </div>
-            <Users className="h-8 w-8 text-green-600" />
-          </div>
-        </div>
-        
-        <div className="card p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-3xl font-bold text-yellow-600">
-                {alerts.filter(a => !a.acknowledged).length}
-              </div>
-              <div className="text-sm text-gray-600 mt-1">Pending Alerts</div>
-            </div>
-            <AlertTriangle className="h-8 w-8 text-yellow-600" />
-          </div>
-        </div>
-        
-        <div className="card p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-3xl font-bold text-blue-600">2.3min</div>
-              <div className="text-sm text-gray-600 mt-1">Avg Response Time</div>
-            </div>
-            <Clock className="h-8 w-8 text-blue-600" />
-          </div>
-        </div>
-      </div>
-
-      {/* Patient Risk Assessment */}
-      <div className="card p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Patient Risk Assessment</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-200">
-                <th className="text-left py-3 px-4 font-medium text-gray-900">Patient</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-900">Stability Score</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-900">Risk Level</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-900">HR Trend</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-900">SpO2 Trend</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-900">Alerts (24h)</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-900">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {patientAnalytics.map((patient) => (
-                <tr key={patient.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="py-3 px-4">
-                    <div>
-                      <div className="font-medium text-gray-900">{patient.name}</div>
-                      <div className="text-sm text-gray-500">{patient.room}</div>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center">
-                      <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                        <div 
-                          className={`h-2 rounded-full ${
-                            patient.stabilityScore > 80 ? 'bg-green-500' :
-                            patient.stabilityScore > 60 ? 'bg-yellow-500' : 'bg-red-500'
-                          }`}
-                          style={{ width: `${patient.stabilityScore}%` }}
-                        />
-                      </div>
-                      <span className="text-sm font-medium">{patient.stabilityScore}%</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(patient.riskLevel)}`}>
-                      {patient.riskLevel.toUpperCase()}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center">
-                      {getTrendIcon(patient.trends.heartRate)}
-                      <span className="ml-1 text-sm">{patient.trends.heartRate.toFixed(1)}%</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center">
-                      {getTrendIcon(patient.trends.oxygenSaturation)}
-                      <span className="ml-1 text-sm">{patient.trends.oxygenSaturation.toFixed(1)}%</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex space-x-1">
-                      {patient.alertCounts.critical > 0 && (
-                        <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">
-                          {patient.alertCounts.critical}C
-                        </span>
-                      )}
-                      {patient.alertCounts.warning > 0 && (
-                        <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">
-                          {patient.alertCounts.warning}W
-                        </span>
-                      )}
-                      {patient.alertCounts.total === 0 && (
-                        <span className="text-green-600 text-xs">None</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      patient.status === 'critical' ? 'bg-red-100 text-red-800' :
-                      patient.status === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-green-100 text-green-800'
-                    }`}>
-                      {patient.status.toUpperCase()}
-                    </span>
-                  </td>
-                </tr>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Analytics & Reports</h1>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
+            <select
+              value={selectedPatient}
+              onChange={(e) => setSelectedPatient(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="all">All Patients</option>
+              {patients.map(patient => (
+                <option key={patient.id} value={patient.id}>{patient.name}</option>
               ))}
-            </tbody>
-          </table>
+            </select>
+            <select
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="24h">Last 24 Hours</option>
+              <option value="7d">Last 7 Days</option>
+              <option value="30d">Last 30 Days</option>
+              <option value="90d">Last 90 Days</option>
+            </select>
+            <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2">
+              <Filter className="h-4 w-4" />
+              <span>Filter</span>
+            </button>
+            <button onClick={exportData} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2">
+              <Download className="h-4 w-4" />
+              <span>Export</span>
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Vital Signs Trends */}
-        <div className="card p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">24-Hour Vital Trends</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={hourlyData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="hour" />
-              <YAxis yAxisId="left" />
-              <YAxis yAxisId="right" orientation="right" />
-              <Tooltip />
-              <Line yAxisId="left" type="monotone" dataKey="avgHeartRate" stroke="#ef4444" name="Avg HR" />
-              <Line yAxisId="right" type="monotone" dataKey="avgSpO2" stroke="#3b82f6" name="Avg SpO2" />
-            </LineChart>
-          </ResponsiveContainer>
+        {/* Key Metrics */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-blue-600">
+                  {Math.round(patientAnalytics.reduce((acc, p) => acc + p.stabilityScore, 0) / patientAnalytics.length)}%
+                </div>
+                <div className="text-sm text-gray-600 mt-1">Avg Stability Score</div>
+              </div>
+              <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-green-600">{patients.length}</div>
+                <div className="text-sm text-gray-600 mt-1">Active Patients</div>
+              </div>
+              <Users className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-yellow-600">
+                  {alerts.filter(a => !a.acknowledged).length}
+                </div>
+                <div className="text-sm text-gray-600 mt-1">Pending Alerts</div>
+              </div>
+              <AlertTriangle className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-600" />
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-blue-600">2.3min</div>
+                <div className="text-sm text-gray-600 mt-1">Avg Response Time</div>
+              </div>
+              <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+            </div>
+          </div>
         </div>
 
-        {/* Alert Distribution */}
-        <div className="card p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Alert Distribution</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={alertsData}
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-              >
-                {alertsData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
+        {/* Patient Risk Assessment */}
+        <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Patient Risk Assessment</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-gray-900 text-sm">Patient</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-gray-900 text-sm">Stability Score</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-gray-900 text-sm">Risk Level</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-gray-900 text-sm hidden sm:table-cell">HR Trend</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-gray-900 text-sm hidden sm:table-cell">SpO2 Trend</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-gray-900 text-sm">Alerts (24h)</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-gray-900 text-sm">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {patientAnalytics.map((patient) => (
+                  <tr key={patient.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <td className="py-3 px-2 sm:px-4">
+                      <div>
+                        <div className="font-medium text-gray-900 text-sm">{patient.name}</div>
+                        <div className="text-xs text-gray-500">{patient.room}</div>
+                      </div>
+                    </td>
+                    <td className="py-3 px-2 sm:px-4">
+                      <div className="flex items-center">
+                        <div className="w-12 sm:w-16 bg-gray-200 rounded-full h-2 mr-2">
+                          <div 
+                            className={`h-2 rounded-full ${
+                              patient.stabilityScore > 80 ? 'bg-green-500' :
+                              patient.stabilityScore > 60 ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}
+                            style={{ width: `${patient.stabilityScore}%` }}
+                          />
+                        </div>
+                        <span className="text-sm font-medium">{patient.stabilityScore}%</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-2 sm:px-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(patient.riskLevel)}`}>
+                        {patient.riskLevel.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="py-3 px-2 sm:px-4 hidden sm:table-cell">
+                      <div className="flex items-center">
+                        {getTrendIcon(patient.trends.heartRate)}
+                        <span className="ml-1 text-sm">{patient.trends.heartRate.toFixed(1)}%</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-2 sm:px-4 hidden sm:table-cell">
+                      <div className="flex items-center">
+                        {getTrendIcon(patient.trends.oxygenSaturation)}
+                        <span className="ml-1 text-sm">{patient.trends.oxygenSaturation.toFixed(1)}%</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-2 sm:px-4">
+                      <div className="flex flex-wrap gap-1">
+                        {patient.alertCounts.critical > 0 && (
+                          <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">
+                            {patient.alertCounts.critical}C
+                          </span>
+                        )}
+                        {patient.alertCounts.warning > 0 && (
+                          <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">
+                            {patient.alertCounts.warning}W
+                          </span>
+                        )}
+                        {patient.alertCounts.total === 0 && (
+                          <span className="text-green-600 text-xs">None</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-3 px-2 sm:px-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        patient.status === 'critical' ? 'bg-red-100 text-red-800' :
+                        patient.status === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-green-100 text-green-800'
+                      }`}>
+                        {patient.status.toUpperCase()}
+                      </span>
+                    </td>
+                  </tr>
                 ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        {/* Device Efficiency */}
-        <div className="card p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Device Performance</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={deviceUsageData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="efficiency" fill="#0ea5e9" name="Efficiency %" />
-              <Bar dataKey="patients" fill="#06b6d4" name="Patients" />
-            </BarChart>
-          </ResponsiveContainer>
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Vital Signs Trends */}
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">24-Hour Vital Trends</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={hourlyData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="hour" />
+                <YAxis yAxisId="left" />
+                <YAxis yAxisId="right" orientation="right" />
+                <Tooltip />
+                <Line yAxisId="left" type="monotone" dataKey="avgHeartRate" stroke="#ef4444" name="Avg HR" />
+                <Line yAxisId="right" type="monotone" dataKey="avgSpO2" stroke="#3b82f6" name="Avg SpO2" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Alert Distribution */}
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Alert Distribution</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={alertsData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  {alertsData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Device Efficiency */}
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Device Performance</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={deviceUsageData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="efficiency" fill="#0ea5e9" name="Efficiency %" />
+                <Bar dataKey="patients" fill="#06b6d4" name="Patients" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Patient Stability Distribution */}
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Patient Stability Scores</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={vitalDistribution}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="patient" />
+                <YAxis />
+                <Tooltip />
+                <Area type="monotone" dataKey="stabilityScore" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        {/* Patient Stability Distribution */}
-        <div className="card p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Patient Stability Scores</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={vitalDistribution}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="patient" />
-              <YAxis />
-              <Tooltip />
-              <Area type="monotone" dataKey="stabilityScore" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+        {/* Detailed Patient History */}
+        {selectedPatient !== 'all' && selectedPatientData.length > 0 && (
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Detailed History - {selectedPatientData[0].name}
+            </h2>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={selectedPatientData[0].history}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="timestamp" 
+                  tickFormatter={(value) => new Date(value).toLocaleTimeString()} 
+                />
+                <YAxis yAxisId="left" />
+                <YAxis yAxisId="right" orientation="right" />
+                <Tooltip 
+                  labelFormatter={(value) => new Date(value).toLocaleString()}
+                />
+                <Line yAxisId="left" type="monotone" dataKey="heartRate" stroke="#ef4444" name="Heart Rate" />
+                <Line yAxisId="right" type="monotone" dataKey="oxygenSaturation" stroke="#3b82f6" name="SpO2" />
+                <Line yAxisId="left" type="monotone" dataKey="temperature" stroke="#f59e0b" name="Temperature" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
-
-      {/* Detailed Patient History */}
-      {selectedPatient !== 'all' && selectedPatientData.length > 0 && (
-        <div className="card p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Detailed History - {selectedPatientData[0].name}
-          </h2>
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={selectedPatientData[0].history}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="timestamp" 
-                tickFormatter={(value) => new Date(value).toLocaleTimeString()} 
-              />
-              <YAxis yAxisId="left" />
-              <YAxis yAxisId="right" orientation="right" />
-              <Tooltip 
-                labelFormatter={(value) => new Date(value).toLocaleString()}
-              />
-              <Line yAxisId="left" type="monotone" dataKey="heartRate" stroke="#ef4444" name="Heart Rate" />
-              <Line yAxisId="right" type="monotone" dataKey="oxygenSaturation" stroke="#3b82f6" name="SpO2" />
-              <Line yAxisId="left" type="monotone" dataKey="temperature" stroke="#f59e0b" name="Temperature" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      )}
     </div>
   )
 }

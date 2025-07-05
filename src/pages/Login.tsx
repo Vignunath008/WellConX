@@ -115,10 +115,10 @@ const Login: React.FC = () => {
           </div>
           
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="card p-8">
+            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
               <div className="space-y-6">
-                <div className="form-group">
-                  <label htmlFor="email" className="form-label">
+                <div className="space-y-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                     Email address
                   </label>
                   <input
@@ -128,13 +128,13 @@ const Login: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="input"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Enter your email"
                   />
                 </div>
                 
-                <div className="form-group">
-                  <label htmlFor="password" className="form-label">
+                <div className="space-y-2">
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                     Password
                   </label>
                   <div className="relative">
@@ -145,7 +145,7 @@ const Login: React.FC = () => {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="input pr-12"
+                      className="w-full px-3 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       placeholder="Enter your password"
                     />
                     <button
@@ -164,15 +164,15 @@ const Login: React.FC = () => {
               </div>
               
               {error && (
-                <div className="mt-6 p-4 bg-error-50 border border-error-200 rounded-lg">
-                  <p className="text-text-sm text-error-700">{error}</p>
+                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-text-sm text-red-700">{error}</p>
                 </div>
               )}
               
               <button
                 type="submit"
                 disabled={isLoading}
-                className="btn-primary btn-xl w-full mt-8"
+                className="w-full mt-8 bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Signing in...' : 'Sign in'}
               </button>
@@ -180,7 +180,7 @@ const Login: React.FC = () => {
           </form>
           
           {/* Demo Accounts */}
-          <div className="card p-6">
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <h3 className="text-text-lg font-semibold text-gray-900 mb-4">Demo Accounts</h3>
             <div className="space-y-3 text-text-sm">
               <div className="flex justify-between items-center">
