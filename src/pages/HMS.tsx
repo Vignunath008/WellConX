@@ -11,13 +11,11 @@ import {
   AlertTriangle,
   CheckCircle,
   QrCode,
-  ArrowRight,
-  Filter,
   Download,
   RefreshCw
 } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { Line, AreaChart, Area, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 const HMS: React.FC = () => {
   const [selectedDepartment, setSelectedDepartment] = useState('all')
