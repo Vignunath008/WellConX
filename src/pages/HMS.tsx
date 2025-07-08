@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { 
   Users, 
   Bed, 
-  Calendar, 
   DollarSign, 
   Clock, 
-  Activity,
   TrendingUp,
   TrendingDown,
-  MapPin,
   UserCheck,
   FileText,
   AlertTriangle,
@@ -24,13 +20,12 @@ import { motion } from 'framer-motion'
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 const HMS: React.FC = () => {
-  const navigate = useNavigate()
   const [selectedDepartment, setSelectedDepartment] = useState('all')
   const [dateRange, setDateRange] = useState('today')
   const [refreshTime, setRefreshTime] = useState(new Date())
 
   // Mock data for HMS
-  const [hmsData, setHmsData] = useState({
+  const [hmsData] = useState({
     overview: {
       totalPatients: 1247,
       activeIPD: 89,
@@ -87,14 +82,7 @@ const HMS: React.FC = () => {
     const interval = setInterval(() => {
       setRefreshTime(new Date())
       // Simulate real-time updates
-      setHmsData(prev => ({
-        ...prev,
-        overview: {
-          ...prev.overview,
-          emergencyQueue: Math.max(0, prev.overview.emergencyQueue + Math.floor(Math.random() * 3) - 1),
-          dailyRevenue: prev.overview.dailyRevenue + Math.floor(Math.random() * 1000)
-        }
-      }))
+      // Note: Real-time updates would modify hmsData here
     }, 30000)
 
     return () => clearInterval(interval)

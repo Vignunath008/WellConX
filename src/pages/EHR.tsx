@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { 
   User, 
   FileText, 
-  Calendar, 
   Pill, 
   TestTube, 
   Image, 
@@ -21,10 +19,9 @@ import {
   Stethoscope,
   Clipboard
 } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 const EHR: React.FC = () => {
-  const navigate = useNavigate()
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState('overview')
   const [searchTerm, setSearchTerm] = useState('')
@@ -32,7 +29,7 @@ const EHR: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false)
 
   // Mock EHR data
-  const [ehrData, setEhrData] = useState({
+  const [ehrData] = useState({
     patients: [
       {
         id: 'PAT-001',
@@ -224,7 +221,6 @@ const EHR: React.FC = () => {
     const visits = ehrData.visits.filter(v => v.patientId === patient.id)
     const prescriptions = ehrData.prescriptions.filter(p => p.patientId === patient.id)
     const labResults = ehrData.labResults.filter(l => l.patientId === patient.id)
-    const radiology = ehrData.radiology.filter(r => r.patientId === patient.id)
 
     return (
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
