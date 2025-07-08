@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { 
   User, 
@@ -12,17 +12,11 @@ import {
   Upload,
   Search,
   Filter,
-  Star,
-  Clock,
   AlertCircle,
   CheckCircle,
   Eye,
   Edit,
-  Trash2,
   Plus,
-  Tag,
-  Shield,
-  Activity,
   Heart,
   Stethoscope,
   Clipboard
