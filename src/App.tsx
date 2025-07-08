@@ -14,6 +14,8 @@ import Analytics from './pages/Analytics'
 import Settings from './pages/Settings'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
+import HMS from './pages/HMS'
+import EHR from './pages/EHR'
 import AdminPanel from './pages/AdminPanel'
 import ProtectedRoute from './components/ProtectedRoute'
 
@@ -39,6 +41,8 @@ function App() {
               <Route path="devices" element={<Devices />} />
               <Route path="devices/setup" element={<DeviceSetup />} />
               <Route path="analytics" element={<Analytics />} />
+              <Route path="hms" element={<HMS />} />
+              <Route path="ehr" element={<EHR />} />
               <Route path="settings" element={<Settings />} />
               <Route path="admin" element={<AdminPanel />} />
             </Route>

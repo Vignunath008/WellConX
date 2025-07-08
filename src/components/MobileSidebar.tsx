@@ -9,6 +9,8 @@ import {
   BarChart3, 
   Settings,
   Activity,
+  Building2,
+  FileText,
   UserCheck,
   X,
   LogOut
@@ -25,6 +27,8 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Patients', href: '/patients', icon: Users },
+   { name: 'HMS', href: '/hms', icon: Building2 },
+   { name: 'EHR', href: '/ehr', icon: FileText },
     { name: 'Devices', href: '/devices', icon: Monitor },
     { name: 'Analytics', href: '/analytics', icon: BarChart3 },
     { name: 'Settings', href: '/settings', icon: Settings },

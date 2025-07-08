@@ -4,7 +4,7 @@ import { useData } from '../contexts/DataContext'
 import RealTimeChart from '../components/charts/RealTimeChart'
 import LiveWaveform from '../components/charts/LiveWaveform'
 import AddPatientModal from '../components/modals/AddPatientModal'
-import { Users, Monitor, AlertTriangle, Clock, Plus, Eye, Heart, Wind, Thermometer, Activity, TrendingUp } from 'lucide-react'
+import { Users, Monitor, AlertTriangle, Clock, Plus, Eye, Heart, Wind, Thermometer, Activity, TrendingUp, Building2, FileText } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const Dashboard: React.FC = () => {
@@ -180,6 +180,20 @@ const Dashboard: React.FC = () => {
             >
               <Plus className="h-5 w-5" />
               Add First Patient
+            </button>
+            <button 
+              onClick={() => navigate('/hms')}
+              className="btn-secondary btn-lg"
+            >
+              <Building2 className="h-5 w-5" />
+              HMS
+            </button>
+            <button 
+              onClick={() => navigate('/ehr')}
+              className="btn-secondary btn-lg"
+            >
+              <FileText className="h-5 w-5" />
+              EHR
             </button>
           </div>
         ) : (
