@@ -15,7 +15,7 @@ import {
   RefreshCw
 } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { Line, AreaChart, Area, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 const HMS: React.FC = () => {
   const [selectedDepartment, setSelectedDepartment] = useState('all')
