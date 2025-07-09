@@ -1,7 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import LogoutConfirmationModal from '../components/LogoutConfirmationModal'
 import { 
   Shield, 
   Users, 
@@ -24,7 +23,6 @@ import { motion } from 'framer-motion'
 const MainPlatform: React.FC = () => {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
-  const [showLogoutModal, setShowLogoutModal] = React.useState(false)
 
   // Mock platform statistics
   const platformStats = [
@@ -114,17 +112,8 @@ const MainPlatform: React.FC = () => {
   }
 
   const handleLogout = () => {
-    setShowLogoutModal(true)
-  }
-
-  const handleLogoutConfirm = () => {
-    setShowLogoutModal(false)
     logout()
     // After logout, user will stay on the main platform page (no navigation needed)
-  }
-
-  const handleLogoutCancel = () => {
-    setShowLogoutModal(false)
   }
 
   return (
@@ -145,24 +134,13 @@ const MainPlatform: React.FC = () => {
             
             <div className="flex items-center space-x-4">
               {user ? (
-                <>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                    <p className="text-xs text-gray-500 capitalize">{user.role}</p>
-                  </div>
-                  <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-semibold text-sm">
-                      {user.name?.charAt(0) || 'U'}
-                    </span>
-                  </div>
-                  <button
-                    onClick={handleLogout}
-                    className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-                    title="Logout"
-                  >
-                    <LogOut className="h-5 w-5" />
-                  </button>
-                </>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Sign Out</span>
+                </button>
               ) : (
                 <div className="text-sm text-gray-600">
                   Welcome to WellConX Platform
@@ -177,11 +155,11 @@ const MainPlatform: React.FC = () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {user ? `Welcome back, ${user.name}` : 'Welcome to WellConX'}
+            {user ? `Welcome, ${user.name}!` : 'Welcome to WellConX'}
           </h1>
           <p className="text-gray-600">
             {user 
-              ? 'Access your healthcare modules and manage your workflow' 
+              ? `Good to see you again! Choose a module below to continue your healthcare workflow.` 
               : 'Enterprise Healthcare Platform - Choose a module to get started'
             }
           </p>
@@ -301,13 +279,6 @@ const MainPlatform: React.FC = () => {
         </div>
       </div>
 
-      {/* Logout Confirmation Modal */}
-      <LogoutConfirmationModal
-        isOpen={showLogoutModal}
-        onClose={handleLogoutCancel}
-        onConfirm={handleLogoutConfirm}
-        userName={user?.name}
-      />
     </div>
   )
 }
