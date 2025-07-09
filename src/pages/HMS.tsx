@@ -15,7 +15,8 @@ import {
   CheckCircle,
   QrCode,
   Download,
-  RefreshCw
+  RefreshCw,
+  Building2
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
