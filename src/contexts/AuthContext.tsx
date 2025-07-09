@@ -74,21 +74,114 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Dr. Rajesh Sharma',
         email: 'doctor@wellconx.com',
         role: 'doctor',
-        department: 'Cardiology'
+        department: 'Cardiology',
+        picture: undefined
       },
       {
         id: '2',
         name: 'Nurse Priya Patel',
         email: 'nurse@wellconx.com',
         role: 'nurse',
-        department: 'ICU'
+        department: 'ICU',
+        picture: undefined
       },
       {
         id: '3',
         name: 'Vikram Mehta',
         email: 'admin@wellconx.com',
         role: 'admin',
-        department: 'IT'
+        department: 'IT',
+        picture: undefined
+      },
+      // Add EHR specific demo users
+      {
+        id: '4',
+        name: 'Dr. Anita Kumar',
+        email: 'cmo@wellconx.com',
+        role: 'doctor',
+        department: 'Administration',
+        picture: undefined
+      },
+      {
+        id: '5',
+        name: 'Dr. Suresh Gupta',
+        email: 'physician@wellconx.com',
+        role: 'doctor',
+        department: 'Internal Medicine',
+        picture: undefined
+      },
+      {
+        id: '6',
+        name: 'Dr. Meera Joshi',
+        email: 'resident@wellconx.com',
+        role: 'doctor',
+        department: 'Emergency',
+        picture: undefined
+      },
+      {
+        id: '7',
+        name: 'Nurse Kavita Singh',
+        email: 'np@wellconx.com',
+        role: 'nurse',
+        department: 'Pediatrics',
+        picture: undefined
+      },
+      {
+        id: '8',
+        name: 'Ravi Sharma',
+        email: 'scribe@wellconx.com',
+        role: 'admin',
+        department: 'Documentation',
+        picture: undefined
+      },
+      {
+        id: '9',
+        name: 'Deepak Verma',
+        email: 'ehr.admin@wellconx.com',
+        role: 'admin',
+        department: 'IT Systems',
+        picture: undefined
+      },
+      // Add HMS specific demo users
+      {
+        id: '10',
+        name: 'Rajesh Agarwal',
+        email: 'manager@wellconx.com',
+        role: 'admin',
+        department: 'Hospital Administration',
+        picture: undefined
+      },
+      {
+        id: '11',
+        name: 'Sunita Rao',
+        email: 'registration@wellconx.com',
+        role: 'nurse',
+        department: 'Registration',
+        picture: undefined
+      },
+      {
+        id: '12',
+        name: 'Amit Patel',
+        email: 'billing@wellconx.com',
+        role: 'admin',
+        department: 'Finance',
+        picture: undefined
+      },
+      {
+        id: '13',
+        name: 'Neha Sharma',
+        email: 'bedcoord@wellconx.com',
+        role: 'nurse',
+        department: 'Bed Management',
+        picture: undefined
+      },
+      {
+        id: '14',
+        name: 'Kiran Joshi',
+        email: 'scheduler@wellconx.com',
+        role: 'admin',
+        department: 'Scheduling',
+        picture: undefined
       }
     ]
 
