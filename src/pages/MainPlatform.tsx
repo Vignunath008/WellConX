@@ -15,13 +15,14 @@ import {
   TrendingUp,
   Monitor,
   Heart,
-  Building2
+  Building2,
+  LogOut
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const MainPlatform: React.FC = () => {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
 
   // Mock platform statistics
   const platformStats = [
@@ -110,6 +111,11 @@ const MainPlatform: React.FC = () => {
     navigate(route)
   }
 
+  const handleLogout = () => {
+    logout()
+    // After logout, user will stay on the main platform page
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -127,15 +133,30 @@ const MainPlatform: React.FC = () => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
-              </div>
-              <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">
-                  {user?.name?.charAt(0) || 'U'}
-                </span>
-              </div>
+              {user ? (
+                <>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                    <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                  </div>
+                  <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
+                    <span className="text-white font-semibold text-sm">
+                      {user.name?.charAt(0) || 'U'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                    title="Logout"
+                  >
+                    <LogOut className="h-5 w-5" />
+                  </button>
+                </>
+              ) : (
+                <div className="text-sm text-gray-600">
+                  Welcome to WellConX Platform
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -144,34 +165,43 @@ const MainPlatform: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to WellConX</h1>
-          <p className="text-gray-600">Enterprise Healthcare Platform Dashboard</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {user ? `Welcome back, ${user.name}` : 'Welcome to WellConX'}
+          </h1>
+          <p className="text-gray-600">
+            {user 
+              ? 'Access your healthcare modules and manage your workflow' 
+              : 'Enterprise Healthcare Platform - Choose a module to get started'
+            }
+          </p>
         </div>
 
-        {/* Platform Statistics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {platformStats.map((stat, index) => (
-            <motion.div
-              key={index}
-              className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-xl bg-gray-50 ${stat.color}`}>
-                  <stat.icon className="h-6 w-6" />
+        {/* Platform Statistics - Only show if user is logged in */}
+        {user && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {platformStats.map((stat, index) => (
+              <motion.div
+                key={index}
+                className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`p-3 rounded-xl bg-gray-50 ${stat.color}`}>
+                    <stat.icon className="h-6 w-6" />
+                  </div>
+                  <TrendingUp className="h-4 w-4 text-green-500" />
                 </div>
-                <TrendingUp className="h-4 w-4 text-green-500" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</h3>
-                <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
-                <p className="text-xs text-green-600">{stat.change}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</h3>
+                  <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
+                  <p className="text-xs text-green-600">{stat.change}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
         {/* Module Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -252,6 +282,11 @@ const MainPlatform: React.FC = () => {
               <p className="text-gray-600 text-sm">Advanced medical device integration and monitoring</p>
             </div>
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-12 text-center text-gray-500 text-sm">
+          <p>© 2024 WellConX Enterprise Healthcare Platform. All rights reserved.</p>
         </div>
       </div>
     </div>

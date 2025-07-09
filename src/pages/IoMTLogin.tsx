@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { Activity, Eye, EyeOff, ArrowLeft, Monitor, Heart, Zap } from 'lucide-react'
+import { Activity, Eye, EyeOff, ArrowLeft, Monitor, Heart, Zap, Shield, Users, BarChart3 } from 'lucide-react'
 
 const IoMTLogin: React.FC = () => {
   const [email, setEmail] = useState('')
@@ -47,6 +47,21 @@ const IoMTLogin: React.FC = () => {
       icon: Activity,
       title: 'Live Waveforms',
       description: 'ECG, plethysmography, and respiratory waveform visualization'
+    },
+    {
+      icon: Shield,
+      title: 'HIPAA Compliant',
+      description: 'Enterprise-grade security with encrypted data transmission'
+    },
+    {
+      icon: Users,
+      title: 'Multi-User Support',
+      description: 'Role-based access control for doctors, nurses, and staff'
+    },
+    {
+      icon: BarChart3,
+      title: 'Advanced Analytics',
+      description: 'Comprehensive reporting, trend analysis, and insights'
     }
   ]
 
@@ -76,7 +91,7 @@ const IoMTLogin: React.FC = () => {
               </p>
             </div>
             
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-6">
               {features.map((feature, index) => (
                 <div key={index} className="flex items-start gap-4">
                   <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm flex-shrink-0">

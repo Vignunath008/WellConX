@@ -12,8 +12,6 @@ import Devices from './pages/Devices'
 import DeviceSetup from './pages/DeviceSetup'
 import Analytics from './pages/Analytics'
 import Settings from './pages/Settings'
-import Login from './pages/Login'
-import SignUp from './pages/SignUp'
 import HMS from './pages/HMS'
 import EHR from './pages/EHR'
 import AdminPanel from './pages/AdminPanel'
@@ -29,19 +27,15 @@ function App() {
       <DataProvider>
         <Router>
           <Routes>
-            {/* Main Platform Route */}
-            <Route path="/" element={
-              <ProtectedRoute>
-                <MainPlatform />
-              </ProtectedRoute>
-            } />
+            {/* Main Platform Route - Now the starting page */}
+            <Route path="/" element={<MainPlatform />} />
             
             {/* Module Login Routes */}
             <Route path="/iomt/login" element={<IoMTLogin />} />
             <Route path="/ehr/login" element={<EHRLogin />} />
             <Route path="/hms/login" element={<HMSLogin />} />
             
-            {/* IoMT Module Routes */}
+            {/* IoMT Module Routes - Now protected */}
             <Route path="/iomt" element={
               <ProtectedRoute>
                 <Layout />
@@ -60,23 +54,19 @@ function App() {
               <Route path="admin" element={<AdminPanel />} />
             </Route>
 
-            {/* HMS Module Routes */}
+            {/* HMS Module Routes - Now protected */}
             <Route path="/hms" element={
               <ProtectedRoute>
                 <HMS />
               </ProtectedRoute>
             } />
 
-            {/* EHR Module Routes */}
+            {/* EHR Module Routes - Now protected */}
             <Route path="/ehr" element={
               <ProtectedRoute>
                 <EHR />
               </ProtectedRoute>
             } />
-
-            {/* Legacy Routes for backward compatibility */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
           </Routes>
         </Router>
       </DataProvider>
