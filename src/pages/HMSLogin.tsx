@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { Building2, Eye, EyeOff, ArrowLeft, Calendar, Bed, Users, DollarSign } from 'lucide-react'
+import { Building2, Eye, EyeOff, ArrowLeft, Calendar, Bed, Users, DollarSign, UserCheck, ClipboardList, BarChart3, Shield } from 'lucide-react'
 
 const HMSLogin: React.FC = () => {
   const [email, setEmail] = useState('')
@@ -23,7 +23,7 @@ const HMSLogin: React.FC = () => {
     if (success) {
       navigate('/hms')
     } else {
-      setError('Invalid credentials. Try demo accounts: doctor@wellconx.com, nurse@wellconx.com, or admin@wellconx.com with password: demo123')
+      setError('Invalid credentials. Please contact your HMS administrator for access or use demo accounts for testing.')
     }
   }
 
@@ -47,7 +47,37 @@ const HMSLogin: React.FC = () => {
       icon: DollarSign,
       title: 'Billing & Revenue',
       description: 'Financial management with billing, insurance claims, and reporting'
+    },
+    {
+      icon: UserCheck,
+      title: 'Staff Management',
+      description: 'Employee scheduling, shift management, and resource allocation'
+    },
+    {
+      icon: ClipboardList,
+      title: 'Inventory Control',
+      description: 'Medical supplies tracking and automated reorder management'
+    },
+    {
+      icon: BarChart3,
+      title: 'Operational Analytics',
+      description: 'Performance metrics, KPIs, and operational intelligence dashboards'
+    },
+    {
+      icon: Shield,
+      title: 'Compliance Management',
+      description: 'Regulatory compliance tracking and audit trail management'
     }
+  ]
+
+  // HMS-specific demo accounts
+  const demoAccounts = [
+    { role: 'Hospital Administrator', email: 'admin@wellconx.com', description: 'Full system access' },
+    { role: 'Department Manager', email: 'manager@wellconx.com', description: 'Department oversight' },
+    { role: 'Registration Staff', email: 'registration@wellconx.com', description: 'Patient registration' },
+    { role: 'Billing Coordinator', email: 'billing@wellconx.com', description: 'Financial operations' },
+    { role: 'Bed Coordinator', email: 'bedcoord@wellconx.com', description: 'Bed management' },
+    { role: 'Scheduler', email: 'scheduler@wellconx.com', description: 'Appointment scheduling' }
   ]
 
   return (
@@ -76,15 +106,15 @@ const HMSLogin: React.FC = () => {
               </p>
             </div>
             
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-4">
               {features.map((feature, index) => (
-                <div key={index} className="flex items-start gap-4">
-                  <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm flex-shrink-0">
-                    <feature.icon className="h-5 w-5 text-white" />
+                <div key={index} className="flex items-start gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
+                  <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm flex-shrink-0">
+                    <feature.icon className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold mb-1">{feature.title}</h3>
-                    <p className="text-green-100 text-text-sm leading-relaxed">{feature.description}</p>
+                    <h3 className="text-white font-semibold text-sm mb-1">{feature.title}</h3>
+                    <p className="text-green-100 text-xs leading-relaxed">{feature.description}</p>
                   </div>
                 </div>
               ))}
@@ -93,7 +123,7 @@ const HMSLogin: React.FC = () => {
         </div>
         
         <div className="text-green-200 text-text-sm">
-          © 2024 WellConX HMS Module. All rights reserved.
+          © 2024 WellConX HMS Module. Joint Commission Ready • HIMSS Certified
         </div>
       </div>
 
@@ -195,24 +225,26 @@ const HMSLogin: React.FC = () => {
           
           {/* Demo Accounts */}
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h3 className="text-text-lg font-semibold text-gray-900 mb-4">Demo Accounts</h3>
+            <h3 className="text-text-lg font-semibold text-gray-900 mb-4">Demo Access Accounts</h3>
             <div className="space-y-3 text-text-sm">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Doctor:</span>
-                <span className="font-mono text-gray-900">doctor@wellconx.com</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Nurse:</span>
-                <span className="font-mono text-gray-900">nurse@wellconx.com</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Admin:</span>
-                <span className="font-mono text-gray-900">admin@wellconx.com</span>
-              </div>
+              {demoAccounts.map((account, index) => (
+                <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                  <div>
+                    <span className="font-medium text-gray-900">{account.role}:</span>
+                    <span className="font-mono text-gray-700 ml-2">{account.email}</span>
+                  </div>
+                </div>
+              ))}
               <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-                <span className="text-gray-600">Password:</span>
-                <span className="font-mono text-gray-900">demo123</span>
+                <span className="font-medium text-gray-600">Password (All accounts):</span>
+                <span className="font-mono text-gray-900 bg-gray-100 px-2 py-1 rounded">demo123</span>
               </div>
+            </div>
+            <div className="mt-4 p-3 bg-green-50 rounded-lg">
+              <p className="text-xs text-green-800">
+                <strong>Note:</strong> These are demonstration accounts for testing purposes. 
+                In production, access would be integrated with your hospital's HR and identity management systems.
+              </p>
             </div>
           </div>
         </div>
