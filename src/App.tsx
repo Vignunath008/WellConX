@@ -17,6 +17,8 @@ import SignUp from './pages/SignUp'
 import HMS from './pages/HMS'
 import EHR from './pages/EHR'
 import AdminPanel from './pages/AdminPanel'
+import MainPlatform from './pages/MainPlatform'
+import IoMTLogin from './pages/IoMTLogin'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -25,14 +27,21 @@ function App() {
       <DataProvider>
         <Router>
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+            {/* Main Platform Route */}
             <Route path="/" element={
+              <ProtectedRoute>
+                <MainPlatform />
+              </ProtectedRoute>
+            } />
+            
+            {/* IoMT Module Routes */}
+            <Route path="/iomt/login" element={<IoMTLogin />} />
+            <Route path="/iomt" element={
               <ProtectedRoute>
                 <Layout />
               </ProtectedRoute>
             }>
-              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="patients" element={<Patients />} />
               <Route path="patients/:patientId" element={<PatientDetails />} />
               <Route path="patients/:patientId/history" element={<PatientHistory />} />
@@ -41,11 +50,27 @@ function App() {
               <Route path="devices" element={<Devices />} />
               <Route path="devices/setup" element={<DeviceSetup />} />
               <Route path="analytics" element={<Analytics />} />
-              <Route path="hms" element={<HMS />} />
-              <Route path="ehr" element={<EHR />} />
               <Route path="settings" element={<Settings />} />
               <Route path="admin" element={<AdminPanel />} />
             </Route>
+
+            {/* HMS Module Routes */}
+            <Route path="/hms" element={
+              <ProtectedRoute>
+                <HMS />
+              </ProtectedRoute>
+            } />
+
+            {/* EHR Module Routes */}
+            <Route path="/ehr" element={
+              <ProtectedRoute>
+                <EHR />
+              </ProtectedRoute>
+            } />
+
+            {/* Legacy Routes for backward compatibility */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
           </Routes>
         </Router>
       </DataProvider>
