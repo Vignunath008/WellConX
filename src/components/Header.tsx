@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useData } from '../contexts/DataContext'
+import LogoutConfirmationModal from './LogoutConfirmationModal'
 import { Bell, Search, X, User, Menu, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -17,6 +18,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
   const [showSearchResults, setShowSearchResults] = useState(false)
   const [showAlerts, setShowAlerts] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
   
   const unreadAlerts = alerts.filter(a => !a.acknowledged).length
 
@@ -82,8 +84,17 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
 
   const handleLogout = () => {
     setShowUserMenu(false)
+    setShowLogoutModal(true)
+  }
+
+  const handleLogoutConfirm = () => {
+    setShowLogoutModal(false)
     logout()
     navigate('/login')
+  }
+
+  const handleLogoutCancel = () => {
+    setShowLogoutModal(false)
   }
 
   const handleSettingsClick = () => {
@@ -494,6 +505,14 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
           onClick={() => setShowUserMenu(false)}
         />
       )}
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={handleLogoutCancel}
+        onConfirm={handleLogoutConfirm}
+        userName={user?.name}
+      />
     </>
   )
 }

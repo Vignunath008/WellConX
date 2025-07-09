@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import LogoutConfirmationModal from './LogoutConfirmationModal'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   LayoutDashboard, 
@@ -23,6 +24,7 @@ interface MobileSidebarProps {
 const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const [showLogoutModal, setShowLogoutModal] = React.useState(false)
 
   const navigation = [
     { name: 'Dashboard', href: '/iomt/dashboard', icon: LayoutDashboard },
@@ -37,9 +39,19 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
     navigation.splice(-1, 0, { name: 'Admin Panel', href: '/iomt/admin', icon: UserCheck })
   }
 
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true)
+  }
+
+  const handleLogoutConfirm = () => {
+    setShowLogoutModal(false)
     onClose()
     logout()
+    navigate('/')
+  }
+
+  const handleLogoutCancel = () => {
+    setShowLogoutModal(false)
   }
 
   const handleBackToPlatform = () => {
@@ -146,7 +158,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
                     </p>
                   </div>
                   <button
-                    onClick={handleLogout}
+                    onClick={handleLogoutClick}
                     className="btn-ghost btn-sm"
                     title="Logout"
                   >
@@ -158,6 +170,14 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
           </motion.div>
         </>
       )}
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={handleLogoutCancel}
+        onConfirm={handleLogoutConfirm}
+        userName={user?.name}
+      />
     </AnimatePresence>
   )
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import LogoutConfirmationModal from './LogoutConfirmationModal'
 import { 
   LayoutDashboard, 
   Users, 
@@ -16,6 +17,7 @@ import {
 const Sidebar: React.FC = () => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const [showLogoutModal, setShowLogoutModal] = React.useState(false)
 
   const navigation = [
     { name: 'Dashboard', href: '/iomt/dashboard', icon: LayoutDashboard },
@@ -34,8 +36,23 @@ const Sidebar: React.FC = () => {
     navigate('/')
   }
 
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true)
+  }
+
+  const handleLogoutConfirm = () => {
+    setShowLogoutModal(false)
+    logout()
+    navigate('/')
+  }
+
+  const handleLogoutCancel = () => {
+    setShowLogoutModal(false)
+  }
+
   return (
-    <div className="flex flex-col h-full w-72 bg-white border-r border-gray-200">
+    <>
+      <div className="flex flex-col h-full w-72 bg-white border-r border-gray-200">
       {/* Logo */}
       <div className="flex items-center gap-3 px-6 py-6 border-b border-gray-200">
         <div className="bg-purple-600 p-2 rounded-xl">
@@ -104,7 +121,7 @@ const Sidebar: React.FC = () => {
               </p>
             </div>
             <button
-              onClick={logout}
+              onClick={handleLogoutClick}
               className="btn-ghost btn-sm"
               title="Logout"
             >
@@ -114,6 +131,15 @@ const Sidebar: React.FC = () => {
         </div>
       </div>
     </div>
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={handleLogoutCancel}
+        onConfirm={handleLogoutConfirm}
+        userName={user?.name}
+      />
+    </>
   )
 }
 

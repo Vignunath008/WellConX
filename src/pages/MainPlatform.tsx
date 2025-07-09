@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import LogoutConfirmationModal from '../components/LogoutConfirmationModal'
 import { 
   Shield, 
   Users, 
@@ -23,6 +24,7 @@ import { motion } from 'framer-motion'
 const MainPlatform: React.FC = () => {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
+  const [showLogoutModal, setShowLogoutModal] = React.useState(false)
 
   // Mock platform statistics
   const platformStats = [
@@ -112,8 +114,17 @@ const MainPlatform: React.FC = () => {
   }
 
   const handleLogout = () => {
+    setShowLogoutModal(true)
+  }
+
+  const handleLogoutConfirm = () => {
+    setShowLogoutModal(false)
     logout()
-    // After logout, user will stay on the main platform page
+    // After logout, user will stay on the main platform page (no navigation needed)
+  }
+
+  const handleLogoutCancel = () => {
+    setShowLogoutModal(false)
   }
 
   return (
@@ -289,6 +300,14 @@ const MainPlatform: React.FC = () => {
           <p>© 2024 WellConX Enterprise Healthcare Platform. All rights reserved.</p>
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={handleLogoutCancel}
+        onConfirm={handleLogoutConfirm}
+        userName={user?.name}
+      />
     </div>
   )
 }
