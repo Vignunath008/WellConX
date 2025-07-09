@@ -70,7 +70,7 @@ const MainPlatform: React.FC = () => {
         'Digital Prescriptions',
         'SOAP Notes'
       ],
-      route: '/ehr'
+      route: '/ehr/login'
     },
     {
       id: 'hms',
@@ -86,7 +86,7 @@ const MainPlatform: React.FC = () => {
         'Bed Management',
         'Billing'
       ],
-      route: '/hms'
+      route: '/hms/login'
     },
     {
       id: 'iomt',
@@ -102,18 +102,12 @@ const MainPlatform: React.FC = () => {
         'Real-time Alerts',
         'Analytics'
       ],
-      route: '/iomt'
+      route: '/iomt/login'
     }
   ]
 
   const handleModuleAccess = (route: string) => {
-    if (route === '/iomt') {
-      // Navigate to IoMT login page
-      navigate('/iomt/login')
-    } else {
-      // Navigate directly to other modules (they use the same auth context)
-      navigate(route)
-    }
+    navigate(route)
   }
 
   return (

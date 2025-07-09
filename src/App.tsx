@@ -19,6 +19,8 @@ import EHR from './pages/EHR'
 import AdminPanel from './pages/AdminPanel'
 import MainPlatform from './pages/MainPlatform'
 import IoMTLogin from './pages/IoMTLogin'
+import EHRLogin from './pages/EHRLogin'
+import HMSLogin from './pages/HMSLogin'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -34,8 +36,12 @@ function App() {
               </ProtectedRoute>
             } />
             
-            {/* IoMT Module Routes */}
+            {/* Module Login Routes */}
             <Route path="/iomt/login" element={<IoMTLogin />} />
+            <Route path="/ehr/login" element={<EHRLogin />} />
+            <Route path="/hms/login" element={<HMSLogin />} />
+            
+            {/* IoMT Module Routes */}
             <Route path="/iomt" element={
               <ProtectedRoute>
                 <Layout />
