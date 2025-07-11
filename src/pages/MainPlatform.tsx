@@ -7,8 +7,6 @@ import {
   Zap, 
   Calendar,
   Bed,
-  DollarSign,
-  FileText,
   Activity,
   TrendingUp,
   Monitor,
@@ -106,11 +104,6 @@ const MainPlatform: React.FC = () => {
 
   const handleModuleAccess = (route: string) => {
     navigate(route)
-  }
-
-  const handleLogout = () => {
-    logout()
-    // After logout, user will stay on the main platform page (no navigation needed)
   }
 
   return (
