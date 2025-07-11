@@ -9,14 +9,11 @@ import {
   Bed,
   DollarSign,
   FileText,
-  Stethoscope,
-  Pill,
   Activity,
   TrendingUp,
   Monitor,
   Heart,
-  Building2,
-  LogOut
+  Building2
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
