@@ -21,7 +21,8 @@ import {
   Heart,
   Stethoscope,
   Clipboard,
-  Calendar
+  Calendar,
+  Shield
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
