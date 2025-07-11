@@ -134,16 +134,8 @@ const MainPlatform: React.FC = () => {
             
             <div className="flex items-center space-x-4">
               {user ? (
-                <div className="flex items-center space-x-3">
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">Welcome, {user.name}!</p>
-                    <p className="text-xs text-gray-500 capitalize">{user.role} • {user.department}</p>
-                  </div>
-                  <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-semibold">
-                      {user.name?.charAt(0) || 'U'}
-                    </span>
-                  </div>
+                <div className="text-sm text-gray-600">
+                  Signed in to WellConX Platform
                 </div>
               ) : (
                 <div className="text-sm text-gray-600">
@@ -159,11 +151,11 @@ const MainPlatform: React.FC = () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {user ? `Welcome back, ${user.name}!` : 'Welcome to WellConX'}
+            Welcome to WellConX
           </h1>
           <p className="text-gray-600">
             {user 
-              ? 'Access your healthcare modules and manage your workflow efficiently.' 
+              ? 'Enterprise Healthcare Platform - Access your modules and manage your workflow' 
               : 'Enterprise Healthcare Platform - Choose a module to get started'
             }
           </p>
