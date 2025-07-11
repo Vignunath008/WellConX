@@ -17,7 +17,7 @@ import { motion } from 'framer-motion'
 
 const MainPlatform: React.FC = () => {
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
 
   // Mock platform statistics
   const platformStats = [
