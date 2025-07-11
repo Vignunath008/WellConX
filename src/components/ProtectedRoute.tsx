@@ -4,10 +4,11 @@ import { useAuth } from '../contexts/AuthContext'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
+  requiredModule?: string
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user, isLoading } = useAuth()
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredModule }) => {
+  const { user, isLoading, currentModule } = useAuth()
   const location = useLocation()
 
   if (isLoading) {
@@ -25,6 +26,20 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     if (location.pathname.startsWith('/hms')) {
       loginPath = '/hms/login'
     } else if (location.pathname.startsWith('/ehr')) {
+      loginPath = '/ehr/login'
+    }
+    
+    return <Navigate to={loginPath} replace />
+  }
+
+  // Check if user is trying to access a different module than they're logged into
+  if (requiredModule && currentModule && currentModule !== requiredModule) {
+    // User is trying to access a different module - redirect to appropriate login
+    let loginPath = '/iomt/login'
+    
+    if (requiredModule === 'hms') {
+      loginPath = '/hms/login'
+    } else if (requiredModule === 'ehr') {
       loginPath = '/ehr/login'
     }
     

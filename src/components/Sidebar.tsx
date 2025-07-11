@@ -43,7 +43,8 @@ const Sidebar: React.FC = () => {
   const handleLogoutConfirm = () => {
     setShowLogoutModal(false)
     logout()
-    navigate('/')
+    // Navigate to main platform after logout
+    navigate('/', { replace: true })
   }
 
   const handleLogoutCancel = () => {

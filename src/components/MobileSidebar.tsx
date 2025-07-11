@@ -47,7 +47,8 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
     setShowLogoutModal(false)
     onClose()
     logout()
-    navigate('/')
+    // Navigate to main platform after logout
+    navigate('/', { replace: true })
   }
 
   const handleLogoutCancel = () => {

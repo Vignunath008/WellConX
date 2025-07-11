@@ -8,7 +8,7 @@ const HMSLogin: React.FC = () => {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
-  const { user, login, isLoading } = useAuth()
+  const { user, login, isLoading, setCurrentModule } = useAuth()
   const navigate = useNavigate()
 
   if (user) {
@@ -21,6 +21,7 @@ const HMSLogin: React.FC = () => {
     
     const success = await login(email, password)
     if (success) {
+      setCurrentModule('hms')
       navigate('/hms')
     } else {
       setError('Invalid credentials. Please contact your HMS administrator for access or use demo accounts for testing.')

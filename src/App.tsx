@@ -37,7 +37,7 @@ function App() {
             
             {/* IoMT Module Routes - Now protected */}
             <Route path="/iomt" element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredModule="iomt">
                 <Layout />
               </ProtectedRoute>
             }>
@@ -56,14 +56,14 @@ function App() {
 
             {/* HMS Module Routes - Now protected */}
             <Route path="/hms" element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredModule="hms">
                 <HMS />
               </ProtectedRoute>
             } />
 
             {/* EHR Module Routes - Now protected */}
             <Route path="/ehr" element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredModule="ehr">
                 <EHR />
               </ProtectedRoute>
             } />

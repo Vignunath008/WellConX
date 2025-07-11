@@ -8,7 +8,7 @@ const EHRLogin: React.FC = () => {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
-  const { user, login, isLoading } = useAuth()
+  const { user, login, isLoading, setCurrentModule } = useAuth()
   const navigate = useNavigate()
 
   if (user) {
@@ -21,6 +21,7 @@ const EHRLogin: React.FC = () => {
     
     const success = await login(email, password)
     if (success) {
+      setCurrentModule('ehr')
       navigate('/ehr')
     } else {
       setError('Invalid credentials. Please contact your EHR administrator for access or use demo accounts for testing.')

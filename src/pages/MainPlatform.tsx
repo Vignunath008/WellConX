@@ -103,6 +103,8 @@ const MainPlatform: React.FC = () => {
   ]
 
   const handleModuleAccess = (route: string) => {
+    // Clear current module when accessing from main platform
+    // This ensures users must log in to each module separately
     navigate(route)
   }
 

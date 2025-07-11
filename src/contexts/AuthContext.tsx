@@ -32,6 +32,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>
   logout: () => void
   isLoading: boolean
+  currentModule: string | null
+  setCurrentModule: (module: string | null) => void
   registerUser: (userData: Omit<RegistrationRequest, 'id' | 'submittedAt' | 'status'>) => Promise<boolean>
   getRegistrationRequests: () => RegistrationRequest[]
   approveRegistration: (requestId: string) => void
@@ -51,12 +53,17 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [currentModule, setCurrentModule] = useState<string | null>(null)
 
   useEffect(() => {
     // Check for stored auth token
     const storedUser = localStorage.getItem('wellconx_user')
     if (storedUser) {
       setUser(JSON.parse(storedUser))
+    }
+    const storedModule = localStorage.getItem('wellconx_current_module')
+    if (storedModule) {
+      setCurrentModule(storedModule)
     }
     setIsLoading(false)
   }, [])
@@ -194,6 +201,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (foundUser && password === 'demo123') {
       setUser(foundUser)
       localStorage.setItem('wellconx_user', JSON.stringify(foundUser))
+      // Don't set module here - let the login page handle it
       setIsLoading(false)
       return true
     }
@@ -204,7 +212,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     setUser(null)
+    setCurrentModule(null)
     localStorage.removeItem('wellconx_user')
+    localStorage.removeItem('wellconx_current_module')
+  }
+
+  const handleSetCurrentModule = (module: string | null) => {
+    setCurrentModule(module)
+    if (module) {
+      localStorage.setItem('wellconx_current_module', module)
+    } else {
+      localStorage.removeItem('wellconx_current_module')
+    }
   }
 
   const registerUser = async (userData: Omit<RegistrationRequest, 'id' | 'submittedAt' | 'status'>): Promise<boolean> => {
@@ -281,6 +300,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       login, 
       logout, 
       isLoading,
+      currentModule,
+      setCurrentModule: handleSetCurrentModule,
       registerUser,
       getRegistrationRequests,
       approveRegistration,

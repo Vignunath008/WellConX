@@ -83,7 +83,8 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuClick }) => {
   const handleLogout = () => {
     setShowUserMenu(false)
     logout()
-    navigate('/')
+    // Navigate to main platform after logout
+    navigate('/', { replace: true })
   }
 
   const handleSettingsClick = () => {

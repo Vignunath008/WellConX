@@ -8,7 +8,7 @@ const IoMTLogin: React.FC = () => {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
-  const { user, login, isLoading } = useAuth()
+  const { user, login, isLoading, setCurrentModule } = useAuth()
   const navigate = useNavigate()
 
   if (user) {
@@ -21,6 +21,7 @@ const IoMTLogin: React.FC = () => {
     
     const success = await login(email, password)
     if (success) {
+      setCurrentModule('iomt')
       navigate('/iomt/dashboard')
     } else {
       setError('Invalid credentials. Try demo accounts: doctor@wellconx.com, nurse@wellconx.com, or admin@wellconx.com with password: demo123')
