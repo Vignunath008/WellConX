@@ -17,8 +17,6 @@ import {
   Database,
   Lock,
   Smartphone,
-  FileText,
-  AlertTriangle,
   Phone,
   Mail,
   MapPin,
