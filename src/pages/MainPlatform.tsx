@@ -233,37 +233,36 @@ const MainPlatform: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Enhanced Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 safe-area-inset-top">
+          <div className="flex items-center justify-between h-14 sm:h-16">
             <div className="flex items-center space-x-4">
-              <div className="bg-primary-600 p-2 rounded-xl">
-                <Activity className="h-6 w-6 text-white" />
+              <div className="bg-gradient-to-r from-primary-600 to-primary-700 p-2 sm:p-2.5 rounded-xl shadow-sm">
+                <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">WellConX</h1>
-                <p className="text-sm text-gray-500">Enterprise Healthcare Platform</p>
+                <h1 className="text-lg sm:text-xl font-bold text-gray-900">WellConX</h1>
+                <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">Enterprise Healthcare Platform</p>
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-6 text-sm">
-                <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="hidden lg:flex items-center space-x-4 sm:space-x-6 text-sm">
+                <div className="flex items-center space-x-2 bg-green-50 px-3 py-1.5 rounded-full">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-gray-600">System Status: Operational</span>
+                  <span className="text-green-700 font-medium text-xs sm:text-sm">Operational</span>
                 </div>
-                <div className="text-gray-600">
-                  {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                <div className="text-gray-600 font-mono text-xs sm:text-sm bg-gray-50 px-3 py-1.5 rounded-full">
+                  {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
                 </div>
               </div>
-              {user ? (
-                <div className="text-sm text-gray-600">
-                  Welcome back, {user.name}
+              
+              {/* Mobile status indicator */}
+              <div className="lg:hidden flex items-center space-x-2">
+                <div className="flex items-center space-x-1 bg-green-50 px-2 py-1 rounded-full">
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                  <span className="text-green-700 font-medium text-xs">Live</span>
                 </div>
-              ) : (
-                <div className="text-sm text-gray-600">
-                  Welcome to WellConX Platform
-                </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
