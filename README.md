@@ -21,12 +21,6 @@ WellConX is the world's most advanced enterprise healthcare platform, connecting
 - **HL7 Protocol Support**: Complete HL7 v2.5 integration for seamless data exchange
 - **Advanced Analytics**: Trend analysis, patient risk assessment, and clinical insights
 
-### Statistics
-
-- **Connected Devices**: 94K+ active medical devices
-- **Alert Accuracy**: 99.2% precision in critical alerts
-- **Response Latency**: <50ms real-time data processing
-
 
 ### 2. HMS Module - Hospital Management System
 
