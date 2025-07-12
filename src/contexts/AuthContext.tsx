@@ -34,6 +34,7 @@ interface AuthContextType {
   isLoading: boolean
   currentModule: string | null
   setCurrentModule: (module: string | null) => void
+  logoutAndReturnToPlatform: () => void
   registerUser: (userData: Omit<RegistrationRequest, 'id' | 'submittedAt' | 'status'>) => Promise<boolean>
   getRegistrationRequests: () => RegistrationRequest[]
   approveRegistration: (requestId: string) => void
@@ -217,6 +218,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('wellconx_current_module')
   }
 
+  const logoutAndReturnToPlatform = () => {
+    // Clear user session and module state
+    setUser(null)
+    setCurrentModule(null)
+    localStorage.removeItem('wellconx_user')
+    localStorage.removeItem('wellconx_current_module')
+  }
   const handleSetCurrentModule = (module: string | null) => {
     setCurrentModule(module)
     if (module) {
@@ -302,6 +310,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isLoading,
       currentModule,
       setCurrentModule: handleSetCurrentModule,
+      logoutAndReturnToPlatform,
       registerUser,
       getRegistrationRequests,
       approveRegistration,

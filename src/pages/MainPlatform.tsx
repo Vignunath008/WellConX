@@ -29,9 +29,16 @@ import { motion } from 'framer-motion'
 
 const MainPlatform: React.FC = () => {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, logoutAndReturnToPlatform } = useAuth()
   const [currentTime, setCurrentTime] = useState(new Date())
 
+  // Auto-logout when returning to main platform
+  useEffect(() => {
+    if (user) {
+      // User is logged in but on main platform - logout from module
+      logoutAndReturnToPlatform()
+    }
+  }, [user, logoutAndReturnToPlatform])
   // Update time every minute
   useEffect(() => {
     const timer = setInterval(() => {
