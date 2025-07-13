@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Activity, Eye, EyeOff, ArrowLeft, Monitor, Heart, Zap, Shield, Users, BarChart3 } from 'lucide-react'
 
@@ -190,6 +190,15 @@ const IoMTLogin: React.FC = () => {
                       )}
                     </button>
                   </div>
+                </div>
+                
+                <div className="text-right">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm font-medium text-purple-600 hover:text-purple-500"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
               </div>
               

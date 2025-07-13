@@ -23,7 +23,8 @@ import {
   ArrowRight,
   Play,
   Download,
-  ExternalLink
+  ExternalLink,
+  AlertCircle
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -31,14 +32,12 @@ const MainPlatform: React.FC = () => {
   const navigate = useNavigate()
   const { user, logoutAndReturnToPlatform } = useAuth()
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [notification, setNotification] = useState<{ type: 'success' | 'info' | 'error'; message: string } | null>(null)
+  const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set())
+  const [activeTestimonial, setActiveTestimonial] = useState(0)
 
-  // Auto-logout when returning to main platform
-  useEffect(() => {
-    if (user) {
-      // User is logged in but on main platform - logout from module
-      logoutAndReturnToPlatform()
-    }
-  }, [user, logoutAndReturnToPlatform])
+  // No auto-logout on main platform - users can stay logged in
+  // The main platform is the central hub where users can access different modules
   // Update time every minute
   useEffect(() => {
     const timer = setInterval(() => {
@@ -210,7 +209,162 @@ const MainPlatform: React.FC = () => {
   ]
 
   const handleModuleAccess = (route: string) => {
+    // Check if user is authenticated
+    if (!user) {
+      // Redirect to login with the intended destination
+      navigate('/login', { state: { from: { pathname: route } } })
+      return
+    }
+    // For logged-in users, navigate directly to the module
     navigate(route)
+  }
+
+  // Handle Schedule Demo
+  const handleScheduleDemo = () => {
+    // Show notification
+    setNotification({ type: 'info', message: 'Opening email client to schedule demo...' })
+    
+    // Open email client with pre-filled demo request
+    const subject = encodeURIComponent('WellConX Platform Demo Request')
+    const body = encodeURIComponent(`Hello WellConX Team,
+
+I'm interested in scheduling a demo of the WellConX platform for our healthcare organization.
+
+Organization Details:
+- Organization Name: 
+- Contact Person: 
+- Phone: 
+- Email: 
+- Number of Beds/Facilities: 
+- Current Systems: 
+- Primary Use Case: 
+
+Please contact me to schedule a convenient time for the demo.
+
+Best regards,
+${user?.name || 'Healthcare Professional'}`)
+    
+    window.open(`mailto:contact@wellconx.com?subject=${subject}&body=${body}`, '_blank')
+    
+    // Clear notification after 3 seconds
+    setTimeout(() => setNotification(null), 3000)
+  }
+
+  // Handle Download Brochure
+  const handleDownloadBrochure = () => {
+    // Show notification
+    setNotification({ type: 'success', message: 'Downloading WellConX brochure...' })
+    
+    // Create a simple brochure content
+    const brochureContent = `
+WellConX Enterprise Healthcare Platform
+=====================================
+
+COMPREHENSIVE HEALTHCARE SOLUTIONS
+
+EHR Module - Electronic Health Records Management
+• Digital Patient Profiles
+• Clinical Documentation
+• E-Prescriptions & Drug Interactions
+• SOAP Notes with Voice-to-Text
+• Medical History Timeline
+• Lab Results Integration
+
+HMS Module - Hospital Management System
+• Patient Registration & Queue
+• Smart Appointment Scheduling
+• Real-time Bed Management
+• Billing & Insurance Claims
+• Staff Scheduling & Resources
+• Inventory & Supply Chain
+
+IoMT Module - Internet of Medical Things
+• Multi-vendor Device Integration
+• Real-time Vital Signs Monitoring
+• AI-powered Clinical Alerts
+• Live Waveform Visualization
+• Predictive Analytics
+• HL7 Protocol Support
+
+PLATFORM STATISTICS
+• 2,847+ Healthcare Facilities
+• 156,432+ Active Patients
+• 94,567+ Connected Devices
+• 12.8M+ Data Points/Day
+
+CERTIFICATIONS & COMPLIANCE
+• HIPAA Compliant
+• SOC 2 Certified
+• ISO 27001
+• FDA 510(k)
+
+CONTACT INFORMATION
+Phone: +1 (555) 123-WELL
+Email: contact@wellconx.com
+Address: San Francisco, CA
+
+Visit: https://wellconx.com
+    `
+    
+    // Create and download the brochure
+    const blob = new Blob([brochureContent], { type: 'text/plain' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'WellConX-Platform-Brochure.txt'
+    document.body.appendChild(a)
+    a.click()
+    window.URL.revokeObjectURL(url)
+    document.body.removeChild(a)
+    
+    // Clear notification after 3 seconds
+    setTimeout(() => setNotification(null), 3000)
+  }
+
+  // Handle View Documentation
+  const handleViewDocumentation = () => {
+    // Show notification
+    setNotification({ type: 'info', message: 'Opening WellConX documentation...' })
+    
+    // Open documentation in a new tab
+    window.open('https://docs.wellconx.com', '_blank')
+    
+    // Clear notification after 3 seconds
+    setTimeout(() => setNotification(null), 3000)
+  }
+
+  // Handle Contact Actions
+  const handleContactAction = (type: 'phone' | 'email' | 'address') => {
+    let message = ''
+    
+    switch (type) {
+      case 'phone':
+        message = 'Opening phone dialer...'
+        window.open('tel:+1555123WELL', '_self')
+        break
+      case 'email':
+        message = 'Opening email client...'
+        window.open('mailto:contact@wellconx.com', '_blank')
+        break
+      case 'address':
+        message = 'Opening Google Maps...'
+        window.open('https://maps.google.com/?q=San+Francisco+CA', '_blank')
+        break
+    }
+    
+    setNotification({ type: 'info', message })
+    setTimeout(() => setNotification(null), 3000)
+  }
+
+  // Toggle module expansion
+  const toggleModuleExpansion = (moduleId: string) => {
+    const newExpanded = new Set(expandedModules)
+    if (newExpanded.has(moduleId)) {
+      newExpanded.delete(moduleId)
+    } else {
+      newExpanded.add(moduleId)
+    }
+    setExpandedModules(newExpanded)
   }
 
   const StatCard = ({ stat, index }: any) => (
@@ -263,6 +417,64 @@ const MainPlatform: React.FC = () => {
                 </div>
               </div>
               
+              {/* User Profile Section */}
+              {user ? (
+                <div className="flex items-center space-x-3">
+                  {/* User Avatar and Info */}
+                  <div className="hidden sm:flex items-center space-x-3 bg-gray-50 px-3 py-2 rounded-lg">
+                    {user.picture ? (
+                      // Google OAuth user with profile picture
+                      <img 
+                        src={user.picture} 
+                        alt={user.name}
+                        className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm"
+                      />
+                    ) : (
+                      // Regular user with initials
+                      <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
+                        <span className="text-white font-semibold text-sm">
+                          {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                        </span>
+                      </div>
+                    )}
+                    <div className="hidden md:block">
+                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                      <div className="text-xs text-gray-500">{user.email}</div>
+                    </div>
+                  </div>
+                  
+                  {/* Logout Button */}
+                  <button
+                    onClick={() => {
+                      logoutAndReturnToPlatform()
+                      navigate('/login')
+                    }}
+                    className="flex items-center space-x-2 bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-lg transition-colors duration-200"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span className="hidden sm:inline text-sm font-medium">Logout</span>
+                  </button>
+                </div>
+              ) : (
+                /* Authentication Buttons */
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="btn-secondary btn-sm"
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    onClick={() => navigate('/signup')}
+                    className="btn-primary btn-sm"
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              )}
+              
               {/* Mobile status indicator */}
               <div className="lg:hidden flex items-center space-x-2">
                 <div className="flex items-center space-x-1 bg-green-50 px-2 py-1 rounded-full">
@@ -270,10 +482,61 @@ const MainPlatform: React.FC = () => {
                   <span className="text-green-700 font-medium text-xs">Live</span>
                 </div>
               </div>
+              
+              {/* Mobile User Profile (when logged in) */}
+              {user && (
+                <div className="sm:hidden flex items-center space-x-2">
+                  {user.picture ? (
+                    <img 
+                      src={user.picture} 
+                      alt={user.name}
+                      className="w-6 h-6 rounded-full object-cover border border-white shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center">
+                      <span className="text-white font-semibold text-xs">
+                        {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => {
+                      logoutAndReturnToPlatform()
+                      navigate('/login')
+                    }}
+                    className="p-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-colors duration-200"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Notification Display */}
+      {notification && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg flex items-center space-x-2 ${
+            notification.type === 'success' 
+              ? 'bg-green-500 text-white' 
+              : notification.type === 'error'
+              ? 'bg-red-500 text-white'
+              : 'bg-blue-500 text-white'
+          }`}
+        >
+          {notification.type === 'success' && <CheckCircle className="h-5 w-5" />}
+          {notification.type === 'error' && <AlertCircle className="h-5 w-5" />}
+          {notification.type === 'info' && <Activity className="h-5 w-5" />}
+          <span className="font-medium">{notification.message}</span>
+        </motion.div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
@@ -283,6 +546,19 @@ const MainPlatform: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8"
           >
+            {user && (
+              <div className="mb-6">
+                <div className="inline-flex items-center space-x-2 bg-primary-50 text-primary-700 px-4 py-2 rounded-full text-sm font-medium">
+                  <CheckCircle className="h-4 w-4" />
+                  <span>Welcome back, {user.name}!</span>
+                  {user.id?.startsWith('google-') && (
+                    <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                      Google Account
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
               Welcome to <span className="text-primary-600">WellConX</span>
             </h1>
@@ -321,6 +597,66 @@ const MainPlatform: React.FC = () => {
             {platformStats.map((stat, index) => (
               <StatCard key={index} stat={stat} index={index} />
             ))}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Quick Actions</h2>
+            <p className="text-gray-600">Get started with WellConX quickly</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <motion.button
+              onClick={() => {
+                setNotification({ type: 'info', message: 'Opening live demo...' })
+                window.open('https://demo.wellconx.com', '_blank')
+                setTimeout(() => setNotification(null), 3000)
+              }}
+              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center space-y-3"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Play className="h-8 w-8" />
+              <div>
+                <h3 className="font-semibold text-lg">View Live Demo</h3>
+                <p className="text-blue-100 text-sm">Experience the platform firsthand</p>
+              </div>
+            </motion.button>
+
+            <motion.button
+              onClick={() => {
+                setNotification({ type: 'info', message: 'Opening pricing calculator...' })
+                window.open('https://wellconx.com/pricing', '_blank')
+                setTimeout(() => setNotification(null), 3000)
+              }}
+              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center space-y-3"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <TrendingUp className="h-8 w-8" />
+              <div>
+                <h3 className="font-semibold text-lg">Request Pricing</h3>
+                <p className="text-green-100 text-sm">Get customized pricing for your organization</p>
+              </div>
+            </motion.button>
+
+            <motion.button
+              onClick={() => {
+                setNotification({ type: 'info', message: 'Opening support chat...' })
+                window.open('https://support.wellconx.com/chat', '_blank')
+                setTimeout(() => setNotification(null), 3000)
+              }}
+              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center space-y-3"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Users className="h-8 w-8" />
+              <div>
+                <h3 className="font-semibold text-lg">Support Chat</h3>
+                <p className="text-purple-100 text-sm">Get instant help from our experts</p>
+              </div>
+            </motion.button>
           </div>
         </div>
 
@@ -415,23 +751,44 @@ const MainPlatform: React.FC = () => {
                   {/* Features List */}
                   <div className="space-y-2 mb-6">
                     <h4 className="text-sm font-semibold text-gray-900 mb-3">Key Features:</h4>
-                    {module.features.map((feature, featureIndex) => (
+                    {module.features.slice(0, expandedModules.has(module.id) ? module.features.length : 3).map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center space-x-2">
                         <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
                         <span className="text-sm text-gray-600">{feature}</span>
                       </div>
                     ))}
+                    {module.features.length > 3 && (
+                      <button
+                        onClick={() => toggleModuleExpansion(module.id)}
+                        className="text-primary-600 hover:text-primary-700 text-sm font-medium mt-2"
+                      >
+                        {expandedModules.has(module.id) ? 'Show Less' : `Show ${module.features.length - 3} More Features`}
+                      </button>
+                    )}
                   </div>
                 </div>
 
                 {/* Module Action */}
-                <div className="px-6 pb-6">
+                <div className="px-6 pb-6 space-y-3">
                   <button
                     onClick={() => handleModuleAccess(module.route)}
                     className={`w-full ${module.color} ${module.hoverColor} text-white py-3 px-6 rounded-xl font-semibold transition-colors duration-200 flex items-center justify-center space-x-2`}
                   >
-                    <span>Access {module.title}</span>
+                    <span>{user ? `Enter ${module.title}` : `Access ${module.title}`}</span>
                     <ArrowRight className="h-4 w-4" />
+                  </button>
+                  
+                  {/* Learn More Button */}
+                  <button
+                    onClick={() => {
+                      setNotification({ type: 'info', message: `Opening ${module.title} documentation...` })
+                      window.open(`https://docs.wellconx.com/${module.id}`, '_blank')
+                      setTimeout(() => setNotification(null), 3000)
+                    }}
+                    className="w-full border border-gray-300 hover:bg-gray-50 text-gray-700 py-2 px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    <span>Learn More</span>
                   </button>
                 </div>
               </motion.div>
@@ -446,28 +803,66 @@ const MainPlatform: React.FC = () => {
             <p className="text-gray-600">See what our customers say about WellConX</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={index}
-                className="p-6 bg-gray-50 rounded-xl"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+          <div className="relative">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {testimonials.map((testimonial, index) => (
+                <motion.div
+                  key={index}
+                  className={`p-6 rounded-xl transition-all duration-300 cursor-pointer ${
+                    index === activeTestimonial 
+                      ? 'bg-primary-50 border-2 border-primary-200 shadow-lg' 
+                      : 'bg-gray-50 hover:bg-gray-100'
+                  }`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  onClick={() => setActiveTestimonial(index)}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <div className="flex items-center mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 text-yellow-500 fill-current" />
+                    ))}
+                  </div>
+                  <p className="text-gray-700 mb-4 italic">"{testimonial.quote}"</p>
+                  <div>
+                    <div className="font-semibold text-gray-900">{testimonial.name}</div>
+                    <div className="text-sm text-gray-600">{testimonial.role}</div>
+                    <div className="text-sm text-gray-500">{testimonial.hospital}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            
+            {/* Testimonial Navigation */}
+            <div className="flex justify-center mt-6 space-x-2">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveTestimonial(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    index === activeTestimonial 
+                      ? 'bg-primary-600 scale-125' 
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                />
+              ))}
+            </div>
+            
+            {/* View All Testimonials Button */}
+            <div className="text-center mt-6">
+              <button
+                onClick={() => {
+                  setNotification({ type: 'info', message: 'Opening customer testimonials page...' })
+                  window.open('https://wellconx.com/testimonials', '_blank')
+                  setTimeout(() => setNotification(null), 3000)
+                }}
+                className="inline-flex items-center space-x-2 text-primary-600 hover:text-primary-700 font-medium"
               >
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-yellow-500 fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-4 italic">"{testimonial.quote}"</p>
-                <div>
-                  <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                  <div className="text-sm text-gray-600">{testimonial.role}</div>
-                  <div className="text-sm text-gray-500">{testimonial.hospital}</div>
-                </div>
-              </motion.div>
-            ))}
+                <span>View All Customer Stories</span>
+                <ExternalLink className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -520,15 +915,24 @@ const MainPlatform: React.FC = () => {
                 and see how WellConX can benefit your organization.
               </p>
               <div className="space-y-4">
-                <div className="flex items-center space-x-3">
+                <div 
+                  className="flex items-center space-x-3 cursor-pointer hover:text-primary-600 transition-colors"
+                  onClick={() => handleContactAction('phone')}
+                >
                   <Phone className="h-5 w-5 text-primary-600" />
                   <span className="text-gray-700">+1 (555) 123-WELL</span>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div 
+                  className="flex items-center space-x-3 cursor-pointer hover:text-primary-600 transition-colors"
+                  onClick={() => handleContactAction('email')}
+                >
                   <Mail className="h-5 w-5 text-primary-600" />
                   <span className="text-gray-700">contact@wellconx.com</span>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div 
+                  className="flex items-center space-x-3 cursor-pointer hover:text-primary-600 transition-colors"
+                  onClick={() => handleContactAction('address')}
+                >
                   <MapPin className="h-5 w-5 text-primary-600" />
                   <span className="text-gray-700">San Francisco, CA</span>
                 </div>
@@ -536,15 +940,24 @@ const MainPlatform: React.FC = () => {
             </div>
             
             <div className="space-y-4">
-              <button className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2">
+              <button 
+                onClick={handleScheduleDemo}
+                className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2"
+              >
                 <Play className="h-4 w-4" />
                 <span>Schedule Demo</span>
               </button>
-              <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2">
+              <button 
+                onClick={handleDownloadBrochure}
+                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2"
+              >
                 <Download className="h-4 w-4" />
                 <span>Download Brochure</span>
               </button>
-              <button className="w-full border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-6 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2">
+              <button 
+                onClick={handleViewDocumentation}
+                className="w-full border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-6 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2"
+              >
                 <ExternalLink className="h-4 w-4" />
                 <span>View Documentation</span>
               </button>

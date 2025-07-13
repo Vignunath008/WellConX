@@ -16,6 +16,10 @@ import HMS from './pages/HMS'
 import EHR from './pages/EHR'
 import AdminPanel from './pages/AdminPanel'
 import MainPlatform from './pages/MainPlatform'
+import Landing from './pages/Landing'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
+import ForgotPassword from './pages/ForgotPassword'
 import IoMTLogin from './pages/IoMTLogin'
 import EHRLogin from './pages/EHRLogin'
 import HMSLogin from './pages/HMSLogin'
@@ -27,8 +31,16 @@ function App() {
       <DataProvider>
         <Router>
           <Routes>
-            {/* Main Platform Route - Now the starting page */}
-            <Route path="/" element={<MainPlatform />} />
+            {/* Landing page - redirects based on auth status */}
+            <Route path="/" element={<Landing />} />
+            
+            {/* Main Platform Route - requires authentication */}
+            <Route path="/platform" element={<MainPlatform />} />
+            
+            {/* Authentication Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             
             {/* Module Login Routes */}
             <Route path="/iomt/login" element={<IoMTLogin />} />

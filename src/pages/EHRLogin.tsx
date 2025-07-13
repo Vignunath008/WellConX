@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Shield, Eye, EyeOff, ArrowLeft, FileText, User, Stethoscope, Clipboard, Database, Search, Calendar, Pill } from 'lucide-react'
 
@@ -205,6 +205,15 @@ const EHRLogin: React.FC = () => {
                       )}
                     </button>
                   </div>
+                </div>
+                
+                <div className="text-right">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm font-medium text-blue-600 hover:text-blue-500"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
               </div>
               

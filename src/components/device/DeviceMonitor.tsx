@@ -7,9 +7,19 @@ interface DeviceMonitorProps {
   device: Device
   onConfigure?: (deviceId: string) => void
   onViewData?: (deviceId: string) => void
+  onStatusChange?: (deviceId: string, status: 'online' | 'offline' | 'maintenance') => void
+  onDelete?: (deviceId: string) => void
+  onRestart?: (deviceId: string) => void
 }
 
-const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ device, onConfigure, onViewData }) => {
+const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ 
+  device, 
+  onConfigure, 
+  onViewData, 
+  onStatusChange, 
+  onDelete, 
+  onRestart 
+}) => {
   const getStatusIcon = () => {
     switch (device.status) {
       case 'online':
@@ -62,6 +72,30 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ device, onConfigure, onVi
     e.stopPropagation()
     if (onViewData) {
       onViewData(device.id)
+    }
+  }
+
+  const handleStatusChangeClick = (e: React.MouseEvent, newStatus: 'online' | 'offline' | 'maintenance') => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (onStatusChange) {
+      onStatusChange(device.id, newStatus)
+    }
+  }
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (onDelete && confirm(`Are you sure you want to delete device "${device.name}"?`)) {
+      onDelete(device.id)
+    }
+  }
+
+  const handleRestartClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (onRestart && confirm(`Are you sure you want to restart device "${device.name}"?`)) {
+      onRestart(device.id)
     }
   }
 
@@ -152,6 +186,28 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ device, onConfigure, onVi
           className="flex-1 bg-primary-600 text-white px-3 py-2 rounded-medical text-sm font-medium hover:bg-primary-700 transition-colors"
         >
           View Data
+        </button>
+      </div>
+
+      {/* Additional Actions */}
+      <div className="mt-2 flex space-x-1">
+        <button 
+          onClick={(e) => handleStatusChangeClick(e, device.status === 'online' ? 'offline' : 'online')}
+          className="flex-1 bg-yellow-100 border border-yellow-300 text-yellow-700 px-2 py-1 rounded-medical text-xs font-medium hover:bg-yellow-200 transition-colors"
+        >
+          {device.status === 'online' ? 'Go Offline' : 'Go Online'}
+        </button>
+        <button 
+          onClick={handleRestartClick}
+          className="flex-1 bg-blue-100 border border-blue-300 text-blue-700 px-2 py-1 rounded-medical text-xs font-medium hover:bg-blue-200 transition-colors"
+        >
+          Restart
+        </button>
+        <button 
+          onClick={handleDeleteClick}
+          className="flex-1 bg-red-100 border border-red-300 text-red-700 px-2 py-1 rounded-medical text-xs font-medium hover:bg-red-200 transition-colors"
+        >
+          Delete
         </button>
       </div>
     </motion.div>

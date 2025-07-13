@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useData } from '../contexts/DataContext'
 import DeviceMonitor from '../components/device/DeviceMonitor'
-import { Monitor, Plus, Search, Wifi, WifiOff, Settings, RefreshCw, Download, X, Activity, Heart, Wind, Thermometer, CheckCircle, Zap } from 'lucide-react'
+import { Monitor, Plus, Search, Wifi, WifiOff, Settings, RefreshCw, Download, X, Activity, Heart, Wind, Thermometer, CheckCircle, Zap, AlertTriangle } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const Devices: React.FC = () => {
@@ -11,7 +11,31 @@ const Devices: React.FC = () => {
   const [brandFilter, setBrandFilter] = useState<'all' | 'Philips' | 'GE' | 'Mindray'>('all')
   const [showConfigModal, setShowConfigModal] = useState(false)
   const [showDataModal, setShowDataModal] = useState(false)
+  const [showAddDeviceModal, setShowAddDeviceModal] = useState(false)
+  const [showAssignPatientModal, setShowAssignPatientModal] = useState(false)
   const [selectedDevice, setSelectedDevice] = useState<any>(null)
+  const [configForm, setConfigForm] = useState({
+    location: '',
+    ipAddress: '',
+    patientId: ''
+  })
+  const [addDeviceForm, setAddDeviceForm] = useState({
+    name: '',
+    model: '',
+    brand: 'Philips',
+    location: '',
+    ipAddress: '',
+    serialNumber: ''
+  })
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: 'success' | 'error' | 'info';
+  }>({
+    show: false,
+    message: '',
+    type: 'success'
+  })
 
   const filteredDevices = devices.filter(device => {
     const searchLower = searchTerm.toLowerCase()
@@ -52,12 +76,21 @@ const Devices: React.FC = () => {
     }
   }
 
+  const showNotification = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+    setNotification({ show: true, message, type })
+    setTimeout(() => setNotification(prev => ({ ...prev, show: false })), 3000)
+  }
+
   const handleAddDevice = () => {
-    alert('Add Device Wizard\n\n1. Select device type\n2. Configure network settings\n3. Set up HL7 parameters\n4. Test connection\n5. Assign to patient')
+    setShowAddDeviceModal(true)
   }
 
   const handleRefresh = () => {
-    alert('Refreshing device status...\n\n✓ Checking network connectivity\n✓ Updating device heartbeats\n✓ Verifying HL7 connections\n✓ Syncing patient assignments')
+    showNotification('Refreshing device status...', 'info')
+    // Simulate refresh process
+    setTimeout(() => {
+      showNotification('Device status updated successfully!', 'success')
+    }, 2000)
   }
 
   const handleExport = () => {
@@ -76,13 +109,104 @@ const Devices: React.FC = () => {
     a.click()
     URL.revokeObjectURL(url)
     
-    alert('Device data exported successfully!')
+    showNotification('Device data exported successfully!')
   }
 
   const clearFilters = () => {
     setSearchTerm('')
     setStatusFilter('all')
     setBrandFilter('all')
+  }
+
+  const handleSubmitAddDevice = () => {
+    if (!addDeviceForm.name || !addDeviceForm.model || !addDeviceForm.location || !addDeviceForm.ipAddress) {
+      showNotification('Please fill in all required fields', 'error')
+      return
+    }
+
+    const newDevice = {
+      id: `DEV-${Date.now()}`,
+      name: addDeviceForm.name,
+      model: addDeviceForm.model,
+      brand: addDeviceForm.brand,
+      location: addDeviceForm.location,
+      ipAddress: addDeviceForm.ipAddress,
+      serialNumber: addDeviceForm.serialNumber || `SN-${Math.floor(Math.random() * 1000000)}`,
+      status: 'online' as const,
+      lastHeartbeat: new Date(),
+      patientId: null
+    }
+
+    // In a real app, this would be added to the devices array
+    // For demo purposes, we'll simulate adding to the devices array
+    console.log('Adding new device:', newDevice)
+    showNotification('Device added successfully!')
+    setShowAddDeviceModal(false)
+    setAddDeviceForm({
+      name: '',
+      model: '',
+      brand: 'Philips',
+      location: '',
+      ipAddress: '',
+      serialNumber: ''
+    })
+  }
+
+  const handleAssignPatient = (deviceId: string) => {
+    setSelectedDevice(devices.find(d => d.id === deviceId))
+    setShowAssignPatientModal(true)
+  }
+
+  const handleUnassignPatient = (deviceId: string) => {
+    // In a real app, this would update the device's patientId to null
+    console.log('Unassigning patient from device:', deviceId)
+    showNotification('Patient unassigned successfully!')
+  }
+
+  const handleSaveConfiguration = () => {
+    if (!configForm.location) {
+      showNotification('Please enter a location', 'error')
+      return
+    }
+
+    // In a real app, this would save the configuration to the backend
+    console.log('Saving configuration:', configForm)
+    showNotification('Configuration saved successfully!')
+    setShowConfigModal(false)
+  }
+
+  const handleAssignPatientSubmit = () => {
+    if (!configForm.patientId) {
+      showNotification('Please select a patient', 'error')
+      return
+    }
+
+    // In a real app, this would assign the patient to the device
+    console.log('Assigning patient:', configForm.patientId, 'to device:', selectedDevice?.id)
+    showNotification('Patient assigned successfully!')
+    setShowAssignPatientModal(false)
+    setConfigForm({ location: '', ipAddress: '', patientId: '' })
+  }
+
+  const handleDeviceStatusChange = (deviceId: string, newStatus: 'online' | 'offline' | 'maintenance') => {
+    // In a real app, this would update the device status
+    console.log('Changing device status:', deviceId, 'to:', newStatus)
+    showNotification(`Device status changed to ${newStatus}`, 'success')
+  }
+
+  const handleDeviceDelete = (deviceId: string) => {
+    // In a real app, this would delete the device
+    console.log('Deleting device:', deviceId)
+    showNotification('Device deleted successfully!', 'success')
+  }
+
+  const handleDeviceRestart = (deviceId: string) => {
+    // In a real app, this would restart the device
+    console.log('Restarting device:', deviceId)
+    showNotification('Device restart initiated...', 'info')
+    setTimeout(() => {
+      showNotification('Device restarted successfully!', 'success')
+    }, 3000)
   }
 
   // Get patient assigned to device
@@ -295,6 +419,9 @@ const Devices: React.FC = () => {
                 device={device}
                 onConfigure={handleConfigure}
                 onViewData={handleViewData}
+                onStatusChange={handleDeviceStatusChange}
+                onDelete={handleDeviceDelete}
+                onRestart={handleDeviceRestart}
               />
             </motion.div>
           ))}
@@ -423,8 +550,10 @@ const Devices: React.FC = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
                         <input
                           type="text"
-                          value={selectedDevice.location}
+                          value={configForm.location || selectedDevice.location}
+                          onChange={(e) => setConfigForm(prev => ({ ...prev, location: e.target.value }))}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                          placeholder="Enter device location"
                         />
                       </div>
                     </div>
@@ -486,14 +615,20 @@ const Devices: React.FC = () => {
                             <p className="font-medium text-gray-900">Currently Assigned</p>
                             <p className="text-sm text-gray-600">Patient ID: {selectedDevice.patientId}</p>
                           </div>
-                          <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm">
+                          <button 
+                            onClick={() => handleUnassignPatient(selectedDevice.id)}
+                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm"
+                          >
                             Unassign
                           </button>
                         </div>
                       ) : (
                         <div className="text-center py-4">
                           <p className="text-gray-600 mb-3">No patient currently assigned</p>
-                          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                          <button 
+                            onClick={() => handleAssignPatient(selectedDevice.id)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                          >
                             Assign Patient
                           </button>
                         </div>
@@ -511,10 +646,7 @@ const Devices: React.FC = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={() => {
-                    alert('Configuration saved successfully!')
-                    setShowConfigModal(false)
-                  }}
+                  onClick={handleSaveConfiguration}
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Save Configuration
@@ -697,6 +829,244 @@ const Devices: React.FC = () => {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Device Modal */}
+      {showAddDeviceModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div 
+              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" 
+              aria-hidden="true"
+              onClick={() => setShowAddDeviceModal(false)}
+            ></div>
+
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-white/20 p-2 rounded-lg">
+                      <Monitor className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold">Add New Device</h2>
+                      <p className="text-blue-100">Configure device settings</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowAddDeviceModal(false)}
+                    className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Device Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={addDeviceForm.name}
+                      onChange={(e) => setAddDeviceForm(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter device name"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Model <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={addDeviceForm.model}
+                      onChange={(e) => setAddDeviceForm(prev => ({ ...prev, model: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter device model"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+                    <select
+                      value={addDeviceForm.brand}
+                      onChange={(e) => setAddDeviceForm(prev => ({ ...prev, brand: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="Philips">Philips</option>
+                      <option value="GE">GE</option>
+                      <option value="Mindray">Mindray</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Location <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={addDeviceForm.location}
+                      onChange={(e) => setAddDeviceForm(prev => ({ ...prev, location: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter device location"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      IP Address <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={addDeviceForm.ipAddress}
+                      onChange={(e) => setAddDeviceForm(prev => ({ ...prev, ipAddress: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="192.168.1.100"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Serial Number</label>
+                    <input
+                      type="text"
+                      value={addDeviceForm.serialNumber}
+                      onChange={(e) => setAddDeviceForm(prev => ({ ...prev, serialNumber: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter serial number (optional)"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+                <button
+                  onClick={() => setShowAddDeviceModal(false)}
+                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSubmitAddDevice}
+                  disabled={!addDeviceForm.name || !addDeviceForm.model || !addDeviceForm.location || !addDeviceForm.ipAddress}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  Add Device
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Assign Patient Modal */}
+      {showAssignPatientModal && selectedDevice && (
+        <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div 
+              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" 
+              aria-hidden="true"
+              onClick={() => setShowAssignPatientModal(false)}
+            ></div>
+
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+              <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-white/20 p-2 rounded-lg">
+                      <Monitor className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold">Assign Patient</h2>
+                      <p className="text-green-100">{selectedDevice.name}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowAssignPatientModal(false)}
+                    className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Select Patient <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={configForm.patientId}
+                      onChange={(e) => setConfigForm(prev => ({ ...prev, patientId: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    >
+                      <option value="">Choose a patient...</option>
+                      {patients.map((patient) => (
+                        <option key={patient.id} value={patient.id}>
+                          {patient.name} - {patient.room}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <h4 className="font-medium text-blue-900 mb-2">Device Information</h4>
+                    <div className="text-sm text-blue-800 space-y-1">
+                      <div>Device: {selectedDevice.name}</div>
+                      <div>Model: {selectedDevice.model}</div>
+                      <div>Location: {selectedDevice.location}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+                <button
+                  onClick={() => setShowAssignPatientModal(false)}
+                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAssignPatientSubmit}
+                  disabled={!configForm.patientId}
+                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  Assign Patient
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notification */}
+      {notification.show && (
+        <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${
+          notification.type === 'success' ? 'bg-green-500 text-white' :
+          notification.type === 'error' ? 'bg-red-500 text-white' :
+          'bg-blue-500 text-white'
+        }`}>
+          <div className="flex items-center space-x-2">
+            {notification.type === 'success' && <CheckCircle className="h-5 w-5" />}
+            {notification.type === 'error' && <AlertTriangle className="h-5 w-5" />}
+            {notification.type === 'info' && <Activity className="h-5 w-5" />}
+            <span>{notification.message}</span>
           </div>
         </div>
       )}

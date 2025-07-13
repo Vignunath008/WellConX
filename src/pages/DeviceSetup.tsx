@@ -1,10 +1,25 @@
 import React, { useState } from 'react'
-import { Monitor, Wifi, Settings, CheckCircle, Play } from 'lucide-react'
+import { Monitor, Wifi, Settings, CheckCircle, Play, AlertTriangle, Activity } from 'lucide-react'
 
 const DeviceSetup: React.FC = () => {
   const [selectedDevice, setSelectedDevice] = useState<string>('')
   const [connectionType, setConnectionType] = useState<'network' | 'serial'>('network')
   const [setupStep, setSetupStep] = useState(1)
+  const [isTesting, setIsTesting] = useState(false)
+  const [testResults, setTestResults] = useState({
+    network: false,
+    hl7: false,
+    monitoring: false
+  })
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: 'success' | 'error' | 'info';
+  }>({
+    show: false,
+    message: '',
+    type: 'success'
+  })
 
   const deviceTypes = [
     {
@@ -273,6 +288,62 @@ const DeviceSetup: React.FC = () => {
     </div>
   )
 
+  const showNotification = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+    setNotification({ show: true, message, type })
+    setTimeout(() => setNotification(prev => ({ ...prev, show: false })), 3000)
+  }
+
+  const handleTestConnection = () => {
+    setIsTesting(true)
+    showNotification('Testing device connection...', 'info')
+    
+    // Simulate connection testing with progressive results
+    setTimeout(() => {
+      setTestResults(prev => ({ ...prev, network: true }))
+      showNotification('Network connection established!', 'success')
+    }, 1000)
+    
+    setTimeout(() => {
+      setTestResults(prev => ({ ...prev, hl7: true }))
+      showNotification('HL7 communication verified!', 'success')
+    }, 2000)
+    
+    setTimeout(() => {
+      setTestResults(prev => ({ ...prev, monitoring: true }))
+      setIsTesting(false)
+      showNotification('Connection test completed successfully!', 'success')
+    }, 3000)
+  }
+
+  const handleCompleteSetup = () => {
+    showNotification('Device setup completed successfully!', 'success')
+    // In a real app, this would redirect to the devices page
+    setTimeout(() => {
+      window.location.href = '/iomt/devices'
+    }, 1500)
+  }
+
+  const handleSkipTest = () => {
+    showNotification('Test skipped. You can test the connection later.', 'info')
+    setTestResults({
+      network: true,
+      hl7: true,
+      monitoring: true
+    })
+  }
+
+  const handleResetSetup = () => {
+    setSetupStep(1)
+    setSelectedDevice('')
+    setConnectionType('network')
+    setTestResults({
+      network: false,
+      hl7: false,
+      monitoring: false
+    })
+    showNotification('Setup reset to beginning', 'info')
+  }
+
   const renderTestConnection = () => (
     <div className="space-y-6">
       <div>
@@ -281,22 +352,58 @@ const DeviceSetup: React.FC = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-green-50 rounded-xl p-6 border border-green-200 text-center">
-          <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-3" />
-          <h4 className="font-semibold text-green-900 mb-1">Network Connected</h4>
-          <p className="text-sm text-green-700">Device is reachable on network</p>
+        <div className={`rounded-xl p-6 border text-center transition-colors ${
+          testResults.network 
+            ? 'bg-green-50 border-green-200' 
+            : 'bg-gray-50 border-gray-200'
+        }`}>
+          {testResults.network ? (
+            <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-3" />
+          ) : (
+            <Activity className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+          )}
+          <h4 className={`font-semibold mb-1 ${
+            testResults.network ? 'text-green-900' : 'text-gray-900'
+          }`}>Network Connected</h4>
+          <p className={`text-sm ${
+            testResults.network ? 'text-green-700' : 'text-gray-600'
+          }`}>Device is reachable on network</p>
         </div>
         
-        <div className="bg-blue-50 rounded-xl p-6 border border-blue-200 text-center">
-          <Play className="h-12 w-12 text-blue-600 mx-auto mb-3" />
-          <h4 className="font-semibold text-blue-900 mb-1">HL7 Receiving</h4>
-          <p className="text-sm text-blue-700">Data messages being received</p>
+        <div className={`rounded-xl p-6 border text-center transition-colors ${
+          testResults.hl7 
+            ? 'bg-blue-50 border-blue-200' 
+            : 'bg-gray-50 border-gray-200'
+        }`}>
+          {testResults.hl7 ? (
+            <CheckCircle className="h-12 w-12 text-blue-600 mx-auto mb-3" />
+          ) : (
+            <Play className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+          )}
+          <h4 className={`font-semibold mb-1 ${
+            testResults.hl7 ? 'text-blue-900' : 'text-gray-900'
+          }`}>HL7 Receiving</h4>
+          <p className={`text-sm ${
+            testResults.hl7 ? 'text-blue-700' : 'text-gray-600'
+          }`}>Data messages being received</p>
         </div>
         
-        <div className="bg-purple-50 rounded-xl p-6 border border-purple-200 text-center">
-          <Monitor className="h-12 w-12 text-purple-600 mx-auto mb-3" />
-          <h4 className="font-semibold text-purple-900 mb-1">Live Monitoring</h4>
-          <p className="text-sm text-purple-700">Real-time vitals displayed</p>
+        <div className={`rounded-xl p-6 border text-center transition-colors ${
+          testResults.monitoring 
+            ? 'bg-purple-50 border-purple-200' 
+            : 'bg-gray-50 border-gray-200'
+        }`}>
+          {testResults.monitoring ? (
+            <CheckCircle className="h-12 w-12 text-purple-600 mx-auto mb-3" />
+          ) : (
+            <Monitor className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+          )}
+          <h4 className={`font-semibold mb-1 ${
+            testResults.monitoring ? 'text-purple-900' : 'text-gray-900'
+          }`}>Live Monitoring</h4>
+          <p className={`text-sm ${
+            testResults.monitoring ? 'text-purple-700' : 'text-gray-600'
+          }`}>Real-time vitals displayed</p>
         </div>
       </div>
       
@@ -312,8 +419,38 @@ const DeviceSetup: React.FC = () => {
         </div>
       </div>
       
-      <div className="flex justify-center">
-        <button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-medium transition-colors">
+      <div className="flex justify-center space-x-4">
+        <button 
+          onClick={handleTestConnection}
+          disabled={isTesting}
+          className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-8 py-3 rounded-xl font-medium transition-colors flex items-center space-x-2"
+        >
+          {isTesting ? (
+            <>
+              <Activity className="h-5 w-5 animate-spin" />
+              <span>Testing...</span>
+            </>
+          ) : (
+            <>
+              <Play className="h-5 w-5" />
+              <span>Test Connection</span>
+            </>
+          )}
+        </button>
+        
+        <button 
+          onClick={handleSkipTest}
+          disabled={isTesting}
+          className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+        >
+          Skip Test
+        </button>
+        
+        <button 
+          onClick={handleCompleteSetup}
+          disabled={!testResults.network || !testResults.hl7 || !testResults.monitoring}
+          className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-8 py-3 rounded-xl font-medium transition-colors"
+        >
           Complete Setup
         </button>
       </div>
@@ -332,70 +469,97 @@ const DeviceSetup: React.FC = () => {
   }
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Device Setup</h1>
-        <p className="text-gray-600 mt-1">Connect your medical devices to WellConX platform</p>
-      </div>
+    <>
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Device Setup</h1>
+          <p className="text-gray-600 mt-1">Connect your medical devices to WellConX platform</p>
+        </div>
 
-      {/* Progress Steps */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <div className="flex items-center justify-between">
-          {setupSteps.map((step, index) => (
-            <div key={step.id} className="flex items-center">
-              <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                setupStep >= step.id
-                  ? 'bg-blue-600 border-blue-600 text-white'
-                  : 'border-gray-300 text-gray-400'
-              }`}>
-                {setupStep > step.id ? (
-                  <CheckCircle className="h-5 w-5" />
-                ) : (
-                  <span className="text-sm font-medium">{step.id}</span>
+        {/* Progress Steps */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+          <div className="flex items-center justify-between">
+            {setupSteps.map((step, index) => (
+              <div key={step.id} className="flex items-center">
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                  setupStep >= step.id
+                    ? 'bg-blue-600 border-blue-600 text-white'
+                    : 'border-gray-300 text-gray-400'
+                }`}>
+                  {setupStep > step.id ? (
+                    <CheckCircle className="h-5 w-5" />
+                  ) : (
+                    <span className="text-sm font-medium">{step.id}</span>
+                  )}
+                </div>
+                <div className="ml-3">
+                  <p className={`text-sm font-medium ${
+                    setupStep >= step.id ? 'text-gray-900' : 'text-gray-400'
+                  }`}>
+                    {step.title}
+                  </p>
+                  <p className="text-xs text-gray-500">{step.description}</p>
+                </div>
+                {index < setupSteps.length - 1 && (
+                  <div className={`w-16 h-0.5 mx-4 ${
+                    setupStep > step.id ? 'bg-blue-600' : 'bg-gray-300'
+                  }`} />
                 )}
               </div>
-              <div className="ml-3">
-                <p className={`text-sm font-medium ${
-                  setupStep >= step.id ? 'text-gray-900' : 'text-gray-400'
-                }`}>
-                  {step.title}
-                </p>
-                <p className="text-xs text-gray-500">{step.description}</p>
-              </div>
-              {index < setupSteps.length - 1 && (
-                <div className={`w-16 h-0.5 mx-4 ${
-                  setupStep > step.id ? 'bg-blue-600' : 'bg-gray-300'
-                }`} />
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+
+        {/* Current Step Content */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-8">
+          {renderCurrentStep()}
+        </div>
+
+        {/* Navigation */}
+        <div className="flex justify-between">
+          <div className="flex space-x-3">
+            <button
+              onClick={() => setSetupStep(Math.max(1, setupStep - 1))}
+              disabled={setupStep === 1}
+              className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            
+            <button
+              onClick={handleResetSetup}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              Reset Setup
+            </button>
+          </div>
+          
+          <button
+            onClick={() => setSetupStep(Math.min(5, setupStep + 1))}
+            disabled={setupStep === 5 || (setupStep === 1 && !selectedDevice)}
+            className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {setupStep === 5 ? 'Complete' : 'Next'}
+          </button>
         </div>
       </div>
 
-      {/* Current Step Content */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-8">
-        {renderCurrentStep()}
-      </div>
-
-      {/* Navigation */}
-      <div className="flex justify-between">
-        <button
-          onClick={() => setSetupStep(Math.max(1, setupStep - 1))}
-          disabled={setupStep === 1}
-          className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Previous
-        </button>
-        
-        <button
-          onClick={() => setSetupStep(Math.min(5, setupStep + 1))}
-          disabled={setupStep === 5 || (setupStep === 1 && !selectedDevice)}
-          className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {setupStep === 5 ? 'Complete' : 'Next'}
-        </button>
-      </div>
-    </div>
+      {/* Notification */}
+      {notification.show && (
+        <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${
+          notification.type === 'success' ? 'bg-green-500 text-white' :
+          notification.type === 'error' ? 'bg-red-500 text-white' :
+          'bg-blue-500 text-white'
+        }`}>
+          <div className="flex items-center space-x-2">
+            {notification.type === 'success' && <CheckCircle className="h-5 w-5" />}
+            {notification.type === 'error' && <AlertTriangle className="h-5 w-5" />}
+            {notification.type === 'info' && <Activity className="h-5 w-5" />}
+            <span>{notification.message}</span>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 

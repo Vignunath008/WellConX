@@ -54,15 +54,15 @@ const Dashboard: React.FC = () => {
   }
 
   const handleViewAllPatients = () => {
-    navigate('/patients')
+    navigate('/iomt/patients')
   }
 
   const handleViewHistory = (patientId: string) => {
-    navigate(`/patients/${patientId}/history`)
+    navigate(`/iomt/patients/${patientId}/history`)
   }
 
   const handleViewDetails = (patientId: string) => {
-    navigate(`/patients/${patientId}`)
+    navigate(`/iomt/patients/${patientId}`)
   }
 
   const statCards = [

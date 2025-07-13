@@ -56,7 +56,7 @@ const PatientDetails: React.FC = () => {
           <h2 className="text-xl font-bold text-gray-900 mb-2">Patient Not Found</h2>
           <p className="text-gray-600 mb-4 text-sm">The requested patient could not be found.</p>
           <button
-            onClick={() => navigate('/patients')}
+            onClick={() => navigate('/iomt/patients')}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg w-full"
           >
             Back to Patients
@@ -115,7 +115,7 @@ const PatientDetails: React.FC = () => {
         <div className="bg-white border-b border-gray-200 px-3 py-3 sticky top-0 z-10">
           <div className="flex items-center space-x-3">
             <button
-              onClick={() => navigate('/patients')}
+              onClick={() => navigate('/iomt/patients')}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -287,7 +287,7 @@ const PatientDetails: React.FC = () => {
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm font-medium text-green-800">Device Status</span>
                               <div className={`w-2 h-2 rounded-full ${
-                                assignedDevice.status === 'online' ? 'bg-green-500 animate-pulse' : 'bg-red-500'
+                                assignedDevice.status === 'online' ? 'bg-green-500' : 'bg-red-500'
                               }`} />
                             </div>
                             <div className="space-y-1 text-xs text-green-700">
@@ -330,7 +330,7 @@ const PatientDetails: React.FC = () => {
                   <div className="p-3">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                        <div className="w-2 h-2 bg-green-500 rounded-full" />
                         <span className="text-xs text-gray-600 font-medium">Live Data</span>
                       </div>
                       <span className="text-xs text-gray-500">
@@ -521,7 +521,7 @@ const PatientDetails: React.FC = () => {
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 safe-area-inset-bottom">
           <div className="flex space-x-2">
             <button
-              onClick={() => navigate(`/patients/${patient.id}/history`)}
+              onClick={() => navigate(`/iomt/patients/${patient.id}/history`)}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 text-sm"
             >
               <Clock className="h-4 w-4" />
@@ -529,7 +529,7 @@ const PatientDetails: React.FC = () => {
             </button>
             
             <button
-              onClick={() => navigate(`/patients/${patient.id}/advanced`)}
+              onClick={() => navigate(`/iomt/patients/${patient.id}/advanced`)}
               className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 text-sm"
             >
               <Zap className="h-4 w-4" />
@@ -537,7 +537,7 @@ const PatientDetails: React.FC = () => {
             </button>
 
             <button
-              onClick={() => navigate(`/patients/${patient.id}/ai`)}
+              onClick={() => navigate(`/iomt/patients/${patient.id}/ai`)}
               className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 text-sm"
             >
               <Brain className="h-4 w-4" />

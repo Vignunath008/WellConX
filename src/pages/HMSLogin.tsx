@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Building2, Eye, EyeOff, ArrowLeft, Calendar, Bed, Users, DollarSign, UserCheck, ClipboardList, BarChart3, Shield } from 'lucide-react'
 
@@ -205,6 +205,15 @@ const HMSLogin: React.FC = () => {
                       )}
                     </button>
                   </div>
+                </div>
+                
+                <div className="text-right">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm font-medium text-green-600 hover:text-green-500"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
               </div>
               
