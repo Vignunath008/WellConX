@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useData } from '../contexts/DataContext'
 import { 
@@ -7,8 +7,6 @@ import {
   Zap, 
   Activity, 
   TrendingUp, 
-  AlertTriangle, 
-  CheckCircle, 
   Clock, 
   Eye, 
   Settings, 

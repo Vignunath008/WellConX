@@ -1,10 +1,8 @@
 import React from 'react';
-import { CheckCircle, AlertCircle, Mail } from 'lucide-react';
+import { CheckCircle, Mail } from 'lucide-react';
 import { EmailService } from '../utils/emailService';
 
 const EmailJSStatus: React.FC = () => {
-  const isConfigured = EmailService.isConfigured();
-  
   return (
     <div className="fixed bottom-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm">
       <div className="flex items-start gap-3">

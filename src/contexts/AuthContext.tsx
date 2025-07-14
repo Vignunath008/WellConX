@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { EmailService } from '../utils/emailService'
-import { GoogleOAuthService, GoogleOneTap } from '../utils/googleOAuth'
+import { GoogleOAuthService } from '../utils/googleOAuth'
 
 interface User {
   id: string
