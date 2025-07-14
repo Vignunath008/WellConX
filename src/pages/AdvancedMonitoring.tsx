@@ -24,10 +24,7 @@ import {
   Network,
   HardDrive,
   Monitor,
-  Smartphone,
-  Tablet,
-  Watch,
-  Droplets
+  Monitor
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
