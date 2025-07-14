@@ -21,11 +21,6 @@ import {
   Cpu, 
   Database,
   Network,
-  Watch,
-  Heart,
-  Thermometer,
-  Droplets,
-  Wind
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -35,7 +30,7 @@ const AIMonitoring: React.FC = () => {
   const { patients } = useData()
   const [selectedTab, setSelectedTab] = useState('overview')
   const [expandedItems, setExpandedItems] = useState<string[]>([])
-  const [aiStatus, setAiStatus] = useState('active')
+  const [aiStatus] = useState('active')
   const [predictionMode, setPredictionMode] = useState('realtime')
   const [confidence, setConfidence] = useState(85)
 
