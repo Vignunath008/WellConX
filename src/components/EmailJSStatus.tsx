@@ -1,6 +1,5 @@
 import React from 'react';
 import { CheckCircle, Mail } from 'lucide-react';
-import { EmailService } from '../utils/emailService';
 
 const EmailJSStatus: React.FC = () => {
   return (
