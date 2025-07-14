@@ -4,7 +4,34 @@ import { useData } from '../contexts/DataContext'
 import { VitalMonitorGrid } from '../components/monitors/VitalMonitor'
 import LiveWaveform from '../components/charts/LiveWaveform'
 import RealTimeChart from '../components/charts/RealTimeChart'
-import { ArrowLeft, User, Monitor, Edit, Save, X, AlertTriangle, Clock, Activity, Zap, Brain, ChevronDown, ChevronUp } from 'lucide-react'
+import { 
+  ArrowLeft, 
+  User, 
+  Monitor, 
+  Edit, 
+  Save, 
+  X, 
+  AlertTriangle, 
+  Clock, 
+  Activity, 
+  Zap, 
+  Brain, 
+  Heart, 
+  Wind, 
+  Thermometer, 
+  TrendingUp, 
+  FileText, 
+  Calendar, 
+  MapPin,
+  Search,
+  Filter,
+  Download,
+  Share2,
+  Eye,
+  Plus,
+  ChevronDown,
+  ChevronUp
+} from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const PatientDetails: React.FC = () => {
@@ -14,13 +41,10 @@ const PatientDetails: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [editedPatient, setEditedPatient] = useState<any>(null)
   const [chartData, setChartData] = useState<any[]>([])
-  const [expandedSections, setExpandedSections] = useState({
-    info: true,
-    vitals: true,
-    waveforms: false,
-    charts: false,
-    alerts: false
-  })
+  const [activeTab, setActiveTab] = useState('overview')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterType, setFilterType] = useState('all')
+  const [expandedSections, setExpandedSections] = useState<string[]>([])
 
   const patient = patients.find(p => p.id === patientId)
   const assignedDevice = devices.find(d => d.id === patient?.deviceId)
@@ -51,16 +75,19 @@ const PatientDetails: React.FC = () => {
 
   if (!patient) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="text-center max-w-sm mx-auto">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Patient Not Found</h2>
-          <p className="text-gray-600 mb-4 text-sm">The requested patient could not be found.</p>
-          <button
-            onClick={() => navigate('/iomt/patients')}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg w-full"
-          >
-            Back to Patients
-          </button>
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white rounded-2xl p-8 text-center">
+            <User className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Patient Not Found</h2>
+            <p className="text-gray-600 mb-6">The requested patient could not be found.</p>
+            <button
+              onClick={() => navigate('/iomt/patients')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+            >
+              Back to Patients
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -78,472 +105,594 @@ const PatientDetails: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'critical': return 'bg-red-100 text-red-800 border-red-200'
-      case 'warning': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      default: return 'bg-green-100 text-green-800 border-green-200'
+      case 'critical': return 'text-red-600 bg-red-50'
+      case 'warning': return 'text-yellow-600 bg-yellow-50'
+      default: return 'text-green-600 bg-green-50'
     }
   }
 
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }))
+  const toggleExpanded = (id: string) => {
+    setExpandedSections(prev => 
+      prev.includes(id) 
+        ? prev.filter(item => item !== id)
+        : [...prev, id]
+    )
   }
 
-  const SectionHeader = ({ title, isExpanded, onToggle, icon: Icon }: any) => (
-    <button
-      onClick={onToggle}
-      className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition-colors rounded-t-lg border-b border-gray-200"
-    >
-      <div className="flex items-center space-x-2 min-w-0 flex-1">
-        <Icon className="h-4 w-4 text-gray-600 flex-shrink-0" />
-        <h2 className="text-sm font-semibold text-gray-900 truncate">{title}</h2>
-      </div>
-      {isExpanded ? (
-        <ChevronUp className="h-4 w-4 text-gray-500 flex-shrink-0" />
-      ) : (
-        <ChevronDown className="h-4 w-4 text-gray-500 flex-shrink-0" />
-      )}
-    </button>
-  )
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: Activity },
+    { id: 'vitals', label: 'Vital Signs', icon: Heart },
+    { id: 'waveforms', label: 'Waveforms', icon: Monitor },
+    { id: 'trends', label: 'Trends', icon: TrendingUp },
+    { id: 'alerts', label: 'Alerts', icon: AlertTriangle },
+  ]
+
+  const statCards = [
+    {
+      title: 'Heart Rate',
+      value: Math.round(patient.vitals.heartRate),
+      unit: 'bpm',
+      icon: Heart,
+      color: 'text-error-600',
+      bgColor: 'bg-error-50',
+      status: patient.vitals.heartRate > 100 || patient.vitals.heartRate < 60 ? 'warning' : 'normal'
+    },
+    {
+      title: 'Blood Pressure',
+      value: `${Math.round(patient.vitals.bloodPressure.systolic)}/${Math.round(patient.vitals.bloodPressure.diastolic)}`,
+      unit: 'mmHg',
+      icon: Activity,
+      color: 'text-warning-600',
+      bgColor: 'bg-warning-50',
+      status: 'normal'
+    },
+    {
+      title: 'SpO2',
+      value: Math.round(patient.vitals.oxygenSaturation),
+      unit: '%',
+      icon: Wind,
+      color: 'text-primary-600',
+      bgColor: 'bg-primary-50',
+      status: patient.vitals.oxygenSaturation < 95 ? 'warning' : 'normal'
+    },
+    {
+      title: 'Temperature',
+      value: patient.vitals.temperature.toFixed(1),
+      unit: '°F',
+      icon: Thermometer,
+      color: 'text-warning-600',
+      bgColor: 'bg-warning-50',
+      status: patient.vitals.temperature > 99.5 || patient.vitals.temperature < 97 ? 'warning' : 'normal'
+    }
+  ]
 
   return (
-    <div className="min-h-screen bg-gray-50 safe-area-inset-top safe-area-inset-bottom">
-      <div className="max-w-full overflow-hidden">
-        {/* Mobile-Optimized Header */}
-        <div className="bg-white border-b border-gray-200 px-3 py-3 sticky top-0 z-10">
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => navigate('/iomt/patients')}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </button>
-            <div className="min-w-0 flex-1">
-              <h1 className="text-lg font-bold text-gray-900 truncate">{patient.name}</h1>
-              <p className="text-xs text-gray-600 truncate">Patient Details</p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => navigate('/iomt/patients')}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5 text-gray-600" />
+              </button>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Patient Details</h1>
+                <p className="text-gray-600">{patient.name} • ID: {patient.id}</p>
+              </div>
             </div>
-            
-            <div className="flex items-center space-x-2 flex-shrink-0">
+            <div className="flex items-center space-x-3">
               {!isEditing ? (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-medium transition-colors flex items-center space-x-1 text-sm"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
                 >
                   <Edit className="h-4 w-4" />
                   <span>Edit</span>
                 </button>
               ) : (
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-2">
                   <button
                     onClick={handleSaveEdit}
-                    className="bg-green-600 hover:bg-green-700 text-white px-2 py-2 rounded-lg font-medium transition-colors flex items-center space-x-1 text-sm"
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
                   >
                     <Save className="h-4 w-4" />
+                    <span>Save</span>
                   </button>
                   <button
                     onClick={handleCancelEdit}
-                    className="bg-gray-600 hover:bg-gray-700 text-white px-2 py-2 rounded-lg font-medium transition-colors flex items-center space-x-1 text-sm"
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
                   >
                     <X className="h-4 w-4" />
+                    <span>Cancel</span>
                   </button>
                 </div>
               )}
+              <button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
+                <Download className="h-4 w-4" />
+                <span>Export</span>
+              </button>
+              <button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
+                <Share2 className="h-4 w-4" />
+                <span>Share</span>
+              </button>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Content Container */}
-        <div className="px-3 py-3 space-y-3 pb-20">
-          {/* Patient Information - Always Visible on Mobile */}
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <SectionHeader 
-              title="Patient Information" 
-              isExpanded={expandedSections.info}
-              onToggle={() => toggleSection('info')}
-              icon={User}
-            />
-            
-            <AnimatePresence>
-              {expandedSections.info && (
-                <motion.div
-                  initial={{ height: 0 }}
-                  animate={{ height: 'auto' }}
-                  exit={{ height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="p-3">
-                    {/* Patient Header - Mobile Optimized */}
-                    <div className="flex items-start space-x-3 mb-4">
-                      <div className="bg-blue-50 p-2 rounded-lg flex-shrink-0">
-                        <User className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-base font-bold text-gray-900 mb-1">{patient.name}</h3>
-                        <div className="space-y-1 text-sm text-gray-600">
-                          <div className="flex items-center justify-between">
-                            <span>Age:</span>
-                            <span className="font-medium">{patient.age} years</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span>Gender:</span>
-                            <span className="font-medium capitalize">{patient.gender}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span>Room:</span>
-                            <span className="font-medium">{patient.room}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className={`px-2 py-1 rounded-full text-xs font-medium border flex-shrink-0 ${getStatusColor(patient.status)}`}>
-                        {patient.status.toUpperCase()}
-                      </div>
-                    </div>
-
-                    {isEditing ? (
-                      <div className="space-y-3">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                          <input
-                            type="text"
-                            value={editedPatient.name}
-                            onChange={(e) => setEditedPatient({ ...editedPatient, name: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                          />
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Age</label>
-                            <input
-                              type="number"
-                              value={editedPatient.age}
-                              onChange={(e) => setEditedPatient({ ...editedPatient, age: parseInt(e.target.value) })}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Room</label>
-                            <input
-                              type="text"
-                              value={editedPatient.room}
-                              onChange={(e) => setEditedPatient({ ...editedPatient, room: e.target.value })}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                            />
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Medical Record Number</label>
-                          <input
-                            type="text"
-                            value={editedPatient.medicalRecordNumber}
-                            onChange={(e) => setEditedPatient({ ...editedPatient, medicalRecordNumber: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Diagnosis</label>
-                          <textarea
-                            value={editedPatient.diagnosis}
-                            onChange={(e) => setEditedPatient({ ...editedPatient, diagnosis: e.target.value })}
-                            rows={3}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                          />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {/* Medical Information Grid */}
-                        <div className="bg-gray-50 rounded-lg p-3 space-y-2">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-600">MRN:</span>
-                            <span className="font-medium text-gray-900 text-xs">{patient.medicalRecordNumber}</span>
-                          </div>
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-600">Admitted:</span>
-                            <span className="font-medium text-gray-900 text-xs">{patient.admissionDate.toLocaleDateString()}</span>
-                          </div>
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-600">Device:</span>
-                            <span className="font-medium text-gray-900 text-xs truncate max-w-32">{patient.deviceId || 'Not assigned'}</span>
-                          </div>
-                        </div>
-                        
-                        {/* Diagnosis */}
-                        <div className="bg-blue-50 rounded-lg p-3">
-                          <div className="text-sm">
-                            <span className="font-medium text-blue-800">Diagnosis:</span>
-                            <p className="text-blue-700 mt-1 text-xs leading-relaxed">{patient.diagnosis}</p>
-                          </div>
-                        </div>
-
-                        {/* Device Information - Compact */}
-                        {assignedDevice && (
-                          <div className="bg-green-50 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm font-medium text-green-800">Device Status</span>
-                              <div className={`w-2 h-2 rounded-full ${
-                                assignedDevice.status === 'online' ? 'bg-green-500' : 'bg-red-500'
-                              }`} />
-                            </div>
-                            <div className="space-y-1 text-xs text-green-700">
-                              <div className="flex justify-between">
-                                <span>Model:</span>
-                                <span className="font-medium">{assignedDevice.model}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span>Location:</span>
-                                <span className="font-medium truncate max-w-32">{assignedDevice.location}</span>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+      <div className="max-w-7xl mx-auto px-6 py-6">
+        {/* Patient Info Card */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                <User className="h-8 w-8 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">{patient.name}</h3>
+                <p className="text-gray-600">{patient.age} years • {patient.gender}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex-1">
+                <p className="text-sm text-gray-500">Room</p>
+                <p className="font-semibold text-gray-900">{patient.room}</p>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-gray-500">MRN</p>
+                <p className="font-semibold text-gray-900">{patient.medicalRecordNumber}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex-1">
+                <p className="text-sm text-gray-500">Device</p>
+                <p className="font-semibold text-gray-900">{patient.deviceId || 'Not assigned'}</p>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-gray-500">Status</p>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(patient.status)}`}>
+                  {patient.status}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Diagnosis */}
+          <div className="mt-6 p-4 bg-blue-50 rounded-xl">
+            <div className="text-sm font-medium text-blue-800 mb-1">Diagnosis</div>
+            <div className="text-blue-700">{patient.diagnosis}</div>
           </div>
 
-          {/* Real-Time Vitals - Always Visible */}
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <SectionHeader 
-              title="Real-Time Vital Signs" 
-              isExpanded={expandedSections.vitals}
-              onToggle={() => toggleSection('vitals')}
-              icon={Activity}
-            />
-            
-            <AnimatePresence>
-              {expandedSections.vitals && (
-                <motion.div
-                  initial={{ height: 0 }}
-                  animate={{ height: 'auto' }}
-                  exit={{ height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="p-3">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full" />
-                        <span className="text-xs text-gray-600 font-medium">Live Data</span>
-                      </div>
-                      <span className="text-xs text-gray-500">
-                        {patient.lastUpdated.toLocaleTimeString()}
-                      </span>
-                    </div>
-                    
-                    <VitalMonitorGrid vitals={patient.vitals} />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Live Waveforms - Collapsible */}
-          {waveforms[patient.id] && (
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-              <SectionHeader 
-                title="Live Waveforms" 
-                isExpanded={expandedSections.waveforms}
-                onToggle={() => toggleSection('waveforms')}
-                icon={Monitor}
-              />
-              
-              <AnimatePresence>
-                {expandedSections.waveforms && (
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: 'auto' }}
-                    exit={{ height: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-3 space-y-3">
-                      <LiveWaveform
-                        title={`ECG (${patient.vitals.heartRate} bpm)`}
-                        data={waveforms[patient.id].ecg}
-                        color="#00ff00"
-                        height={80}
-                        speed={1.5}
-                        amplitude={1.2}
-                        unit="mV"
-                      />
-                      <LiveWaveform
-                        title={`SpO2 (${patient.vitals.oxygenSaturation}%)`}
-                        data={waveforms[patient.id].pleth}
-                        color="#00ffff"
-                        height={80}
-                        speed={1.5}
-                        amplitude={2.0}
-                        unit="SpO2"
-                      />
-                      <LiveWaveform
-                        title={`Resp (${patient.vitals.respiratoryRate}/min)`}
-                        data={waveforms[patient.id].respiration}
-                        color="#ffff00"
-                        height={80}
-                        speed={1.0}
-                        amplitude={1.5}
-                        unit="Resp"
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+          {/* Device Information */}
+          {assignedDevice && (
+            <div className="mt-4 p-4 bg-green-50 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-sm font-medium text-green-800">Device Status</div>
+                <div className={`w-3 h-3 rounded-full ${
+                  assignedDevice.status === 'online' ? 'bg-green-500' : 'bg-red-500'
+                }`} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-green-700">
+                <div>
+                  <span className="font-medium">Model:</span> {assignedDevice.model}
+                </div>
+                <div>
+                  <span className="font-medium">Location:</span> {assignedDevice.location}
+                </div>
+              </div>
             </div>
           )}
+        </div>
 
-          {/* Charts - Collapsible */}
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <SectionHeader 
-              title="Vital Trends" 
-              isExpanded={expandedSections.charts}
-              onToggle={() => toggleSection('charts')}
-              icon={Activity}
-            />
-            
-            <AnimatePresence>
-              {expandedSections.charts && (
-                <motion.div
-                  initial={{ height: 0 }}
-                  animate={{ height: 'auto' }}
-                  exit={{ height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="p-3 space-y-4">
-                    <RealTimeChart
-                      title="Heart Rate"
-                      data={chartData.map(d => ({ timestamp: d.timestamp, value: d.heartRate }))}
-                      color="#ef4444"
-                      unit=" bpm"
-                      yAxisMin={40}
-                      yAxisMax={140}
-                      height={180}
-                    />
-                    
-                    <RealTimeChart
-                      title="SpO2"
-                      data={chartData.map(d => ({ timestamp: d.timestamp, value: d.oxygenSaturation }))}
-                      color="#3b82f6"
-                      unit="%"
-                      yAxisMin={85}
-                      yAxisMax={100}
-                      height={180}
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+        {/* Filters and Search */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Search className="h-4 w-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search patient data..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="all">All Data</option>
+                <option value="vitals">Vital Signs</option>
+                <option value="waveforms">Waveforms</option>
+                <option value="alerts">Alerts</option>
+                <option value="trends">Trends</option>
+              </select>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
+                <Filter className="h-4 w-4" />
+                <span>Advanced Filter</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="bg-white rounded-2xl border border-gray-200 mb-6">
+          <div className="border-b border-gray-200">
+            <nav className="flex space-x-8 px-6">
+              {tabs.map((tab) => {
+                const Icon = tab.icon
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 transition-colors ${
+                      activeTab === tab.id
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{tab.label}</span>
+                  </button>
+                )
+              })}
+            </nav>
           </div>
 
-          {/* Recent Alerts - Collapsible */}
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <SectionHeader 
-              title={`Recent Alerts (${recentAlerts.length})`}
-              isExpanded={expandedSections.alerts}
-              onToggle={() => toggleSection('alerts')}
-              icon={AlertTriangle}
-            />
-            
-            <AnimatePresence>
-              {expandedSections.alerts && (
-                <motion.div
-                  initial={{ height: 0 }}
-                  animate={{ height: 'auto' }}
-                  exit={{ height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="p-3">
-                    {recentAlerts.length > 0 ? (
+          {/* Tab Content */}
+          <div className="p-6">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                {activeTab === 'overview' && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {/* Current Vitals */}
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-blue-900">Current Vitals</h3>
+                        <Heart className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-blue-700">Heart Rate</span>
+                          <span className="font-semibold text-blue-900">{Math.round(patient.vitals.heartRate)} BPM</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-blue-700">Blood Pressure</span>
+                          <span className="font-semibold text-blue-900">
+                            {Math.round(patient.vitals.bloodPressure.systolic)}/{Math.round(patient.vitals.bloodPressure.diastolic)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-blue-700">SpO2</span>
+                          <span className="font-semibold text-blue-900">{Math.round(patient.vitals.oxygenSaturation)}%</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-blue-700">Temperature</span>
+                          <span className="font-semibold text-blue-900">{patient.vitals.temperature.toFixed(1)}°F</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Device Status */}
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-green-900">Device Status</h3>
+                        <Monitor className="h-5 w-5 text-green-600" />
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-green-700">Status</span>
+                          <span className="font-semibold text-green-900">
+                            {assignedDevice ? (assignedDevice.status === 'online' ? 'Online' : 'Offline') : 'Not Assigned'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-green-700">Model</span>
+                          <span className="font-semibold text-green-900">{assignedDevice?.model || 'N/A'}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-green-700">Location</span>
+                          <span className="font-semibold text-green-900">{assignedDevice?.location || 'N/A'}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-green-700">Last Update</span>
+                          <span className="font-semibold text-green-900">{patient.lastUpdated.toLocaleTimeString()}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Recent Alerts */}
+                    <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-yellow-900">Recent Alerts</h3>
+                        <AlertTriangle className="h-5 w-5 text-yellow-600" />
+                      </div>
                       <div className="space-y-2">
-                        {recentAlerts.map((alert) => (
-                          <motion.div
-                            key={alert.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className={`p-3 rounded-lg border ${
-                              alert.type === 'critical' ? 'bg-red-50 border-red-200' :
-                              alert.type === 'warning' ? 'bg-yellow-50 border-yellow-200' :
-                              'bg-blue-50 border-blue-200'
-                            }`}
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center space-x-2 mb-1">
-                                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                    alert.type === 'critical' ? 'bg-red-100 text-red-800' :
-                                    alert.type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-                                    'bg-blue-100 text-blue-800'
-                                  }`}>
-                                    {alert.type.toUpperCase()}
-                                  </span>
-                                  <span className="text-xs text-gray-500">
-                                    {alert.timestamp.toLocaleTimeString()}
-                                  </span>
-                                </div>
-                                <p className="text-sm text-gray-900 mb-1">{alert.message}</p>
-                                <div className="text-xs text-gray-600">
-                                  {alert.vitalType}: {alert.value} (Threshold: {alert.threshold})
-                                </div>
-                              </div>
-                              
-                              <div className="ml-2 flex-shrink-0">
-                                {alert.acknowledged ? (
-                                  <span className="text-green-600 text-xs">✓</span>
-                                ) : (
-                                  <span className="text-red-600 text-xs">⚠</span>
-                                )}
-                              </div>
+                        {recentAlerts.length > 0 ? (
+                          recentAlerts.slice(0, 3).map((alert, index) => (
+                            <div key={index} className="text-sm">
+                              <span className="font-medium text-yellow-900">{alert.message}</span>
+                              <span className={`ml-2 px-2 py-1 rounded-full text-xs ${
+                                alert.type === 'critical' ? 'bg-red-100 text-red-800' :
+                                alert.type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-blue-100 text-blue-800'
+                              }`}>
+                                {alert.type}
+                              </span>
                             </div>
-                          </motion.div>
-                        ))}
+                          ))
+                        ) : (
+                          <div className="text-sm text-yellow-700">No recent alerts</div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Health Trends */}
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-purple-900">Health Trends</h3>
+                        <TrendingUp className="h-5 w-5 text-purple-600" />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-sm">
+                          <span className="font-medium text-purple-900">Heart Rate</span>
+                          <span className="text-purple-700 ml-2">• Stable</span>
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium text-purple-900">Blood Pressure</span>
+                          <span className="text-purple-700 ml-2">• Normal range</span>
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium text-purple-900">SpO2</span>
+                          <span className="text-purple-700 ml-2">• Optimal</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Waveform Status */}
+                    <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-indigo-900">Waveform Status</h3>
+                        <Monitor className="h-5 w-5 text-indigo-600" />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-sm">
+                          <span className="font-medium text-indigo-900">ECG</span>
+                          <span className="text-indigo-700 ml-2">• Active</span>
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium text-indigo-900">SpO2</span>
+                          <span className="text-indigo-700 ml-2">• Active</span>
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium text-indigo-900">Respiration</span>
+                          <span className="text-indigo-700 ml-2">• Active</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Actions */}
+                    <div className="bg-gradient-to-br from-rose-50 to-rose-100 rounded-xl p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-rose-900">Quick Actions</h3>
+                        <Activity className="h-5 w-5 text-rose-600" />
+                      </div>
+                      <div className="space-y-2">
+                        <button className="w-full text-left text-sm">
+                          <span className="font-medium text-rose-900">View History</span>
+                          <span className="text-rose-700 ml-2">• Full timeline</span>
+                        </button>
+                        <button className="w-full text-left text-sm">
+                          <span className="font-medium text-rose-900">Advanced Monitoring</span>
+                          <span className="text-rose-700 ml-2">• AI analysis</span>
+                        </button>
+                        <button className="w-full text-left text-sm">
+                          <span className="font-medium text-rose-900">Export Data</span>
+                          <span className="text-rose-700 ml-2">• PDF report</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'vitals' && (
+                  <div className="space-y-6">
+                    <div className="bg-gray-50 rounded-xl p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full" />
+                          <span className="text-sm text-gray-600 font-medium">Live Data</span>
+                        </div>
+                        <span className="text-sm text-gray-500">
+                          Last updated: {patient.lastUpdated.toLocaleTimeString()}
+                        </span>
+                      </div>
+                      <VitalMonitorGrid vitals={patient.vitals} />
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'waveforms' && (
+                  <div className="space-y-6">
+                    {waveforms[patient.id] ? (
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <LiveWaveform
+                          title={`ECG (${patient.vitals.heartRate} bpm)`}
+                          data={waveforms[patient.id].ecg}
+                          color="#00ff00"
+                          height={200}
+                          speed={1.5}
+                          amplitude={1.2}
+                          unit="mV"
+                        />
+                        <LiveWaveform
+                          title={`SpO2 (${patient.vitals.oxygenSaturation}%)`}
+                          data={waveforms[patient.id].pleth}
+                          color="#00ffff"
+                          height={200}
+                          speed={1.5}
+                          amplitude={2.0}
+                          unit="SpO2"
+                        />
+                        <LiveWaveform
+                          title={`Resp (${patient.vitals.respiratoryRate}/min)`}
+                          data={waveforms[patient.id].respiration}
+                          color="#ffff00"
+                          height={200}
+                          speed={1.0}
+                          amplitude={1.5}
+                          unit="Resp"
+                        />
                       </div>
                     ) : (
-                      <div className="text-center py-4">
-                        <AlertTriangle className="h-6 w-6 text-gray-400 mx-auto mb-2" />
-                        <h3 className="text-sm font-medium text-gray-900 mb-1">No Recent Alerts</h3>
-                        <p className="text-gray-600 text-xs">This patient has no recent alerts.</p>
+                      <div className="bg-gray-50 rounded-xl p-8 text-center">
+                        <Monitor className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">No Waveform Data</h3>
+                        <p className="text-gray-600">Waveform data is not available for this patient.</p>
                       </div>
                     )}
                   </div>
-                </motion.div>
-              )}
+                )}
+
+                {activeTab === 'trends' && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      <RealTimeChart
+                        title="Heart Rate Trend"
+                        data={chartData.map(d => ({ timestamp: d.timestamp, value: d.heartRate }))}
+                        color="#ef4444"
+                        unit=" bpm"
+                        yAxisMin={40}
+                        yAxisMax={140}
+                        height={250}
+                        thresholds={{
+                          warning: { min: 60, max: 100 },
+                          critical: { min: 50, max: 120 }
+                        }}
+                      />
+                      
+                      <RealTimeChart
+                        title="SpO2 Trend"
+                        data={chartData.map(d => ({ timestamp: d.timestamp, value: d.oxygenSaturation }))}
+                        color="#3b82f6"
+                        unit="%"
+                        yAxisMin={85}
+                        yAxisMax={100}
+                        height={250}
+                        thresholds={{
+                          warning: { min: 95 },
+                          critical: { min: 90 }
+                        }}
+                      />
+                      
+                      <RealTimeChart
+                        title="Temperature Trend"
+                        data={chartData.map(d => ({ timestamp: d.timestamp, value: d.temperature }))}
+                        color="#f59e0b"
+                        unit="°F"
+                        yAxisMin={95}
+                        yAxisMax={104}
+                        height={250}
+                        thresholds={{
+                          warning: { min: 97, max: 99.5 },
+                          critical: { min: 95, max: 101 }
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'alerts' && (
+                  <div className="space-y-4">
+                    {patientAlerts.length > 0 ? (
+                      patientAlerts.map((alert, index) => (
+                        <motion.div
+                          key={alert.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <AlertTriangle className="h-6 w-6 text-yellow-600" />
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-gray-900">{alert.message}</h4>
+                                <p className="text-sm text-gray-600">Alerted on {alert.timestamp.toLocaleTimeString()}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-4">
+                              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                alert.type === 'critical' ? 'bg-red-100 text-red-800' :
+                                alert.type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-blue-100 text-blue-800'
+                              }`}>
+                                {alert.type}
+                              </span>
+                              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                alert.acknowledged ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                              }`}>
+                                {alert.acknowledged ? 'Acknowledged' : 'Active'}
+                              </span>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))
+                    ) : (
+                      <div className="bg-gray-50 rounded-xl p-8 text-center">
+                        <AlertTriangle className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">No Alerts</h3>
+                        <p className="text-gray-600">This patient has no alerts.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </motion.div>
             </AnimatePresence>
           </div>
         </div>
 
-        {/* Fixed Bottom Action Buttons */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 safe-area-inset-bottom">
-          <div className="flex space-x-2">
-            <button
-              onClick={() => navigate(`/iomt/patients/${patient.id}/history`)}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 text-sm"
-            >
-              <Clock className="h-4 w-4" />
-              <span>History</span>
-            </button>
-            
-            <button
-              onClick={() => navigate(`/iomt/patients/${patient.id}/advanced`)}
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 text-sm"
-            >
-              <Zap className="h-4 w-4" />
-              <span>Advanced</span>
-            </button>
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+          <button
+            onClick={() => navigate(`/iomt/patients/${patient.id}/history`)}
+            className="btn-secondary btn-lg flex-1"
+          >
+            <Clock className="h-5 w-5" />
+            View History
+          </button>
+          
+          <button
+            onClick={() => navigate(`/iomt/patients/${patient.id}/advanced`)}
+            className="btn-primary btn-lg flex-1"
+          >
+            <Zap className="h-5 w-5" />
+            Advanced Monitoring
+          </button>
 
-            <button
-              onClick={() => navigate(`/iomt/patients/${patient.id}/ai`)}
-              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 text-sm"
-            >
-              <Brain className="h-4 w-4" />
-              <span>AI</span>
-            </button>
-          </div>
+          <button
+            onClick={() => navigate(`/iomt/patients/${patient.id}/ai`)}
+            className="btn-success btn-lg flex-1"
+          >
+            <Brain className="h-5 w-5" />
+            AI Analysis
+          </button>
         </div>
       </div>
     </div>

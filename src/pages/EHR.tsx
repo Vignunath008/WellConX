@@ -177,8 +177,9 @@ const EHR: React.FC = () => {
 
   const handleLogoutConfirm = () => {
     setShowLogoutModal(false)
-    logout()
-    navigate('/', { replace: true })
+    localStorage.removeItem('ehr_token');
+    localStorage.removeItem('ehr_user');
+    navigate('/ehr/login', { replace: true });
   }
 
   const handleLogoutCancel = () => {

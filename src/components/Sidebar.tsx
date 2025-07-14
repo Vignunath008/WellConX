@@ -42,14 +42,23 @@ const Sidebar: React.FC = () => {
 
   const handleLogoutConfirm = () => {
     setShowLogoutModal(false)
-    logout()
-    // Navigate to main platform after logout
-    navigate('/', { replace: true })
+    // Only clear IoMT module data
+    localStorage.removeItem('iomt_token');
+    localStorage.removeItem('iomt_user');
+    navigate('/iomt/login', { replace: true });
   }
 
   const handleLogoutCancel = () => {
     setShowLogoutModal(false)
   }
+
+  // Replace user with module-specific user:
+  const module = window.location.pathname.split('/')[1];
+  let moduleUser = null;
+  if (module === 'iomt') moduleUser = JSON.parse(localStorage.getItem('iomt_user') || 'null');
+  else if (module === 'ehr') moduleUser = JSON.parse(localStorage.getItem('ehr_user') || 'null');
+  else if (module === 'hms') moduleUser = JSON.parse(localStorage.getItem('hms_user') || 'null');
+  // Use moduleUser throughout the sidebar for user info display.
 
   return (
     <>
@@ -102,23 +111,23 @@ const Sidebar: React.FC = () => {
       <div className="p-4 border-t border-gray-200">
         <div className="bg-gray-50 rounded-xl p-4">
           <div className="flex items-center gap-3">
-            {user?.picture ? (
+            {moduleUser?.picture ? (
               <img 
-                src={user.picture} 
-                alt={user.name} 
+                src={moduleUser.picture} 
+                alt={moduleUser.name} 
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
               <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
                 <span className="text-white font-semibold">
-                  {user?.name?.charAt(0) || 'U'}
+                  {moduleUser?.name?.charAt(0) || 'U'}
                 </span>
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
+              <p className="text-sm font-medium text-gray-900 truncate">{moduleUser?.name}</p>
               <p className="text-xs text-gray-500 truncate capitalize">
-                {user?.role} • {user?.department}
+                {moduleUser?.role} • {moduleUser?.department}
               </p>
             </div>
             <button
@@ -138,7 +147,7 @@ const Sidebar: React.FC = () => {
         isOpen={showLogoutModal}
         onClose={handleLogoutCancel}
         onConfirm={handleLogoutConfirm}
-        userName={user?.name}
+        userName={moduleUser?.name}
       />
     </>
   )

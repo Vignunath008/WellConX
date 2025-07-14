@@ -209,14 +209,31 @@ const MainPlatform: React.FC = () => {
   ]
 
   const handleModuleAccess = (route: string) => {
-    // Check if user is authenticated
-    if (!user) {
-      // Redirect to login with the intended destination
-      navigate('/login', { state: { from: { pathname: route } } })
+    // Determine module from route
+    let moduleKey = ''
+    let loginRoute = ''
+    let dashboardRoute = ''
+    if (route.includes('ehr')) {
+      moduleKey = 'ehr_token'
+      loginRoute = '/ehr/login'
+      dashboardRoute = '/ehr/dashboard'
+    } else if (route.includes('hms')) {
+      moduleKey = 'hms_token'
+      loginRoute = '/hms/login'
+      dashboardRoute = '/hms/dashboard'
+    } else if (route.includes('iomt')) {
+      moduleKey = 'iomt_token'
+      loginRoute = '/iomt/login'
+      dashboardRoute = '/iomt/dashboard'
+    }
+
+    // Always check module token, never main platform user
+    if (!localStorage.getItem(moduleKey)) {
+      navigate(loginRoute)
       return
     }
-    // For logged-in users, navigate directly to the module
-    navigate(route)
+    // If authenticated for the module, go to module dashboard
+    navigate(dashboardRoute)
   }
 
   // Handle Schedule Demo

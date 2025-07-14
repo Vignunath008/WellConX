@@ -7,8 +7,20 @@ interface ProtectedRouteProps {
   requiredModule?: string
 }
 
+const moduleTokenMap: Record<string, string> = {
+  ehr: 'ehr_token',
+  hms: 'hms_token',
+  iomt: 'iomt_token',
+}
+
+const loginPathMap: Record<string, string> = {
+  ehr: '/ehr/login',
+  hms: '/hms/login',
+  iomt: '/iomt/login',
+}
+
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredModule }) => {
-  const { user, isLoading, currentModule } = useAuth()
+  const { user, isLoading, setCurrentModule } = useAuth()
   const location = useLocation()
 
   if (isLoading) {
@@ -19,33 +31,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredModul
     )
   }
 
-  if (!user) {
-    // Determine which login page to redirect to based on the current path
-    let loginPath = '/iomt/login'
-    
-    if (location.pathname.startsWith('/hms')) {
-      loginPath = '/hms/login'
-    } else if (location.pathname.startsWith('/ehr')) {
-      loginPath = '/ehr/login'
+  // Check for module-specific token only
+  if (requiredModule) {
+    const tokenKey = moduleTokenMap[requiredModule]
+    const token = localStorage.getItem(tokenKey)
+    if (!token) {
+      return <Navigate to={loginPathMap[requiredModule]} replace />
+    } else {
+      setCurrentModule && setCurrentModule(requiredModule)
     }
-    
-    return <Navigate to={loginPath} replace />
+    return <>{children}</>
   }
-
-  // Check if user is trying to access a different module than they're logged into
-  if (requiredModule && currentModule && currentModule !== requiredModule) {
-    // User is trying to access a different module - redirect to appropriate login
-    let loginPath = '/iomt/login'
-    
-    if (requiredModule === 'hms') {
-      loginPath = '/hms/login'
-    } else if (requiredModule === 'ehr') {
-      loginPath = '/ehr/login'
-    }
-    
-    return <Navigate to={loginPath} replace />
-  }
-
+  // For main platform routes, you may check for user if needed
   return <>{children}</>
 }
 

@@ -46,9 +46,10 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
   const handleLogoutConfirm = () => {
     setShowLogoutModal(false)
     onClose()
-    logout()
-    // Navigate to main platform after logout
-    navigate('/', { replace: true })
+    // Only clear IoMT module data
+    localStorage.removeItem('iomt_token');
+    localStorage.removeItem('iomt_user');
+    navigate('/iomt/login', { replace: true });
   }
 
   const handleLogoutCancel = () => {

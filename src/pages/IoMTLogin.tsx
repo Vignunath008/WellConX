@@ -1,249 +1,281 @@
-import React, { useState } from 'react'
-import { Navigate, useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import { Activity, Eye, EyeOff, ArrowLeft, Monitor, Heart, Zap, Shield, Users, BarChart3 } from 'lucide-react'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { 
+  Wifi, 
+  Mail, 
+  Lock, 
+  AlertCircle, 
+  CheckCircle,
+  ArrowRight,
+  Activity,
+  Cpu,
+  Waves,
+  Signal,
+  MonitorSmartphone,
+  Database,
+  Home,
+  FileText,
+  Building2
+} from 'lucide-react';
+
+const DEMO_EMAIL = 'iomt-demo@wellconx.com';
+const DEMO_PASSWORD = 'iomtdemo';
+
+const ModuleSidebar = () => {
+  const navigate = useNavigate();
+  
+  return (
+    <div className="fixed left-0 top-0 h-full w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 shadow-sm">
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        onClick={() => navigate('/')}
+        className="w-12 h-12 rounded-xl bg-gray-100 hover:bg-gray-200 mb-6 flex items-center justify-center"
+        title="Main Platform"
+      >
+        <Home className="w-5 h-5 text-gray-700" />
+      </motion.button>
+      
+      <div className="flex flex-col items-center gap-4">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          onClick={() => navigate('/ehr/login')}
+          className="w-12 h-12 rounded-xl bg-blue-50 hover:bg-blue-100 flex items-center justify-center"
+          title="EHR Module"
+        >
+          <FileText className="w-5 h-5 text-blue-600" />
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          onClick={() => navigate('/hms/login')}
+          className="w-12 h-12 rounded-xl bg-emerald-50 hover:bg-emerald-100 flex items-center justify-center"
+          title="HMS Module"
+        >
+          <Building2 className="w-5 h-5 text-emerald-600" />
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          onClick={() => navigate('/iomt/login')}
+          className="w-12 h-12 rounded-xl bg-indigo-100 hover:bg-indigo-200 flex items-center justify-center"
+          title="IoMT Module"
+        >
+          <Cpu className="w-5 h-5 text-indigo-600" />
+        </motion.button>
+      </div>
+    </div>
+  );
+};
 
 const IoMTLogin: React.FC = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
-  const { user, login, isLoading, setCurrentModule } = useAuth()
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  if (user) {
-    return <Navigate to="/iomt/dashboard" replace />
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
+  // Create demo account on component mount if it doesn't exist
+  useEffect(() => {
+    const users = JSON.parse(localStorage.getItem('iomt_users') || '[]');
+    const demoUser = users.find((u: any) => u.email === DEMO_EMAIL);
     
-    const success = await login(email, password)
-    if (success) {
-      setCurrentModule('iomt')
-      navigate('/iomt/dashboard')
-    } else {
-      setError('Invalid credentials. Try demo accounts: doctor@wellconx.com, nurse@wellconx.com, or admin@wellconx.com with password: demo123')
+    if (!demoUser) {
+      users.push({
+        email: DEMO_EMAIL,
+        password: DEMO_PASSWORD,
+        name: 'IoMT Demo User',
+        role: 'Doctor',
+        department: 'Medical Devices'
+      });
+      localStorage.setItem('iomt_users', JSON.stringify(users));
     }
-  }
+  }, []);
 
-  const features = [
-    {
-      icon: Monitor,
-      title: 'Device Integration',
-      description: 'Connect and monitor medical devices from Philips, GE, and Mindray'
-    },
-    {
-      icon: Heart,
-      title: 'Vital Signs Monitoring',
-      description: 'Real-time tracking of heart rate, blood pressure, SpO2, and temperature'
-    },
-    {
-      icon: Zap,
-      title: 'Instant Alerts',
-      description: 'Critical alerts and notifications for immediate clinical response'
-    },
-    {
-      icon: Activity,
-      title: 'Live Waveforms',
-      description: 'ECG, plethysmography, and respiratory waveform visualization'
-    },
-    {
-      icon: Shield,
-      title: 'HIPAA Compliant',
-      description: 'Enterprise-grade security with encrypted data transmission'
-    },
-    {
-      icon: Users,
-      title: 'Multi-User Support',
-      description: 'Role-based access control for doctors, nurses, and staff'
-    },
-    {
-      icon: BarChart3,
-      title: 'Advanced Analytics',
-      description: 'Comprehensive reporting, trend analysis, and insights'
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const users = JSON.parse(localStorage.getItem('iomt_users') || '[]');
+      const user = users.find((u: any) => u.email === email && u.password === password);
+
+      if (!user) {
+        throw new Error('Invalid email or password');
+      }
+
+      localStorage.setItem('iomt_token', 'iomt-' + Math.random());
+      localStorage.setItem('iomt_user', JSON.stringify(user));
+      
+      setSuccess('Login successful! Redirecting...');
+      setTimeout(() => {
+        navigate('/iomt/dashboard');
+      }, 1000);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-  ]
+  };
 
   return (
-    <div className="min-h-screen bg-gray-25 flex">
-      {/* Left Side - IoMT Branding & Features */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-purple-600 to-purple-800 p-12 flex-col justify-between text-white">
-        <div>
-          <div className="flex items-center gap-4 mb-12">
-            <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
-              <Zap className="h-8 w-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-display-md font-bold">IoMT Module</h1>
-              <p className="text-purple-100 text-text-lg">Internet of Medical Things</p>
-            </div>
-          </div>
-          
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-display-lg font-bold mb-6">
-                Real-Time Medical Device Monitoring
-              </h2>
-              <p className="text-text-xl text-purple-100 leading-relaxed">
-                Advanced IoMT platform for seamless medical device integration, real-time vital signs monitoring, 
-                and intelligent clinical alerts for enhanced patient care.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-6">
-              {features.map((feature, index) => (
-                <div key={index} className="flex items-start gap-4">
-                  <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm flex-shrink-0">
-                    <feature.icon className="h-5 w-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-white font-semibold mb-1">{feature.title}</h3>
-                    <p className="text-purple-100 text-text-sm leading-relaxed">{feature.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        
-        <div className="text-purple-200 text-text-sm">
-          © 2024 WellConX IoMT Module. All rights reserved.
-        </div>
-      </div>
-
-      {/* Right Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-8">
-          {/* Back Button */}
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => navigate('/')}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex">
+      <ModuleSidebar />
+      <div className="flex-1 pl-20">
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-6xl w-full flex flex-col-reverse lg:flex-row">
+            {/* Form Side */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="w-full lg:w-1/2 p-8 lg:p-12"
             >
-              <ArrowLeft className="h-5 w-5 text-gray-600" />
-            </button>
-            <span className="text-gray-600">Back to Platform</span>
-          </div>
-
-          {/* Mobile Logo */}
-          <div className="text-center lg:hidden">
-            <div className="flex justify-center mb-6">
-              <div className="bg-purple-600 p-4 rounded-2xl">
-                <Zap className="h-8 w-8 text-white" />
+              <div className="flex items-center mb-8">
+                <Cpu className="h-8 w-8 text-indigo-600 mr-3" />
+                <h2 className="text-3xl font-bold text-gray-800">IoMT Login</h2>
               </div>
-            </div>
-            <h2 className="text-display-md font-bold text-gray-900">IoMT Module</h2>
-            <p className="text-gray-600 mt-2">Internet of Medical Things</p>
-          </div>
-          
-          {/* Desktop Header */}
-          <div className="hidden lg:block text-center">
-            <h2 className="text-display-md font-bold text-gray-900 mb-3">Access IoMT Module</h2>
-            <p className="text-gray-600">Sign in to monitor medical devices</p>
-          </div>
-          
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email address
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                    placeholder="Enter your email"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Password
-                  </label>
+
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                   <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                     <input
-                      id="password"
-                      name="password"
-                      type={showPassword ? 'text' : 'password'}
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+                      placeholder="Enter your email"
                       required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                    <input
+                      type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-3 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                      className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
                       placeholder="Enter your password"
+                      required
                     />
-                    <button
-                      type="button"
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400" />
-                      ) : (
-                        <Eye className="h-5 w-5 text-gray-400" />
-                      )}
-                    </button>
                   </div>
                 </div>
-                
-                <div className="text-right">
-                  <Link
-                    to="/forgot-password"
-                    className="text-sm font-medium text-purple-600 hover:text-purple-500"
+
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center p-4 rounded-lg bg-red-50 text-red-600"
                   >
-                    Forgot password?
-                  </Link>
+                    <AlertCircle className="h-5 w-5 mr-2" />
+                    {error}
+                  </motion.div>
+                )}
+
+                {success && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center p-4 rounded-lg bg-green-50 text-green-600"
+                  >
+                    <CheckCircle className="h-5 w-5 mr-2" />
+                    {success}
+                  </motion.div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full flex items-center justify-center py-3 px-4 rounded-lg text-white font-medium transition-all
+                    ${loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'}
+                  `}
+                >
+                  {loading ? (
+                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                  ) : (
+                    <>
+                      Sign In
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </>
+                  )}
+                </button>
+
+                <div className="text-center text-sm text-gray-600">
+                  <p>Demo Account</p>
+                  <p className="font-medium">{DEMO_EMAIL} / {DEMO_PASSWORD}</p>
+                </div>
+              </form>
+            </motion.div>
+
+            {/* Info Side */}
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="w-full lg:w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 p-8 lg:p-12 text-white"
+            >
+              <div className="h-full flex flex-col justify-between">
+                <div>
+                  <h3 className="text-2xl font-bold mb-6">IoMT Platform Features</h3>
+                  <div className="space-y-6">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 bg-white/10 rounded-lg p-3">
+                        <Wifi className="h-6 w-6" />
+                      </div>
+                      <div className="ml-4">
+                        <h4 className="text-lg font-semibold">Real-time Device Monitoring</h4>
+                        <p className="text-white/80">Monitor connected medical devices in real-time with instant alerts</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 bg-white/10 rounded-lg p-3">
+                        <Waves className="h-6 w-6" />
+                      </div>
+                      <div className="ml-4">
+                        <h4 className="text-lg font-semibold">Waveform Analysis</h4>
+                        <p className="text-white/80">Advanced waveform visualization and analysis tools</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 bg-white/10 rounded-lg p-3">
+                        <Database className="h-6 w-6" />
+                      </div>
+                      <div className="ml-4">
+                        <h4 className="text-lg font-semibold">Data Management</h4>
+                        <p className="text-white/80">Secure storage and management of device data</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-8 lg:mt-0">
+                  <div className="flex items-center space-x-2 text-white/90">
+                    <Signal className="h-5 w-5" />
+                    <span>Connected to WellConX IoMT Network</span>
+                  </div>
                 </div>
               </div>
-              
-              {error && (
-                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-text-sm text-red-700">{error}</p>
-                </div>
-              )}
-              
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full mt-8 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? 'Signing in...' : 'Access IoMT Module'}
-              </button>
-            </div>
-          </form>
-          
-          {/* Demo Accounts */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h3 className="text-text-lg font-semibold text-gray-900 mb-4">Demo Accounts</h3>
-            <div className="space-y-3 text-text-sm">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Doctor:</span>
-                <span className="font-mono text-gray-900">doctor@wellconx.com</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Nurse:</span>
-                <span className="font-mono text-gray-900">nurse@wellconx.com</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Admin:</span>
-                <span className="font-mono text-gray-900">admin@wellconx.com</span>
-              </div>
-              <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-                <span className="text-gray-600">Password:</span>
-                <span className="font-mono text-gray-900">demo123</span>
-              </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default IoMTLogin
+export default IoMTLogin;

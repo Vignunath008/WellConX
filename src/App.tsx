@@ -23,6 +23,9 @@ import ForgotPassword from './pages/ForgotPassword'
 import IoMTLogin from './pages/IoMTLogin'
 import EHRLogin from './pages/EHRLogin'
 import HMSLogin from './pages/HMSLogin'
+import EHRSignup from './pages/EHRSignup'
+import HMSSignup from './pages/HMSSignup'
+import IoMTSignup from './pages/IoMTSignup'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -47,34 +50,38 @@ function App() {
             <Route path="/ehr/login" element={<EHRLogin />} />
             <Route path="/hms/login" element={<HMSLogin />} />
             
+            {/* Module Signup Routes */}
+            <Route path="/iomt/signup" element={<IoMTSignup />} />
+            <Route path="/ehr/signup" element={<EHRSignup />} />
+            <Route path="/hms/signup" element={<HMSSignup />} />
+            
             {/* IoMT Module Routes - Now protected */}
-            <Route path="/iomt" element={
+            <Route path="/iomt/*" element={
               <ProtectedRoute requiredModule="iomt">
                 <Layout />
               </ProtectedRoute>
             }>
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="devices" element={<Devices />} />
               <Route path="patients" element={<Patients />} />
               <Route path="patients/:patientId" element={<PatientDetails />} />
               <Route path="patients/:patientId/history" element={<PatientHistory />} />
-              <Route path="patients/:patientId/advanced" element={<AdvancedMonitoring />} />
               <Route path="patients/:patientId/ai" element={<AIMonitoring />} />
-              <Route path="devices" element={<Devices />} />
-              <Route path="devices/setup" element={<DeviceSetup />} />
+              <Route path="patients/:patientId/advanced" element={<AdvancedMonitoring />} />
               <Route path="analytics" element={<Analytics />} />
+              <Route path="device-setup" element={<DeviceSetup />} />
               <Route path="settings" element={<Settings />} />
-              <Route path="admin" element={<AdminPanel />} />
             </Route>
 
             {/* HMS Module Routes - Now protected */}
-            <Route path="/hms" element={
+            <Route path="/hms/*" element={
               <ProtectedRoute requiredModule="hms">
                 <HMS />
               </ProtectedRoute>
             } />
 
             {/* EHR Module Routes - Now protected */}
-            <Route path="/ehr" element={
+            <Route path="/ehr/*" element={
               <ProtectedRoute requiredModule="ehr">
                 <EHR />
               </ProtectedRoute>

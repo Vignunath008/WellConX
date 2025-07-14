@@ -104,9 +104,9 @@ const HMS: React.FC = () => {
 
   const handleLogoutConfirm = () => {
     setShowLogoutModal(false)
-    logout()
-    // Navigate to main platform after logout
-    navigate('/', { replace: true })
+    localStorage.removeItem('hms_token');
+    localStorage.removeItem('hms_user');
+    navigate('/hms/login', { replace: true });
   }
 
   const handleLogoutCancel = () => {

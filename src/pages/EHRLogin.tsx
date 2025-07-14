@@ -1,266 +1,281 @@
-import React, { useState } from 'react'
-import { Navigate, useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import { Shield, Eye, EyeOff, ArrowLeft, FileText, User, Stethoscope, Clipboard, Database, Search, Calendar, Pill } from 'lucide-react'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { 
+  FileText, 
+  Mail, 
+  Lock, 
+  AlertCircle, 
+  CheckCircle,
+  ArrowRight,
+  Activity,
+  ClipboardList,
+  UserCircle,
+  FileCheck,
+  Clock,
+  Shield,
+  Home,
+  Cpu,
+  Building2
+} from 'lucide-react';
+
+const DEMO_EMAIL = 'ehr-demo@wellconx.com';
+const DEMO_PASSWORD = 'ehrdemo';
+
+const ModuleSidebar = () => {
+  const navigate = useNavigate();
+  
+  return (
+    <div className="fixed left-0 top-0 h-full w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 shadow-sm">
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        onClick={() => navigate('/')}
+        className="w-12 h-12 rounded-xl bg-gray-100 hover:bg-gray-200 mb-6 flex items-center justify-center"
+        title="Main Platform"
+      >
+        <Home className="w-5 h-5 text-gray-700" />
+      </motion.button>
+      
+      <div className="flex flex-col items-center gap-4">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          onClick={() => navigate('/ehr/login')}
+          className="w-12 h-12 rounded-xl bg-blue-100 hover:bg-blue-200 flex items-center justify-center"
+          title="EHR Module"
+        >
+          <FileText className="w-5 h-5 text-blue-600" />
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          onClick={() => navigate('/hms/login')}
+          className="w-12 h-12 rounded-xl bg-emerald-50 hover:bg-emerald-100 flex items-center justify-center"
+          title="HMS Module"
+        >
+          <Building2 className="w-5 h-5 text-emerald-600" />
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          onClick={() => navigate('/iomt/login')}
+          className="w-12 h-12 rounded-xl bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center"
+          title="IoMT Module"
+        >
+          <Cpu className="w-5 h-5 text-indigo-600" />
+        </motion.button>
+      </div>
+    </div>
+  );
+};
 
 const EHRLogin: React.FC = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
-  const { user, login, isLoading, setCurrentModule } = useAuth()
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  if (user) {
-    return <Navigate to="/ehr" replace />
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
+  // Create demo account on component mount if it doesn't exist
+  useEffect(() => {
+    const users = JSON.parse(localStorage.getItem('ehr_users') || '[]');
+    const demoUser = users.find((u: any) => u.email === DEMO_EMAIL);
     
-    const success = await login(email, password)
-    if (success) {
-      setCurrentModule('ehr')
-      navigate('/ehr')
-    } else {
-      setError('Invalid credentials. Please contact your EHR administrator for access or use demo accounts for testing.')
+    if (!demoUser) {
+      users.push({
+        email: DEMO_EMAIL,
+        password: DEMO_PASSWORD,
+        name: 'EHR Demo User',
+        role: 'Doctor',
+        department: 'General Medicine'
+      });
+      localStorage.setItem('ehr_users', JSON.stringify(users));
     }
-  }
+  }, []);
 
-  const features = [
-    {
-      icon: User,
-      title: 'Patient Profiles',
-      description: 'Comprehensive patient records with medical history and demographics'
-    },
-    {
-      icon: FileText,
-      title: 'Clinical Documentation',
-      description: 'Digital medical records, visit notes, and clinical observations'
-    },
-    {
-      icon: Stethoscope,
-      title: 'SOAP Notes',
-      description: 'Structured clinical documentation with voice-to-text capabilities'
-    },
-    {
-      icon: Clipboard,
-      title: 'Digital Prescriptions',
-      description: 'Electronic prescribing with drug interaction checks and audit trails'
-    },
-    {
-      icon: Database,
-      title: 'Medical History',
-      description: 'Complete patient medical history with timeline visualization'
-    },
-    {
-      icon: Search,
-      title: 'Advanced Search',
-      description: 'Powerful search across all patient records and clinical data'
-    },
-    {
-      icon: Calendar,
-      title: 'Appointment Integration',
-      description: 'Seamless integration with scheduling and appointment systems'
-    },
-    {
-      icon: Pill,
-      title: 'Medication Management',
-      description: 'Comprehensive medication tracking and interaction monitoring'
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const users = JSON.parse(localStorage.getItem('ehr_users') || '[]');
+      const user = users.find((u: any) => u.email === email && u.password === password);
+
+      if (!user) {
+        throw new Error('Invalid email or password');
+      }
+
+      localStorage.setItem('ehr_token', 'ehr-' + Math.random());
+      localStorage.setItem('ehr_user', JSON.stringify(user));
+      
+      setSuccess('Login successful! Redirecting...');
+      setTimeout(() => {
+        navigate('/ehr/dashboard');
+      }, 1000);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-  ]
-
-  // EHR-specific demo accounts
-  const demoAccounts = [
-    { role: 'Chief Medical Officer', email: 'cmo@wellconx.com', description: 'Full system access' },
-    { role: 'Attending Physician', email: 'physician@wellconx.com', description: 'Clinical documentation' },
-    { role: 'Medical Resident', email: 'resident@wellconx.com', description: 'Limited access' },
-    { role: 'Nurse Practitioner', email: 'np@wellconx.com', description: 'Patient care notes' },
-    { role: 'Medical Scribe', email: 'scribe@wellconx.com', description: 'Documentation support' },
-    { role: 'EHR Administrator', email: 'ehr.admin@wellconx.com', description: 'System management' }
-  ]
+  };
 
   return (
-    <div className="min-h-screen bg-gray-25 flex">
-      {/* Left Side - EHR Branding & Features */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 p-12 flex-col justify-between text-white">
-        <div>
-          <div className="flex items-center gap-4 mb-12">
-            <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
-              <Shield className="h-8 w-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-display-md font-bold">EHR Module</h1>
-              <p className="text-blue-100 text-text-lg">Electronic Health Records</p>
-            </div>
-          </div>
-          
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-display-lg font-bold mb-6">
-                Comprehensive Patient Records Management
-              </h2>
-              <p className="text-text-xl text-blue-100 leading-relaxed">
-                Advanced electronic health records system for complete patient documentation, 
-                clinical workflows, and seamless care coordination across healthcare teams.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-4">
-              {features.map((feature, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-                  <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm flex-shrink-0">
-                    <feature.icon className="h-4 w-4 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-white font-semibold text-sm mb-1">{feature.title}</h3>
-                    <p className="text-blue-100 text-xs leading-relaxed">{feature.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        
-        <div className="text-blue-200 text-text-sm">
-          © 2024 WellConX EHR Module. HIPAA Compliant • SOC 2 Certified
-        </div>
-      </div>
-
-      {/* Right Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-8">
-          {/* Back Button */}
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => navigate('/')}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 flex">
+      <ModuleSidebar />
+      <div className="flex-1 pl-20">
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-6xl w-full flex flex-col-reverse lg:flex-row">
+            {/* Form Side */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="w-full lg:w-1/2 p-8 lg:p-12"
             >
-              <ArrowLeft className="h-5 w-5 text-gray-600" />
-            </button>
-            <span className="text-gray-600">Back to Platform</span>
-          </div>
-
-          {/* Mobile Logo */}
-          <div className="text-center lg:hidden">
-            <div className="flex justify-center mb-6">
-              <div className="bg-blue-600 p-4 rounded-2xl">
-                <Shield className="h-8 w-8 text-white" />
+              <div className="flex items-center mb-8">
+                <FileText className="h-8 w-8 text-blue-600 mr-3" />
+                <h2 className="text-3xl font-bold text-gray-800">EHR Login</h2>
               </div>
-            </div>
-            <h2 className="text-display-md font-bold text-gray-900">EHR Module</h2>
-            <p className="text-gray-600 mt-2">Electronic Health Records</p>
-          </div>
-          
-          {/* Desktop Header */}
-          <div className="hidden lg:block text-center">
-            <h2 className="text-display-md font-bold text-gray-900 mb-3">Access EHR Module</h2>
-            <p className="text-gray-600">Sign in to manage patient records</p>
-          </div>
-          
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email address
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter your email"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Password
-                  </label>
+
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                   <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                     <input
-                      id="password"
-                      name="password"
-                      type={showPassword ? 'text' : 'password'}
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                      placeholder="Enter your email"
                       required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                    <input
+                      type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-3 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                       placeholder="Enter your password"
+                      required
                     />
-                    <button
-                      type="button"
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400" />
-                      ) : (
-                        <Eye className="h-5 w-5 text-gray-400" />
-                      )}
-                    </button>
                   </div>
                 </div>
-                
-                <div className="text-right">
-                  <Link
-                    to="/forgot-password"
-                    className="text-sm font-medium text-blue-600 hover:text-blue-500"
+
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center p-4 rounded-lg bg-red-50 text-red-600"
                   >
-                    Forgot password?
-                  </Link>
+                    <AlertCircle className="h-5 w-5 mr-2" />
+                    {error}
+                  </motion.div>
+                )}
+
+                {success && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center p-4 rounded-lg bg-green-50 text-green-600"
+                  >
+                    <CheckCircle className="h-5 w-5 mr-2" />
+                    {success}
+                  </motion.div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full flex items-center justify-center py-3 px-4 rounded-lg text-white font-medium transition-all
+                    ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}
+                  `}
+                >
+                  {loading ? (
+                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                  ) : (
+                    <>
+                      Sign In
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </>
+                  )}
+                </button>
+
+                <div className="text-center text-sm text-gray-600">
+                  <p>Demo Account</p>
+                  <p className="font-medium">{DEMO_EMAIL} / {DEMO_PASSWORD}</p>
                 </div>
-              </div>
-              
-              {error && (
-                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-text-sm text-red-700">{error}</p>
-                </div>
-              )}
-              
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full mt-8 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? 'Signing in...' : 'Access EHR Module'}
-              </button>
-            </div>
-          </form>
-          
-          {/* Demo Accounts */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h3 className="text-text-lg font-semibold text-gray-900 mb-4">Demo Access Accounts</h3>
-            <div className="space-y-3 text-text-sm">
-              {demoAccounts.map((account, index) => (
-                <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-                  <div>
-                    <span className="font-medium text-gray-900">{account.role}:</span>
-                    <span className="font-mono text-gray-700 ml-2">{account.email}</span>
+              </form>
+            </motion.div>
+
+            {/* Info Side */}
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="w-full lg:w-1/2 bg-gradient-to-br from-blue-600 to-cyan-600 p-8 lg:p-12 text-white"
+            >
+              <div className="h-full flex flex-col justify-between">
+                <div>
+                  <h3 className="text-2xl font-bold mb-6">EHR Platform Features</h3>
+                  <div className="space-y-6">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 bg-white/10 rounded-lg p-3">
+                        <ClipboardList className="h-6 w-6" />
+                      </div>
+                      <div className="ml-4">
+                        <h4 className="text-lg font-semibold">Electronic Health Records</h4>
+                        <p className="text-white/80">Comprehensive digital patient records and history</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 bg-white/10 rounded-lg p-3">
+                        <UserCircle className="h-6 w-6" />
+                      </div>
+                      <div className="ml-4">
+                        <h4 className="text-lg font-semibold">Patient Management</h4>
+                        <p className="text-white/80">Efficient patient data organization and access</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 bg-white/10 rounded-lg p-3">
+                        <Shield className="h-6 w-6" />
+                      </div>
+                      <div className="ml-4">
+                        <h4 className="text-lg font-semibold">HIPAA Compliant</h4>
+                        <p className="text-white/80">Secure and compliant health data management</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              ))}
-              <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-                <span className="font-medium text-gray-600">Password (All accounts):</span>
-                <span className="font-mono text-gray-900 bg-gray-100 px-2 py-1 rounded">demo123</span>
+
+                <div className="mt-8 lg:mt-0">
+                  <div className="flex items-center space-x-2 text-white/90">
+                    <Clock className="h-5 w-5" />
+                    <span>Real-time Health Record Updates</span>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-              <p className="text-xs text-blue-800">
-                <strong>Note:</strong> These are demonstration accounts for testing purposes. 
-                In production, access would be managed through your healthcare organization's identity provider.
-              </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EHRLogin
+export default EHRLogin;
