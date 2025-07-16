@@ -2,21 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-  Building2, 
   Mail, 
   Lock, 
   AlertCircle, 
   CheckCircle,
   ArrowRight,
-  Activity,
-  Bed,
+  Building2,
+  Stethoscope,
   Users,
-  Calendar,
-  LineChart,
-  Clock,
-  Home,
-  FileText,
-  Cpu
+  Bed,
+  Clipboard
 } from 'lucide-react';
 
 const DEMO_EMAIL = 'hms-demo@wellconx.com';
@@ -33,7 +28,7 @@ const ModuleSidebar = () => {
         className="w-12 h-12 rounded-xl bg-gray-100 hover:bg-gray-200 mb-6 flex items-center justify-center"
         title="Main Platform"
       >
-        <Home className="w-5 h-5 text-gray-700" />
+        <Building2 className="w-5 h-5 text-gray-700" />
       </motion.button>
       
       <div className="flex flex-col items-center gap-4">
@@ -43,7 +38,7 @@ const ModuleSidebar = () => {
           className="w-12 h-12 rounded-xl bg-blue-50 hover:bg-blue-100 flex items-center justify-center"
           title="EHR Module"
         >
-          <FileText className="w-5 h-5 text-blue-600" />
+          <Stethoscope className="w-5 h-5 text-blue-600" />
         </motion.button>
         
         <motion.button
@@ -61,7 +56,7 @@ const ModuleSidebar = () => {
           className="w-12 h-12 rounded-xl bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center"
           title="IoMT Module"
         >
-          <Cpu className="w-5 h-5 text-indigo-600" />
+          <Clipboard className="w-5 h-5 text-indigo-600" />
         </motion.button>
       </div>
     </div>
@@ -253,7 +248,7 @@ const HMSLogin: React.FC = () => {
 
                     <div className="flex items-start">
                       <div className="flex-shrink-0 bg-white/10 rounded-lg p-3">
-                        <LineChart className="h-6 w-6" />
+                        <Stethoscope className="h-6 w-6" />
                       </div>
                       <div className="ml-4">
                         <h4 className="text-lg font-semibold">Resource Analytics</h4>
@@ -265,7 +260,7 @@ const HMSLogin: React.FC = () => {
 
                 <div className="mt-8 lg:mt-0">
                   <div className="flex items-center space-x-2 text-white/90">
-                    <Calendar className="h-5 w-5" />
+                    <Stethoscope className="h-5 w-5" />
                     <span>Automated Scheduling System</span>
                   </div>
                 </div>

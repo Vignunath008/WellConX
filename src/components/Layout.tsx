@@ -1,36 +1,64 @@
-import React, { useState } from 'react'
-import { Outlet } from 'react-router-dom'
-import Sidebar from './Sidebar'
-import Header from './Header'
-import MobileSidebar from './MobileSidebar'
+import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import Header from './Header';
+import Sidebar from './Sidebar';
+import MobileSidebar from './MobileSidebar';
 
 const Layout: React.FC = () => {
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  const toggleMobileSidebar = () => {
+    setIsMobileSidebarOpen(!isMobileSidebarOpen);
+  };
 
   return (
-    <div className="flex h-screen bg-gray-25 overflow-hidden">
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block">
+      <motion.div
+        initial={{ x: -280 }}
+        animate={{ x: 0 }}
+        transition={{ duration: 0.3 }}
+        className="hidden lg:block"
+      >
         <Sidebar />
-      </div>
+      </motion.div>
 
-      {/* Mobile Sidebar Overlay */}
-      <MobileSidebar 
-        isOpen={isMobileSidebarOpen} 
-        onClose={() => setIsMobileSidebarOpen(false)} 
-      />
+      {/* Mobile Sidebar */}
+      <AnimatePresence>
+        {isMobileSidebarOpen && (
+          <motion.div
+            initial={{ x: -280 }}
+            animate={{ x: 0 }}
+            exit={{ x: -280 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 lg:hidden"
+          >
+            <MobileSidebar 
+              isOpen={isMobileSidebarOpen}
+              onClose={() => setIsMobileSidebarOpen(false)} 
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <Header onMobileMenuClick={() => setIsMobileSidebarOpen(true)} />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-25">
-          <div className="py-6">
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <Header onMobileMenuClick={toggleMobileSidebar} />
+        
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="container mx-auto px-4 py-8"
+          >
             <Outlet />
-          </div>
+          </motion.div>
         </main>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

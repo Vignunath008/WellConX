@@ -2,7 +2,9 @@
 export const GOOGLE_OAUTH_CONFIG = {
   clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || '355099186973-t0pcddr0rvogf3n9rgtafm40s4d6lbgq.apps.googleusercontent.com',
   clientSecret: import.meta.env.VITE_GOOGLE_CLIENT_SECRET || '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',
-  redirectUri: window.location.origin + '/auth/google/callback',
+  redirectUri: import.meta.env.PROD 
+    ? 'https://fascinating-meringue-b69602.netlify.app/auth/google/callback'
+    : window.location.origin + '/auth/google/callback',
   scope: 'openid email profile',
   responseType: 'code',
   accessType: 'offline',

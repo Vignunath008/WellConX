@@ -1,8 +1,139 @@
 import { io, Socket } from 'socket.io-client'
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001'
+const API_CONFIG = {
+  baseURL: import.meta.env.PROD 
+    ? 'https://fascinating-meringue-b69602.netlify.app/api'
+    : 'http://localhost:3000/api',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  },
+  maxRetries: 3,
+  retryDelay: 1000, // 1 second
+  timeout: 30000 // 30 seconds
+};
+
+// API Service class
+export class APIService {
+  private static async retryRequest(fn: () => Promise<any>, retries = API_CONFIG.maxRetries): Promise<any> {
+    try {
+      return await fn();
+    } catch (error: any) {
+      if (retries > 0 && this.isRetryableError(error)) {
+        await new Promise(resolve => setTimeout(resolve, API_CONFIG.retryDelay));
+        return this.retryRequest(fn, retries - 1);
+      }
+      throw error;
+    }
+  }
+
+  private static isRetryableError(error: any): boolean {
+    // Network errors, timeout errors, and 5xx server errors are retryable
+    return (
+      !error.response ||
+      error.code === 'ECONNABORTED' ||
+      error.code === 'ETIMEDOUT' ||
+      (error.response && error.response.status >= 500)
+    );
+  }
+
+  private static async handleResponse(response: Response) {
+    if (!response.ok) {
+      const error: any = new Error(`HTTP error! status: ${response.status}`);
+      error.response = response;
+      throw error;
+    }
+
+    // Handle different content types
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return response.json();
+    } else if (contentType && contentType.includes('text/')) {
+      return response.text();
+    } else {
+      return response.blob();
+    }
+  }
+
+  static async request(endpoint: string, options: RequestInit = {}) {
+    const url = `${API_CONFIG.baseURL}${endpoint}`;
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
+
+    const defaultOptions: RequestInit = {
+      headers: {
+        ...API_CONFIG.headers,
+        ...(options.headers || {}),
+      },
+      credentials: 'include',
+      mode: 'cors',
+      signal: controller.signal
+    };
+
+    return this.retryRequest(async () => {
+      try {
+        const response = await fetch(url, {
+          ...defaultOptions,
+          ...options,
+        });
+
+        clearTimeout(timeoutId);
+        return await this.handleResponse(response);
+      } catch (error: any) {
+        clearTimeout(timeoutId);
+        
+        if (error.name === 'AbortError') {
+          throw new Error('Request timeout');
+        }
+
+        // Check for offline status
+        if (!navigator.onLine) {
+          throw new Error('No internet connection. Please check your network.');
+        }
+
+        // Handle other errors
+        console.error('API request failed:', error);
+        throw error;
+      }
+    });
+  }
+
+  // GET request
+  static async get(endpoint: string, options: RequestInit = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: 'GET',
+    });
+  }
+
+  // POST request
+  static async post(endpoint: string, data: any, options: RequestInit = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  // PUT request
+  static async put(endpoint: string, data: any, options: RequestInit = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  // DELETE request
+  static async delete(endpoint: string, options: RequestInit = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: 'DELETE',
+    });
+  }
+}
 
 // Types
 export interface User {
@@ -323,7 +454,7 @@ class ApiService {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     try {
-      const url = `${API_BASE_URL}${endpoint}`
+      const url = `${API_CONFIG.baseURL}${endpoint}`
       const config: RequestInit = {
         headers: this.getHeaders(),
         ...options,
@@ -504,7 +635,7 @@ class ApiService {
     const formData = new FormData()
     formData.append('file', file)
 
-    const response = await fetch(`${API_BASE_URL}/upload`, {
+    const response = await fetch(`${API_CONFIG.baseURL}/upload`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.token}`,
@@ -521,7 +652,7 @@ class ApiService {
 
   // Export API
   async exportData(type: string, id: string): Promise<Blob> {
-    const response = await fetch(`${API_BASE_URL}/export/${type}/${id}`, {
+    const response = await fetch(`${API_CONFIG.baseURL}/export/${type}/${id}`, {
       headers: this.getHeaders(),
     })
 
@@ -542,7 +673,7 @@ class ApiService {
   private initializeSocket() {
     if (!this.token) return
 
-    this.socket = io(SOCKET_URL, {
+    this.socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001', {
       auth: {
         token: this.token,
       },
