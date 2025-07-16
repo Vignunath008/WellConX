@@ -442,7 +442,7 @@ Please use our [Issue Tracker](https://github.com/wellconx/ehr-system/issues) to
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
