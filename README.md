@@ -3,7 +3,7 @@
 A comprehensive, production-ready Electronic Health Records (EHR) system built with modern web technologies, featuring AI-powered insights, telemedicine integration, and advanced analytics.
 
 ![WellConX EHR](https://img.shields.io/badge/WellConX-EHR%20System-blue?style=for-the-badge&logo=health)
-![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Apache-green.svg?style=for-the-badge)
 ![Node.js](https://img.shields.io/badge/Node.js-20.x-green?style=for-the-badge&logo=node.js)
 ![React](https://img.shields.io/badge/React-18.x-blue?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=for-the-badge&logo=typescript)
