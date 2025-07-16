@@ -24,7 +24,7 @@ import {
   Network,
   HardDrive,
   Monitor,
-  Monitor
+  Monitor as MonitorIcon
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -545,7 +545,7 @@ const AdvancedMonitoring: React.FC = () => {
                     <div className="bg-gradient-to-br from-rose-50 to-rose-100 rounded-xl p-6">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-rose-900">Device Status</h3>
-                        <Monitor className="h-5 w-5 text-rose-600" />
+                        <MonitorIcon className="h-5 w-5 text-rose-600" />
                       </div>
                       <div className="space-y-2">
                         <div className="text-sm">
