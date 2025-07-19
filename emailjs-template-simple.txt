@@ -1,0 +1,23 @@
+WellConX Verification Code
+
+Hello {{user_name}},
+
+You have requested a verification code for your WellConX account. Please use the following code to complete your verification:
+
+VERIFICATION CODE: {{otp_code}}
+
+Instructions:
+- Enter this code in the verification field on the WellConX platform
+- This code will expire in 10 minutes
+- If you didn't request this code, please ignore this email
+
+Security Notice:
+⚠️ Never share this verification code with anyone. WellConX staff will never ask for your verification code.
+
+Need help?
+If you're having trouble with the verification process, please contact our support team.
+
+---
+This email was sent to: {{to_email}}
+© 2024 WellConX Medical Monitoring Platform. All rights reserved.
+This is an automated message, please do not reply to this email. 

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WellConX OTP Email Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .email-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        .otp-code {
+            background-color: #f8f9fa;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+            letter-spacing: 5px;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 14px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🏥 WellConX</div>
+            <h2>Verification Code</h2>
+        </div>
+
+        <!-- Greeting -->
+        <p>Hello <strong>{{user_name}}</strong>,</p>
+        
+        <p>You have requested a verification code for your WellConX account. Please use the following code to complete your verification:</p>
+
+        <!-- OTP Code Display -->
+        <div class="otp-code">
+            {{otp_code}}
+        </div>
+
+        <!-- Instructions -->
+        <p><strong>Instructions:</strong></p>
+        <ul>
+            <li>Enter this code in the verification field on the WellConX platform</li>
+            <li>This code will expire in 10 minutes</li>
+            <li>If you didn't request this code, please ignore this email</li>
+        </ul>
+
+        <!-- Warning -->
+        <div class="warning">
+            <strong>⚠️ Security Notice:</strong><br>
+            Never share this verification code with anyone. WellConX staff will never ask for your verification code.
+        </div>
+
+        <!-- Additional Info -->
+        <p><strong>Need help?</strong></p>
+        <p>If you're having trouble with the verification process, please contact our support team.</p>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>This email was sent to: <strong>{{to_email}}</strong></p>
+            <p>© 2024 WellConX Medical Monitoring Platform. All rights reserved.</p>
+            <p>This is an automated message, please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+</html> 
