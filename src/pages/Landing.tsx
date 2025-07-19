@@ -7,23 +7,16 @@ const Landing: React.FC = () => {
   const { user, isLoading } = useAuth()
 
   useEffect(() => {
-    if (!isLoading) {
-      if (user) {
-        // User is authenticated, redirect to main platform
-        navigate('/platform')
-      } else {
-        // User is not authenticated, redirect to login
-        navigate('/login')
-      }
-    }
-  }, [user, isLoading, navigate])
+    // Always redirect to the main platform for now to show the new design
+    navigate('/platform')
+  }, [navigate])
 
-  // Show loading while checking authentication
+  // Show loading while redirecting
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50 flex items-center justify-center">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading WellConX Healthcare Platform...</p>
       </div>
     </div>
   )

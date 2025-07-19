@@ -269,7 +269,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       // If userInfo is provided, use it directly (from completed OAuth flow)
       // Otherwise, try to get from storage (for session restoration)
-      const googleUserInfo = userInfo || GoogleOAuthService.getStoredUserInfo()
+      const googleUserInfo = userInfo || null // TODO: Implement Google user info retrieval
       
       if (!googleUserInfo) {
         throw new Error('Failed to get Google user information')
@@ -319,7 +319,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       // If userInfo is provided, use it directly (from completed OAuth flow)
       // Otherwise, try to get from storage (for session restoration)
-      const googleUserInfo = userInfo || GoogleOAuthService.getStoredUserInfo()
+      const googleUserInfo = userInfo || null // TODO: Implement Google user info retrieval
       
       if (!googleUserInfo) {
         throw new Error('Failed to get Google user information')
