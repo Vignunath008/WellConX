@@ -24,9 +24,23 @@ import {
   Play,
   Download,
   ExternalLink,
-  AlertCircle
+  AlertCircle,
+  Heart,
+  Stethoscope,
+  Brain,
+  UserCheck,
+  Clock,
+  FileText,
+  BarChart3,
+  Microscope,
+  Pill,
+  Calendar,
+  Bell,
+  Search,
+  Settings,
+  LogOut
 } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { ScrollReveal } from '../components/ScrollReveal';
 
 const MainPlatform: React.FC = () => {
@@ -36,6 +50,7 @@ const MainPlatform: React.FC = () => {
   const [notification, setNotification] = useState<{ type: 'success' | 'info' | 'error'; message: string } | null>(null)
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set())
   const [activeTestimonial, setActiveTestimonial] = useState(0)
+  const [activeHeroSlide, setActiveHeroSlide] = useState(0)
 
   // No auto-logout on main platform - users can stay logged in
   // The main platform is the central hub where users can access different modules
@@ -385,31 +400,70 @@ Visit: https://wellconx.com
     setExpandedModules(newExpanded)
   }
 
+  // Hero slides with healthcare imagery
+  const heroSlides = [
+    {
+      title: "Empowering Healthcare Professionals",
+      subtitle: "Advanced Medical Monitoring for Modern Healthcare",
+      description: "Streamline patient care with our integrated EHR, HMS, and IoMT solutions designed specifically for doctors and nurses.",
+      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+      cta: "Explore EHR Module",
+      route: "/ehr/login"
+    },
+    {
+      title: "Real-Time Patient Monitoring",
+      subtitle: "IoMT Solutions for Continuous Care",
+      description: "Monitor vital signs, track patient progress, and receive instant alerts with our advanced IoMT integration platform.",
+      image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+      cta: "View IoMT Dashboard",
+      route: "/iomt/login"
+    },
+    {
+      title: "Efficient Hospital Management",
+      subtitle: "Optimize Operations & Patient Flow",
+      description: "Manage appointments, resources, and staff efficiently with our comprehensive Hospital Management System.",
+      image: "https://images.unsplash.com/photo-1551190822-a9333d879b1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+      cta: "Access HMS Portal",
+      route: "/hms/login"
+    }
+  ]
+
+  // Auto-rotate hero slides
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveHeroSlide((prev) => (prev + 1) % heroSlides.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
   const StatCard = ({ stat, index }: any) => (
     <motion.div
-      className={`${stat.bgColor} rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300`}
+      className={`${stat.bgColor} rounded-2xl p-6 border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      whileHover={{ scale: 1.02 }}
+      whileHover={{ scale: 1.02, y: -5 }}
     >
       <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 rounded-xl bg-white shadow-sm ${stat.color}`}>
+        <div className={`p-3 rounded-xl bg-white/80 shadow-sm ${stat.color} backdrop-blur-sm`}>
           <stat.icon className="h-6 w-6" />
         </div>
-        <TrendingUp className="h-4 w-4 text-green-500" />
+        <div className="flex items-center space-x-1">
+          <TrendingUp className="h-4 w-4 text-emerald-500" />
+          <span className="text-xs font-medium text-emerald-600">Live</span>
+        </div>
       </div>
       <div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</h3>
-        <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
-        <p className="text-xs text-gray-500 mb-2">{stat.description}</p>
-        <p className="text-xs text-green-600 font-medium">{stat.change}</p>
+        <h3 className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</h3>
+        <p className="text-sm font-semibold text-gray-700 mb-1">{stat.title}</p>
+        <p className="text-xs text-gray-500 mb-3">{stat.description}</p>
+        <p className="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-1 rounded-full inline-block">{stat.change}</p>
       </div>
     </motion.div>
   )
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
       {/* Enhanced Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 safe-area-inset-top">
@@ -556,25 +610,226 @@ Visit: https://wellconx.com
         </motion.div>
       )}
 
-      {/* Hero Section */}
-      <ScrollReveal>
-        <div className="bg-gradient-to-br from-primary-600 to-primary-700 text-white py-16 px-6">
-          <div className="max-w-7xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Welcome to WellConX</h1>
-            <p className="text-xl text-primary-100 max-w-2xl">Your comprehensive healthcare platform for seamless patient care and medical device management.</p>
-          </div>
+      {/* Modern Hero Section with Image Carousel */}
+      <div className="relative overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeHeroSlide}
+            initial={{ opacity: 0, x: 300 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -300 }}
+            transition={{ duration: 0.5 }}
+            className="relative h-[70vh] min-h-[600px] flex items-center"
+          >
+            {/* Background Image with Overlay */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: `url(${heroSlides[activeHeroSlide].image})` }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-blue-800/80 to-emerald-900/90"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            </div>
+            
+            {/* Content */}
+            <div className="relative z-10 max-w-7xl mx-auto px-6 text-white">
+              <div className="max-w-3xl">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="flex items-center space-x-3 mb-6"
+                >
+                  <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                    <Stethoscope className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-emerald-300 font-semibold text-lg">WellConX Healthcare Platform</p>
+                    <p className="text-blue-200 text-sm">Trusted by 2,847+ Healthcare Facilities</p>
+                  </div>
+                </motion.div>
+                
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+                >
+                  {heroSlides[activeHeroSlide].title}
+                </motion.h1>
+                
+                <motion.h2
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-2xl md:text-3xl font-semibold text-emerald-300 mb-6"
+                >
+                  {heroSlides[activeHeroSlide].subtitle}
+                </motion.h2>
+                
+                <motion.p
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-xl text-blue-100 mb-8 leading-relaxed max-w-2xl"
+                >
+                  {heroSlides[activeHeroSlide].description}
+                </motion.p>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="flex flex-col sm:flex-row gap-4"
+                >
+                  <button
+                    onClick={() => handleModuleAccess(heroSlides[activeHeroSlide].route)}
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center space-x-3 shadow-lg hover:shadow-xl transform hover:scale-105"
+                  >
+                    <Heart className="h-6 w-6" />
+                    <span>{heroSlides[activeHeroSlide].cta}</span>
+                    <ArrowRight className="h-5 w-5" />
+                  </button>
+                  
+                  <button
+                    onClick={handleScheduleDemo}
+                    className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white/30 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center space-x-3"
+                  >
+                    <Play className="h-6 w-6" />
+                    <span>Schedule Demo</span>
+                  </button>
+                </motion.div>
+                
+                {/* Quick Stats */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                  className="flex flex-wrap gap-6 mt-12 pt-8 border-t border-white/20"
+                >
+                  <div className="flex items-center space-x-2">
+                    <Users className="h-5 w-5 text-emerald-300" />
+                    <span className="text-white font-semibold">156K+ Patients</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Monitor className="h-5 w-5 text-blue-300" />
+                    <span className="text-white font-semibold">94K+ Devices</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Shield className="h-5 w-5 text-purple-300" />
+                    <span className="text-white font-semibold">99.9% Uptime</span>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+        
+        {/* Slide Indicators */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+          {heroSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveHeroSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === activeHeroSlide 
+                  ? 'bg-white scale-125' 
+                  : 'bg-white/50 hover:bg-white/75'
+              }`}
+            />
+          ))}
         </div>
-      </ScrollReveal>
+        
+        {/* Navigation Arrows */}
+        <button
+          onClick={() => setActiveHeroSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)}
+          className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-3 rounded-full transition-all duration-300 z-20"
+        >
+          <ArrowRight className="h-6 w-6 rotate-180" />
+        </button>
+        <button
+          onClick={() => setActiveHeroSlide((prev) => (prev + 1) % heroSlides.length)}
+          className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-3 rounded-full transition-all duration-300 z-20"
+        >
+          <ArrowRight className="h-6 w-6" />
+        </button>
+      </div>
 
-      {/* Stats Section */}
-      <div className="max-w-7xl mx-auto px-6 -mt-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Enhanced Stats Section */}
+      <div className="max-w-7xl mx-auto px-6 -mt-16 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {platformStats.map((stat, index) => (
             <ScrollReveal key={index} delay={index * 100}>
-              <div className={`${stat.bgColor} rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300`}>
-                <h3 className="text-2xl font-bold mb-2">{stat.value}</h3>
-                <p className="text-gray-600">{stat.title}</p>
-              </div>
+              <StatCard stat={stat} index={index} />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+      
+      {/* Healthcare Features Section */}
+      <div className="max-w-7xl mx-auto px-6 py-20">
+        <ScrollReveal>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Built for Healthcare Professionals</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">Designed with doctors and nurses in mind, our platform streamlines workflows and enhances patient care through intelligent automation and real-time insights.</p>
+          </div>
+        </ScrollReveal>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {[
+            {
+              icon: Stethoscope,
+              title: "Clinical Excellence",
+              description: "Advanced diagnostic tools and clinical decision support systems to enhance patient outcomes.",
+              color: "bg-blue-500",
+              bgColor: "bg-blue-50"
+            },
+            {
+              icon: Heart,
+              title: "Patient-Centered Care",
+              description: "Comprehensive patient profiles with real-time vital monitoring and care coordination.",
+              color: "bg-red-500",
+              bgColor: "bg-red-50"
+            },
+            {
+              icon: Brain,
+              title: "AI-Powered Insights",
+              description: "Machine learning algorithms that predict health trends and optimize treatment plans.",
+              color: "bg-purple-500",
+              bgColor: "bg-purple-50"
+            },
+            {
+              icon: Clock,
+              title: "Time Efficiency",
+              description: "Streamlined workflows that reduce administrative burden and increase patient interaction time.",
+              color: "bg-emerald-500",
+              bgColor: "bg-emerald-50"
+            },
+            {
+              icon: Shield,
+              title: "HIPAA Compliant",
+              description: "Enterprise-grade security with end-to-end encryption and compliance monitoring.",
+              color: "bg-indigo-500",
+              bgColor: "bg-indigo-50"
+            },
+            {
+              icon: Smartphone,
+              title: "Mobile Ready",
+              description: "Access patient data and manage care from anywhere with our responsive mobile platform.",
+              color: "bg-orange-500",
+              bgColor: "bg-orange-50"
+            }
+          ].map((feature, index) => (
+            <ScrollReveal key={index} delay={index * 100}>
+              <motion.div
+                className={`${feature.bgColor} rounded-2xl p-8 border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300`}
+                whileHover={{ scale: 1.02, y: -5 }}
+              >
+                <div className={`${feature.color} p-4 rounded-xl w-fit mb-6 shadow-lg`}>
+                  <feature.icon className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              </motion.div>
             </ScrollReveal>
           ))}
         </div>

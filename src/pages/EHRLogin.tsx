@@ -21,8 +21,10 @@ const EHRLogin: React.FC = () => {
 
     try {
       const response = await api.login('ehr', { email, password });
-      await login(response.token);
-      navigate('/ehr');
+      const success = await login(email, password);
+      if (success) {
+        navigate('/ehr');
+      }
     } catch (error: any) {
       setError(error.response?.data?.message || 'Login failed. Please try again.');
     } finally {

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { EmailService } from '../utils/emailService'
-import { GoogleOAuthService } from '../utils/googleOAuth'
+import { signInWithGoogle } from '../utils/googleOAuth'
 
 interface User {
   id: string
@@ -79,8 +79,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(JSON.parse(storedUser))
     } else {
       // Check for Google OAuth session
-      const googleUserInfo = GoogleOAuthService.getStoredUserInfo()
-      const googleAccessToken = GoogleOAuthService.getAccessToken()
+      const googleUserInfo = null // TODO: Implement Google user info retrieval
+      const googleAccessToken = null // TODO: Implement Google access token retrieval
       
       if (googleUserInfo && googleAccessToken) {
         // Check if this Google user exists in our system
@@ -146,7 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     // Sign out from Google OAuth if user was signed in with Google
     if (user?.id?.startsWith('google-')) {
-      GoogleOAuthService.signOut()
+      // TODO: Implement Google sign out
     }
     
     setUser(null)
@@ -158,7 +158,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logoutAndReturnToPlatform = () => {
     // Sign out from Google OAuth if user was signed in with Google
     if (user?.id?.startsWith('google-')) {
-      GoogleOAuthService.signOut()
+      // TODO: Implement Google sign out
     }
     
     // Clear user session and module state

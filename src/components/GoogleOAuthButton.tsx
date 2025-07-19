@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { GoogleOAuthService } from '../utils/googleOAuth'
+import { signInWithGoogle, getGoogleOAuthURL } from '../utils/googleOAuth'
 
 interface GoogleOAuthButtonProps {
   onSuccess?: (userInfo: any) => void
@@ -26,17 +26,17 @@ const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
     setIsGoogleLoading(true)
     
     try {
-      const response = await GoogleOAuthService.signIn()
+      const result = await signInWithGoogle()
       
-      // The response now includes userInfo directly
-      if (response.success && response.userInfo && onSuccess) {
-        onSuccess(response.userInfo)
-      } else {
-        // Fallback: try to get user info from storage
-        const userInfo = GoogleOAuthService.getStoredUserInfo()
-        if (userInfo && onSuccess) {
-          onSuccess(userInfo)
+      // Extract user info from Firebase result
+      if (result.user && onSuccess) {
+        const userInfo = {
+          name: result.user.displayName,
+          email: result.user.email,
+          picture: result.user.photoURL,
+          uid: result.user.uid
         }
+        onSuccess(userInfo)
       }
     } catch (error) {
       console.error('Google OAuth error:', error)

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import type { AxiosResponse, AxiosError } from 'axios';
 import { LoginResponse, DemoCredentials } from '../types/api';
 
 const api = axios.create({
@@ -20,8 +19,8 @@ api.interceptors.request.use((config) => {
 
 // Add response interceptor to handle errors
 api.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  (error: AxiosError) => {
+  (response: any) => response,
+  (error: any) => {
     if (error.response?.status === 401) {
       // Handle unauthorized access
       localStorage.removeItem('auth_token');
